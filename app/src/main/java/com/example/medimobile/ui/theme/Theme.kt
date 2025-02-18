@@ -1,6 +1,5 @@
 package com.example.medimobile.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -37,11 +36,24 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
-// Custom TextStyle for title text
-val titleTextStyle = TextStyle(
+// Custom TextStyle for app title text
+val appTitleTextStyle = TextStyle(
+    fontWeight = FontWeight.Bold, // Bold text
+    fontSize = 44.sp, // Font size
+    textAlign = TextAlign.Center // Center text alignment
+)
+
+// Custom TextStyle for section title text
+val sectionTitleTextStyle = TextStyle(
     fontWeight = FontWeight.Bold, // Bold text
     fontSize = 24.sp, // Font size
     textAlign = TextAlign.Center // Center text alignment
+)
+
+// Custom TextStyle for username and DocID text
+val userNameTextStyle = TextStyle(
+    fontWeight = FontWeight.Bold, // Bold text
+    fontSize = 18.sp, // Font size
 )
 
 @Composable
