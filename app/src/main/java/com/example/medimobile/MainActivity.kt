@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,7 +23,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -38,9 +36,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.medimobile.ui.theme.MediMobileTheme
 import com.example.medimobile.ui.theme.appTitleTextStyle
 import com.example.medimobile.ui.theme.sectionTitleTextStyle
@@ -52,10 +55,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MediMobileTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = "login"
+                ) {
+                    composable("login") { LoginScreen(navController) }
+                    composable("mainMenu") { MainMenuScreen(navController) }
+                    composable("dataEntry") { DataEntryScreen(navController) }
                 }
             }
         }
@@ -63,12 +70,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(navController: NavController) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
-
-    val tabs = listOf("Triage", "Information Collection", "Discharge")
-    val selectedTabIndex = remember { mutableIntStateOf(0) }
 
     Box(
         modifier = Modifier
@@ -79,33 +83,112 @@ fun LoginScreen(modifier: Modifier = Modifier) {
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
+                .fillMaxSize()
+                .padding(horizontal = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
+            Spacer(modifier = Modifier.weight(1f))
+
             Text(
                 text = "MediMobile",
-                style = appTitleTextStyle
+                style = appTitleTextStyle,
+                textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(32.dp))
+
+            Spacer(modifier = Modifier.weight(1f))
 
             // Login Form
             TextField(value = "", onValueChange = {}, placeholder = { Text("username") })
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.weight(0.125f))
             TextField(value = "", onValueChange = {}, placeholder = { Text("password") })
-            Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(modifier = Modifier.weight(0.5f))
 
             // Login Button
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = { navController.navigate("mainMenu")  }) {
                 Text(text = "Login")
             }
+
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
 
 @Composable
-fun DataEntryScreen(modifier: Modifier = Modifier) {
+fun MainMenuScreen(navController: NavController) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Cyan)
+            .navigationBarsPadding()
+            .statusBarsPadding(),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, bottom = 16.dp, start = 8.dp, end = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "User Name",
+                    style = userNameTextStyle)
+                Button(onClick = { navController.navigate("login")  }) {
+                    Text(text = "Logout")
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Spacer(modifier = Modifier.weight(0.5f))
+
+                Text(
+                    text = "MediMobile",
+                    style = appTitleTextStyle
+                )
+
+                Spacer(modifier = Modifier.weight(0.5f))
+
+                // Menu Options
+                Button(onClick = { navController.navigate("dataEntry") }) {
+                    Text(text = "Create New Encounter")
+                }
+
+                Spacer(modifier = Modifier.weight(0.25f))
+
+                Button(onClick = { /*TODO*/ }) {
+                    Text(text = "Update Existing Encounter")
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+            }
+        }
+
+        Button(
+            onClick = { /*TODO*/ },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        ) {
+            Text(text = "Settings")
+        }
+    }
+}
+
+@Composable
+fun DataEntryScreen(navController: NavController) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
 
@@ -184,10 +267,10 @@ fun DataEntryScreen(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { navController.navigate("mainMenu")  }) {
                     Text(text = "Cancel", color = Color.Black)
                 }
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { navController.navigate("mainMenu")  }) {
                     Text(text = "Save", color = Color.Black)
                 }
             }
@@ -231,26 +314,61 @@ data class FormSectionData(
     val content: @Composable (modifier: Modifier) -> Unit
 )
 
-// Radio buttons for Triage
 @Composable
-fun TriageRadioButtons(selectedOption: String?, onOptionSelected: (String) -> Unit) {
+fun TriageRadioButtons(isLandscape: Boolean = false, selectedOption: String?, onOptionSelected: (String) -> Unit) {
     val options = listOf("Green", "Yellow", "Red", "White")
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        options.forEach { option ->
+    // Arrange in grid format for landscape orientation
+    if (isLandscape) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                RadioButton(
-                    selected = selectedOption == option,
-                    onClick = { onOptionSelected(option) }
-                )
-                Text(text = option)
+                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.Start) {
+                    RadioButtonWithText(option = options[0], selectedOption, onOptionSelected)
+                }
+                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.Start) {
+                    RadioButtonWithText(option = options[1], selectedOption, onOptionSelected)
+                }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.Start) {
+                    RadioButtonWithText(option = options[2], selectedOption, onOptionSelected)
+                }
+                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.Start) {
+                    RadioButtonWithText(option = options[3], selectedOption, onOptionSelected)
+                }
             }
         }
+
+    // Arrange in row format for portrait orientation
+    } else {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            options.forEach { option ->
+                RadioButtonWithText(option, selectedOption, onOptionSelected)
+            }
+        }
+    }
+}
+
+@Composable
+fun RadioButtonWithText(option: String, selectedOption: String?, onOptionSelected: (String) -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        RadioButton(
+            selected = selectedOption == option,
+            onClick = { onOptionSelected(option) }
+        )
+        Text(text = option)
     }
 }
 
@@ -313,7 +431,7 @@ fun TriageScreen(isLandscape: Boolean = false) {
         },
         FormSectionData("Triage") {
             val selectedOption = remember { mutableStateOf<String?>(null) }
-            TriageRadioButtons(selectedOption = selectedOption.value, onOptionSelected = { selectedOption.value = it })
+            TriageRadioButtons(isLandscape, selectedOption = selectedOption.value, onOptionSelected = { selectedOption.value = it })
         },
         FormSectionData("Visit ID") {
             TextField(value = "", onValueChange = {}, placeholder = { Text("Enter Visit ID") })
@@ -351,7 +469,7 @@ fun InformationCollectionScreen(isLandscape: Boolean = false) {
                 value = "",
                 onValueChange = {},
                 placeholder = { Text("Enter age") },
-                modifier = Modifier.fillMaxWidth(0.3f)
+                modifier = Modifier.fillMaxWidth(0.4f)
             )
         },
         FormSectionData("Role") {
@@ -446,8 +564,16 @@ fun DischargeScreen(isLandscape: Boolean = false) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun GreetingPreview() {
+fun LoginPreview() {
     MediMobileTheme {
-        LoginScreen()
+        LoginScreen(navController = rememberNavController())
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun MainMenuPreview() {
+    MediMobileTheme {
+        MainMenuScreen(navController = rememberNavController())
     }
 }
