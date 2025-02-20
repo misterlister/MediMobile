@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -36,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -48,6 +52,9 @@ import com.example.medimobile.ui.theme.MediMobileTheme
 import com.example.medimobile.ui.theme.appTitleTextStyle
 import com.example.medimobile.ui.theme.sectionTitleTextStyle
 import com.example.medimobile.ui.theme.userNameTextStyle
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +70,8 @@ class MainActivity : ComponentActivity() {
                     composable("login") { LoginScreen(navController) }
                     composable("mainMenu") { MainMenuScreen(navController) }
                     composable("dataEntry") { DataEntryScreen(navController) }
+                    composable("settings") { SettingsScreen(navController) }
+                    composable("updateEncounter") { UpdateEncounterScreen(navController) }
                 }
             }
         }
@@ -168,7 +177,7 @@ fun MainMenuScreen(navController: NavController) {
 
                 Spacer(modifier = Modifier.weight(0.25f))
 
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { navController.navigate("updateEncounter") }) {
                     Text(text = "Update Existing Encounter")
                 }
 
@@ -177,7 +186,7 @@ fun MainMenuScreen(navController: NavController) {
         }
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate("settings") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
@@ -537,7 +546,6 @@ fun DischargeScreen(isLandscape: Boolean = false) {
                     Button(onClick = { expandedDestinationState.value = !expandedDestinationState.value }) {
                         Text(text = "Select Arrival Method")
                     }
-                    // DropdownMenu that uses the expanded state to show/hide
                     DropdownMenu(
                         expanded = expandedDestinationState.value,
                         onDismissRequest = { expandedDestinationState.value = false }
@@ -562,11 +570,359 @@ fun DischargeScreen(isLandscape: Boolean = false) {
     DataEntryForm(formSections = formSections, isLandscape = isLandscape)
 }
 
+enum class StageStatus {
+    NOT_STARTED,
+    IN_PROGRESS,
+    COMPLETE
+}
+
+data class Encounter(
+    val encounterID: String,
+    val docID: String,
+    val visitID: String,
+    val arrivalTime: String,
+    val triageState: String,
+    val arrivalMethod: String,
+    val age: Int,
+    val chiefComplaint: String,
+    val comments: String,
+    val departureTime: String,
+    val departureDestination: String,
+    val dischargeDiagnosis: String,
+    val triageStatus: StageStatus,
+    val informationCollectionStatus: StageStatus,
+    val dischargeStatus: StageStatus,
+    val complete: Boolean
+)
+
+// Header Cell Style
+@Composable
+fun TableHeaderCell(text: String) {
+    Text(
+        text = text,
+        textAlign = TextAlign.Center,
+        fontWeight = FontWeight.Bold,
+        color = Color.White
+    )
+}
+
+// Data Cell Style
+@Composable
+fun TableCell(text: String) {
+    Text(
+        text = text,
+        textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+fun EncounterTable(
+    records: List<Encounter>,
+    onRowClick: (Encounter) -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .background(Color.White)
+            .border(2.dp, Color.Black)
+    ) {
+        // Table Header
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.LightGray)
+                    .border(1.dp, Color.Black)
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TableHeaderCell("DocID")
+                TableHeaderCell("VisitID")
+                TableHeaderCell("Date")
+                TableHeaderCell("Status")
+            }
+        }
+
+        // Table Data Rows
+        itemsIndexed(records) { index, record ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onRowClick(record) }
+                    .background(if (index % 2 == 0) Color.LightGray else Color.White)
+                    .border(1.dp, Color.Black)
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TableCell(record.docID)
+                TableCell(record.visitID)
+                TableCell(record.arrivalTime)
+                TableCell(if (record.complete) "Complete" else "Incomplete")
+            }
+        }
+    }
+}
+
+// Screen for updating Encounters
+@Composable
+fun UpdateEncounterScreen(navController: NavController) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Cyan)
+            .navigationBarsPadding()
+            .statusBarsPadding()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, bottom = 16.dp, start = 8.dp, end = 8.dp)
+            ) {
+                Text(text = "User Name", style = userNameTextStyle)
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.weight(0.25f))
+
+                Text(text = "Update Encounter", style = appTitleTextStyle)
+
+                Spacer(modifier = Modifier.weight(0.25f))
+
+                Button(onClick = { /*TODO*/ }) {
+                    Text(text = "Refresh")
+                }
+
+                Spacer(modifier = Modifier.weight(0.25f))
+
+                Box(
+                    modifier = Modifier
+                        .weight(1.5f)
+                        .fillMaxWidth()
+                ) {
+                    EncounterTable(
+                        records = getDummyEncounters(),
+                        onRowClick = { selectedRecord ->
+                            println("Selected Encounter: ${selectedRecord.encounterID}")
+                        }
+                    )
+                }
+
+                Spacer(modifier = Modifier.weight(0.25f))
+
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    Arrangement.spacedBy(16.dp)
+                ) {
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = "QR Scan")
+                    }
+                    TextField(value = "", onValueChange = {}, placeholder = { Text("Doc ID") })
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .background(Color.LightGray)
+                .padding(16.dp)
+                .navigationBarsPadding()
+                .wrapContentHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            Button(
+                onClick = { navController.navigate("mainMenu") },
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+            ) {
+                Text(text = "Back", color = Color.Black)
+            }
+        }
+    }
+}
+
+// Screen for adjusting settings
+@Composable
+fun SettingsScreen(navController: NavController) {
+    val expandedEventState = remember { mutableStateOf(false) }
+    val expandedLocationState = remember { mutableStateOf(false) }
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Cyan)
+            .navigationBarsPadding()
+            .statusBarsPadding()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, bottom = 16.dp, start = 8.dp, end = 8.dp)
+            ) {
+                Text(text = "User Name", style = userNameTextStyle)
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.weight(0.5f))
+
+                Text(text = "Settings", style = appTitleTextStyle)
+
+                Spacer(modifier = Modifier.weight(0.5f))
+
+                val formSections = listOf(
+                    FormSectionData("Event") {
+                        Box(modifier = Modifier.wrapContentSize()) {
+                            Column {
+                                Button(onClick = { expandedEventState.value = !expandedEventState.value }) {
+                                    Text(text = "Select Event")
+                                }
+                                DropdownMenu(
+                                    expanded = expandedEventState.value,
+                                    onDismissRequest = { expandedEventState.value = false }
+                                ) {
+                                    DropdownMenuItem(text = { Text("Shambhala") }, onClick = { expandedEventState.value = false })
+                                }
+                            }
+                        }
+                    },
+                    FormSectionData("Location") {
+                        Box(modifier = Modifier.wrapContentSize()) {
+                            Column {
+                                Button(onClick = { expandedLocationState.value = !expandedLocationState.value }) {
+                                    Text(text = "Select Location")
+                                }
+                                DropdownMenu(
+                                    expanded = expandedLocationState.value,
+                                    onDismissRequest = { expandedLocationState.value = false }
+                                ) {
+                                    DropdownMenuItem(text = { Text("Main Medical") }, onClick = { expandedLocationState.value = false })
+                                }
+                            }
+                        }
+                    },
+                )
+                DataEntryForm(formSections = formSections, isLandscape = isLandscape)
+
+                Spacer(modifier = Modifier.weight(1f))
+            }
+        }
+
+        // Back button at the bottom center
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter) // Ensure it's at the bottom
+                .background(Color.LightGray)
+                .padding(16.dp)
+                .navigationBarsPadding()
+                .wrapContentHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            Button(
+                onClick = { navController.navigate("mainMenu") },
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+            ) {
+                Text(text = "Back", color = Color.Black)
+            }
+        }
+    }
+}
+
+
+fun getDummyEncounters(): List<Encounter> {
+    return listOf(
+        Encounter(
+            encounterID = "E001",
+            docID = "D001",
+            visitID = "V100",
+            arrivalTime = "2025-02-19",
+            triageState = "Green",
+            arrivalMethod = "Ambulance",
+            age = 30,
+            chiefComplaint = "Headache",
+            comments = "No allergies",
+            departureTime = "2025-02-19 14:30",
+            departureDestination = "Home",
+            dischargeDiagnosis = "Migraine",
+            triageStatus = StageStatus.IN_PROGRESS,
+            informationCollectionStatus = StageStatus.NOT_STARTED,
+            dischargeStatus = StageStatus.COMPLETE,
+            complete = false
+        ),
+        Encounter(
+            encounterID = "E002",
+            docID = "D002",
+            visitID = "V101",
+            arrivalTime = "2025-02-18",
+            triageState = "Yellow",
+            arrivalMethod = "Walk-in",
+            age = 45,
+            chiefComplaint = "Chest Pain",
+            comments = "Family history of heart disease",
+            departureTime = "2025-02-18 16:00",
+            departureDestination = "ICU",
+            dischargeDiagnosis = "Angina",
+            triageStatus = StageStatus.COMPLETE,
+            informationCollectionStatus = StageStatus.IN_PROGRESS,
+            dischargeStatus = StageStatus.NOT_STARTED,
+            complete = true
+        ),
+        Encounter(
+            encounterID = "E003",
+            docID = "D003",
+            visitID = "V102",
+            arrivalTime = "2025-02-17",
+            triageState = "Red",
+            arrivalMethod = "Helicopter",
+            age = 60,
+            chiefComplaint = "Stroke symptoms",
+            comments = "High blood pressure",
+            departureTime = "2025-02-17 20:00",
+            departureDestination = "Neurology",
+            dischargeDiagnosis = "Stroke",
+            triageStatus = StageStatus.NOT_STARTED,
+            informationCollectionStatus = StageStatus.COMPLETE,
+            dischargeStatus = StageStatus.IN_PROGRESS,
+            complete = false
+        )
+    )
+}
+
+
+
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LoginPreview() {
     MediMobileTheme {
-        LoginScreen(navController = rememberNavController())
+        UpdateEncounterScreen(navController = rememberNavController())
     }
 }
 
@@ -575,5 +931,21 @@ fun LoginPreview() {
 fun MainMenuPreview() {
     MediMobileTheme {
         MainMenuScreen(navController = rememberNavController())
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun SettingsPreview() {
+    MediMobileTheme {
+        SettingsScreen(navController = rememberNavController())
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun DataEntryPreview() {
+    MediMobileTheme {
+        DataEntryScreen(navController = rememberNavController())
     }
 }
