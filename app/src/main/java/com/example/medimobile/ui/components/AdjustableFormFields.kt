@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun AdjustableFormFields(modifier: Modifier = Modifier, isLandscape: Boolean = false, formSections: List<FormSectionData>) {
+fun AdjustableFormFields(isLandscape: Boolean = false, formSections: List<FormSectionData>) {
     // Decide layout based on orientation
     if (isLandscape) {
         // Landscape: Use Row arrangement
@@ -23,7 +23,7 @@ fun AdjustableFormFields(modifier: Modifier = Modifier, isLandscape: Boolean = f
                 FormSection(
                     title = section.title,
                     content = section.content,
-                    isLandscape = isLandscape,
+                    isLandscape = true,
                     modifier = Modifier.weight(1f)
                 )
 
@@ -45,7 +45,7 @@ fun AdjustableFormFields(modifier: Modifier = Modifier, isLandscape: Boolean = f
                 FormSection(
                     title = section.title,
                     content = section.content,
-                    isLandscape = isLandscape
+                    isLandscape = false
                 )
 
                 // Add a horizontal divider between sections, but not after the last one

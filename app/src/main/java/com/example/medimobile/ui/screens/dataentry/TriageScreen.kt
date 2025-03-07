@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -24,9 +27,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.ui.components.AdjustableFormFields
 import com.example.medimobile.ui.components.FormSectionData
-import com.example.medimobile.ui.components.HourDropdown
-import com.example.medimobile.ui.components.MinuteDropdown
+import com.example.medimobile.ui.components.dropdowns.HourDropdown
+import com.example.medimobile.ui.components.dropdowns.MinuteDropdown
 import com.example.medimobile.ui.components.RadioButtonWithText
+import com.example.medimobile.ui.components.dropdowns.ArrivalMethodDropdown
 import com.example.medimobile.viewmodel.PatientEncounterViewModel
 import java.time.LocalDate
 import java.time.LocalTime
@@ -37,7 +41,6 @@ fun TriageScreen(viewModel: PatientEncounterViewModel, isLandscape: Boolean = fa
 
     // Data entry state variables
     val datePickerDialogState = remember { mutableStateOf(false) }
-    val expandedArrivalMethodState = remember { mutableStateOf(false) }
 
 
     // Show DatePickerDialog when state is true
@@ -59,15 +62,18 @@ fun TriageScreen(viewModel: PatientEncounterViewModel, isLandscape: Boolean = fa
     val formSections = listOf(
         FormSectionData("Arrival Time") {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp) // Increase spacing for better separation
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 180.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 // "Now" button column
                 Column(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "Set to Now", fontWeight = FontWeight.Bold)
                     Button(onClick = {
                         val nowDate = LocalDate.now()
                         val nowTime = LocalTime.now()
@@ -80,10 +86,12 @@ fun TriageScreen(viewModel: PatientEncounterViewModel, isLandscape: Boolean = fa
 
                 // Date selection column
                 Column(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "Select Date", fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
                     Button(onClick = { datePickerDialogState.value = true }) {
                         Text(text = encounter.arrivalDate.toString())
                     }
@@ -91,25 +99,24 @@ fun TriageScreen(viewModel: PatientEncounterViewModel, isLandscape: Boolean = fa
 
                 // Time input column
                 Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier
+                        .weight(1f)
+                        .wrapContentHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
-                    Text(text = "Enter Time", fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(8.dp))
                     HourDropdown(
-                        hour = encounter.arrivalTime.hour,
+                        currentHour = "%02d".format(encounter.arrivalTime.hour), // Format the current hour as a string
                         onHourChanged = { newHour ->
-                            val newTime = encounter.arrivalTime.withHour(newHour)
+                            val newTime = encounter.arrivalTime.withHour(newHour.toInt()) // Convert string to int
                             viewModel.setArrivalTime(newTime)
                         }
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
                     MinuteDropdown(
-                        minute = encounter.arrivalTime.minute,
+                        currentMinute = "%02d".format(encounter.arrivalTime.minute), // Format the current minute as a string
                         onMinuteChanged = { newMinute ->
-                            val newTime = encounter.arrivalTime.withMinute(newMinute)
+                            val newTime = encounter.arrivalTime.withMinute(newMinute.toInt()) // Convert string to int
                             viewModel.setArrivalTime(newTime)
                         }
                     )
@@ -117,29 +124,18 @@ fun TriageScreen(viewModel: PatientEncounterViewModel, isLandscape: Boolean = fa
             }
         },
         FormSectionData("Triage") {
-            val selectedOption = remember { mutableStateOf<String?>(null) }
-            TriageRadioButtons(isLandscape, selectedOption = selectedOption.value, onOptionSelected = { selectedOption.value = it })
+            TriageRadioButtons(isLandscape, selectedOption = encounter.triageAcuity, onOptionSelected = { viewModel.setTriageAcuity(it) })
         },
         FormSectionData("Visit ID") {
             TextField(value = "", onValueChange = {}, placeholder = { Text("Enter Visit ID") })
         },
         FormSectionData("Arrival Method") {
-            Box(modifier = Modifier.wrapContentSize()) {
-                Column {
-                    // Button to toggle the DropdownMenu expansion
-                    Button(onClick = { expandedArrivalMethodState.value = !expandedArrivalMethodState.value }) {
-                        Text(text = "Select Arrival Method")
-                    }
-                    // DropdownMenu that uses the expanded state to show/hide
-                    DropdownMenu(
-                        expanded = expandedArrivalMethodState.value,
-                        onDismissRequest = { expandedArrivalMethodState.value = false }
-                    ) {
-                        DropdownMenuItem(text = { Text("Ambulance") }, onClick = { expandedArrivalMethodState.value = false })
-                        DropdownMenuItem(text = { Text("Walk-in") }, onClick = { expandedArrivalMethodState.value = false })
-                    }
+            ArrivalMethodDropdown(
+                currentMethodDisplayValue = encounter.arrivalMethod,  // Initial value
+                onMethodChanged = { newDisplayValue ->
+                    viewModel.setArrivalMethod(newDisplayValue)  // Store the displayValue
                 }
-            }
+            )
         }
     )
     AdjustableFormFields(formSections = formSections, isLandscape = isLandscape)

@@ -19,7 +19,7 @@ fun FormSection(
     modifier: Modifier = Modifier,
     isLandscape: Boolean = false,
 ) {
-    val spacing: Dp = if (isLandscape) 8.dp else 16.dp
+    val spacing: Dp = if (isLandscape) 4.dp else 8.dp
 
     Column(
         modifier = modifier.fillMaxWidth(),
