@@ -50,6 +50,20 @@ val sectionTitleTextStyle = TextStyle(
     textAlign = TextAlign.Center // Center text alignment
 )
 
+// Custom TextStyle for screen title text
+val screenTitleTextStyle = TextStyle(
+    fontWeight = FontWeight.Bold, // Bold text
+    fontSize = 36.sp, // Font size
+    textAlign = TextAlign.Center // Center text alignment
+)
+
+// Custom TextStyle for screen title text
+val screenTitleTextLandscapeStyle = TextStyle(
+    fontWeight = FontWeight.Bold, // Bold text
+    fontSize = 30.sp, // Font size
+    textAlign = TextAlign.Center // Center text alignment
+)
+
 // Custom TextStyle for username and DocID text
 val userNameTextStyle = TextStyle(
     fontWeight = FontWeight.Bold, // Bold text
