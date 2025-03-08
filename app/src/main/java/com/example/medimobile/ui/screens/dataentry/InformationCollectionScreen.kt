@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -14,65 +15,45 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.ui.components.AdjustableFormFields
 import com.example.medimobile.ui.components.FormSectionData
+import com.example.medimobile.ui.components.dropdowns.ChiefComplaintDropdown
+import com.example.medimobile.ui.components.dropdowns.RoleDropdown
+import com.example.medimobile.ui.components.inputfields.AgeInputField
 import com.example.medimobile.viewmodel.PatientEncounterViewModel
 
 @Composable
 fun InformationCollectionScreen(viewModel: PatientEncounterViewModel, isLandscape: Boolean = false) {
     val encounter = viewModel.encounter.value
-    val expandedRoleState = remember { mutableStateOf(false) }
-    val expandedChiefComplaintState = remember { mutableStateOf(false) }
     val formSections = listOf(
         FormSectionData("Age") {
-            TextField(
-                value = "",
-                onValueChange = {},
-                placeholder = { Text("Enter age") },
-                modifier = Modifier.fillMaxWidth(0.4f)
+            AgeInputField(
+                age = encounter.age,
+                onAgeChange = { newAge -> viewModel.setAge(newAge) }
             )
         },
         FormSectionData("Role") {
-            Box(modifier = Modifier.wrapContentSize()) {
-                Column {
-                    // Button to toggle the DropdownMenu expansion
-                    Button(onClick = { expandedRoleState.value = !expandedRoleState.value }) {
-                        Text(text = "Select Arrival Method")
-                    }
-                    // DropdownMenu that uses the expanded state to show/hide
-                    DropdownMenu(
-                        expanded = expandedRoleState.value,
-                        onDismissRequest = { expandedRoleState.value = false }
-                    ) {
-                        DropdownMenuItem(text = { Text("Staff") }, onClick = { expandedRoleState.value = false })
-                        DropdownMenuItem(text = { Text("Attendee") }, onClick = { expandedRoleState.value = false })
-                    }
+            RoleDropdown(
+                currentMethodDisplayValue = encounter.role,
+                onMethodChanged = { newDisplayValue ->
+                    viewModel.setRole(newDisplayValue)
                 }
-            }
+            )
         },
         FormSectionData("Chief Complaint") {
-            Box(modifier = Modifier.wrapContentSize()) {
-                Column {
-                    // Button to toggle the DropdownMenu expansion
-                    Button(onClick = { expandedChiefComplaintState.value = !expandedChiefComplaintState.value }) {
-                        Text(text = "Select Chief Complaint")
-                    }
-                    // DropdownMenu that uses the expanded state to show/hide
-                    DropdownMenu(
-                        expanded = expandedChiefComplaintState.value,
-                        onDismissRequest = { expandedChiefComplaintState.value = false }
-                    ) {
-                        DropdownMenuItem(text = { Text("Nausea") }, onClick = { expandedChiefComplaintState.value = false })
-                        DropdownMenuItem(text = { Text("Dizziness") }, onClick = { expandedChiefComplaintState.value = false })
-                    }
+            ChiefComplaintDropdown(
+                currentMethodDisplayValue = encounter.chiefComplaint,
+                onMethodChanged = { newDisplayValue ->
+                    viewModel.setChiefComplaint(newDisplayValue)
                 }
-            }
+            )
         },
         FormSectionData("Comments") {
             TextField(
-                value = "",
-                onValueChange = {},
+                value = encounter.comment, // Bind to ViewModel
+                onValueChange = { viewModel.setComment(it) }, // Update ViewModel
                 placeholder = { Text("Enter comments (optional)") },
                 modifier = Modifier
                     .fillMaxWidth(0.9f)

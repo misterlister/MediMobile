@@ -4,14 +4,14 @@ import androidx.compose.runtime.Composable
 import com.example.medimobile.data.utils.ShambhalaDropdowns
 
 @Composable
-fun ArrivalMethodDropdown(
+fun ChiefComplaintDropdown(
     currentMethodDisplayValue: String,
     onMethodChanged: (String) -> Unit
 ) {
     BaseDropdown(
         currentSelection = currentMethodDisplayValue,
-        options = ShambhalaDropdowns.arrivalMethods,
-        dropDownLabel = "Arrival Method",
+        options = ShambhalaDropdowns.chiefComplaints,
+        dropDownLabel = "Chief Complaint",
         onSelectionChanged = onMethodChanged
     )
 }
