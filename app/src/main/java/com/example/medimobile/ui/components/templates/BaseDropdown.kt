@@ -1,4 +1,4 @@
-package com.example.medimobile.ui.components.dropdowns
+package com.example.medimobile.ui.components.templates
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

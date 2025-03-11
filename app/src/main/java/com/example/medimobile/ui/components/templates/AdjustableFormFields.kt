@@ -1,4 +1,4 @@
-package com.example.medimobile.ui.components
+package com.example.medimobile.ui.components.templates
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.medimobile.ui.components.HorizontalSectionDivider
+import com.example.medimobile.ui.components.VerticalSectionDivider
 
 @Composable
 fun AdjustableFormFields(isLandscape: Boolean = false, formSections: List<FormSectionData>) {

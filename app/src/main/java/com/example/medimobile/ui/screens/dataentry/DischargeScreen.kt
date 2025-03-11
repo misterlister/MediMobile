@@ -15,39 +15,37 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.medimobile.ui.components.AdjustableFormFields
-import com.example.medimobile.ui.components.FormSectionData
+import com.example.medimobile.ui.components.dropdowns.ArrivalMethodDropdown
+import com.example.medimobile.ui.components.dropdowns.DepartureDestinationDropdown
+import com.example.medimobile.ui.components.inputfields.DateTimeSelector
+import com.example.medimobile.ui.components.templates.AdjustableFormFields
+import com.example.medimobile.ui.components.templates.FormSectionData
 import com.example.medimobile.viewmodel.PatientEncounterViewModel
 
 @Composable
 fun DischargeScreen(viewModel: PatientEncounterViewModel, isLandscape: Boolean = false) {
     val encounter = viewModel.encounter.value
-    val expandedDestinationState = remember { mutableStateOf(false) }
     val formSections = listOf(
         FormSectionData("Departure Time") {
-            TextField(value = "", onValueChange = {}, placeholder = { Text("Enter age") })
+            DateTimeSelector(
+                encounter.departureDate,
+                encounter.departureTime,
+                onDateChange = { viewModel.setDepartureDate(it) },
+                onTimeChange = { viewModel.setDepartureTime(it) }
+            )
         },
         FormSectionData("Departure Destination") {
-            Box(modifier = Modifier.wrapContentSize()) {
-                Column {
-                    // Button to toggle the DropdownMenu expansion
-                    Button(onClick = { expandedDestinationState.value = !expandedDestinationState.value }) {
-                        Text(text = "Select Arrival Method")
-                    }
-                    DropdownMenu(
-                        expanded = expandedDestinationState.value,
-                        onDismissRequest = { expandedDestinationState.value = false }
-                    ) {
-                        DropdownMenuItem(text = { Text("Back to Event") }, onClick = { expandedDestinationState.value = false })
-                        DropdownMenuItem(text = { Text("Hospital via ambulance") }, onClick = { expandedDestinationState.value = false })
-                    }
+            DepartureDestinationDropdown(
+                currentDisplayValue = encounter.departureDest,  // Initial value
+                onChanged = { newDisplayValue ->
+                    viewModel.setDepartureDest(newDisplayValue)  // Store the displayValue
                 }
-            }
+            )
         },
         FormSectionData("Discharge Diagnosis") {
             TextField(
-                value = "",
-                onValueChange = {},
+                value = encounter.dischargeDiagnosis, // Bind to ViewModel
+                onValueChange = { viewModel.setDischargeDiagnosis(it) }, // Update ViewModel
                 placeholder = { Text("Enter Discharge Diagnosis (optional)") },
                 modifier = Modifier
                     .fillMaxWidth(0.9f)

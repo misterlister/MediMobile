@@ -24,8 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.medimobile.ui.components.AdjustableFormFields
-import com.example.medimobile.ui.components.FormSectionData
+import com.example.medimobile.ui.components.templates.AdjustableFormFields
+import com.example.medimobile.ui.components.templates.FormSectionData
 import com.example.medimobile.ui.theme.screenTitleTextLandscapeStyle
 import com.example.medimobile.ui.theme.screenTitleTextStyle
 import com.example.medimobile.ui.theme.userNameTextStyle
