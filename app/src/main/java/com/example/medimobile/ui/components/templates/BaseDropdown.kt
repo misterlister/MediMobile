@@ -23,13 +23,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.medimobile.data.model.DropdownItem
 
 
 @Composable
 fun BaseDropdown(
     currentSelection: String,
-    options: List<DropdownItem>,
+    options: List<String>?,
     dropDownLabel: String,
     onSelectionChanged: (String) -> Unit
 ) {
@@ -46,8 +45,9 @@ fun BaseDropdown(
                 text = dropDownLabel,
                 style = MaterialTheme.typography.bodySmall.copy(color = Color.Black))
             },
-            enabled = false,
+            enabled = false, // Disable the text field so it can't be edited
             colors = OutlinedTextFieldDefaults.colors(
+                // Restore colour to the disabled text field
                 disabledTextColor = MaterialTheme.colorScheme.onSurface,
                 disabledContainerColor = Color.White,
                 disabledBorderColor = MaterialTheme.colorScheme.outline,
@@ -61,14 +61,13 @@ fun BaseDropdown(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable{ expanded = true },
+                .clickable{ expanded = true }, // Make area clickable
 
             trailingIcon = { Icon(Icons.Default.ArrowDropDown,
                 contentDescription = "Select Options",
             )},
         )
 
-        // Dropdown Menu for hours
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
@@ -76,14 +75,22 @@ fun BaseDropdown(
                 .width(240.dp) // Set width for dropdown
                 .background(Color.White) // Background color for the dropdown menu
         ) {
-            options.forEach { optionChoice ->
+            if (options.isNullOrEmpty()) {
                 DropdownMenuItem(
-                    text = { Text(optionChoice.displayValue) },
-                    onClick = {
-                        onSelectionChanged(optionChoice.displayValue) // Update selection
-                        expanded = false // Close dropdown after selection
-                    }
+                    text = { Text("No options available") },
+                    enabled = false, // Make this item not clickable
+                    onClick = {}
                 )
+            } else {
+                options.forEach { optionChoice ->
+                    DropdownMenuItem(
+                        text = { Text(optionChoice) },
+                        onClick = {
+                            onSelectionChanged(optionChoice) // Update selection
+                            expanded = false // Close dropdown after selection
+                        }
+                    )
+                }
             }
         }
     }

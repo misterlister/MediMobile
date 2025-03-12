@@ -1,3 +1,5 @@
+package com.example.medimobile.data.eventdata
+
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.model.StageStatus
 import java.time.LocalDate

@@ -21,20 +21,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.medimobile.ui.components.templates.AdjustableFormFields
+import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
-import com.example.medimobile.ui.theme.screenTitleTextLandscapeStyle
 import com.example.medimobile.ui.theme.screenTitleTextStyle
 import com.example.medimobile.ui.theme.userNameTextStyle
-import getDummyEncounters
+import com.example.medimobile.data.eventdata.getDummyEncounters
+import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
-fun UpdateEncounterScreen(navController: NavController) {
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileViewModel) {
 
     Box(
         modifier = Modifier
@@ -62,11 +59,7 @@ fun UpdateEncounterScreen(navController: NavController) {
 
                 ) {
 
-                Text(text = "Update Encounter", style = if (isLandscape) {
-                    screenTitleTextLandscapeStyle
-                } else {
-                    screenTitleTextStyle
-                } )
+                Text(text = "Update Encounter", style = screenTitleTextStyle)
 
                 val formSections = listOf(
                     FormSectionData(title = null) {
@@ -83,7 +76,7 @@ fun UpdateEncounterScreen(navController: NavController) {
 
                             Box(
                                 modifier = Modifier
-                                    .heightIn(max = if (isLandscape) 180.dp else 280.dp)
+                                    .heightIn(max = 280.dp)
                                     .fillMaxWidth()
                             ) {
                                 EncounterTable(
@@ -146,7 +139,7 @@ fun UpdateEncounterScreen(navController: NavController) {
                     },
                 )
 
-                AdjustableFormFields(formSections = formSections, isLandscape = isLandscape)
+                DividedFormSections(formSections = formSections)
             }
         }
 

@@ -8,6 +8,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -57,17 +58,16 @@ val screenTitleTextStyle = TextStyle(
     textAlign = TextAlign.Center // Center text alignment
 )
 
-// Custom TextStyle for screen title text
-val screenTitleTextLandscapeStyle = TextStyle(
-    fontWeight = FontWeight.Bold, // Bold text
-    fontSize = 30.sp, // Font size
-    textAlign = TextAlign.Center // Center text alignment
-)
-
 // Custom TextStyle for username and DocID text
 val userNameTextStyle = TextStyle(
     fontWeight = FontWeight.Bold, // Bold text
     fontSize = 18.sp, // Font size
+)
+
+val errorMessageTextStyle = TextStyle(
+    fontWeight = FontWeight.Bold, // Bold text
+    fontSize = 18.sp, // Font size
+    color = Color.Red // Set text color to red for error messages
 )
 
 @Composable

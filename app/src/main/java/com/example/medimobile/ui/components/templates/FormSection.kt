@@ -16,10 +16,9 @@ import com.example.medimobile.ui.theme.sectionTitleTextStyle
 fun FormSection(
     title: String?,
     content: @Composable (modifier: Modifier) -> Unit,
-    modifier: Modifier = Modifier,
-    isLandscape: Boolean = false,
+    modifier: Modifier = Modifier
 ) {
-    val spacing: Dp = if (isLandscape) 4.dp else 8.dp
+    val spacing: Dp = 10.dp
 
     Column(
         modifier = modifier.fillMaxWidth(),

@@ -16,31 +16,30 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.ui.theme.userNameTextStyle
-import com.example.medimobile.viewmodel.PatientEncounterViewModel
+import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
-fun DataEntryScreen(navController: NavController, encounter: PatientEncounter? = null) {
+fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel) {
 
-    val viewModel: PatientEncounterViewModel = viewModel()
-    // If an encounter was passed, set it in the ViewModel
-    if (encounter != null) {
-        viewModel.setEncounterFromDatabase(encounter)
+    val currentEncounter = viewModel.currentEncounter.collectAsState().value
+    val username = viewModel.currentUser.collectAsState().value
+
+    // Initialize the current encounter if it's null
+    if (currentEncounter == null) {
+        viewModel.setCurrentEncounter(PatientEncounter())
     }
 
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
-
+    // Navigation tabs
     val tabs = listOf("Triage", "Information Collection", "Discharge")
     val selectedTabIndex = remember { mutableIntStateOf(0) }
 
@@ -69,7 +68,7 @@ fun DataEntryScreen(navController: NavController, encounter: PatientEncounter? =
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "User Name",
+                        text = username ?: "User",
                         style = userNameTextStyle
                     )
                     Text(
@@ -101,9 +100,9 @@ fun DataEntryScreen(navController: NavController, encounter: PatientEncounter? =
                 contentAlignment = Alignment.Center
             ) {
                 when (selectedTabIndex.intValue) {
-                    0 -> TriageScreen(viewModel, isLandscape)
-                    1 -> InformationCollectionScreen(viewModel, isLandscape)
-                    2 -> DischargeScreen(viewModel, isLandscape)
+                    0 -> TriageScreen(viewModel)
+                    1 -> InformationCollectionScreen(viewModel)
+                    2 -> DischargeScreen(viewModel)
                 }
             }
 

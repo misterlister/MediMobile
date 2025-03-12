@@ -12,19 +12,25 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.ui.theme.appTitleTextStyle
+import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
+
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -51,14 +57,25 @@ fun LoginScreen(navController: NavController) {
             Spacer(modifier = Modifier.weight(1f))
 
             // Login Form
-            TextField(value = "", onValueChange = {}, placeholder = { Text("username") })
+            TextField(
+                value = username,
+                onValueChange = { username = it },
+                placeholder = { Text("username") })
             Spacer(modifier = Modifier.weight(0.125f))
-            TextField(value = "", onValueChange = {}, placeholder = { Text("password") })
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                placeholder = { Text("password") },
+                visualTransformation = PasswordVisualTransformation()
+            )
 
             Spacer(modifier = Modifier.weight(0.5f))
 
             // Login Button
-            Button(onClick = { navController.navigate("mainMenu")  }) {
+            Button(onClick = {
+                viewModel.setCurrentUser(username)
+                navController.navigate("mainMenu")
+            }) {
                 Text(text = "Login")
             }
 

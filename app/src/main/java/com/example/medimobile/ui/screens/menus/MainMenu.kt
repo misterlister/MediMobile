@@ -14,19 +14,20 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.ui.theme.appTitleTextStyle
 import com.example.medimobile.ui.theme.userNameTextStyle
+import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
-fun MainMenuScreen(navController: NavController) {
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel) {
+
+    val username = viewModel.currentUser.collectAsState().value
 
     Box(
         modifier = Modifier
@@ -47,7 +48,7 @@ fun MainMenuScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "User Name",
+                    text = username ?: "User",
                     style = userNameTextStyle
                 )
                 Button(onClick = { navController.navigate("login")  }) {

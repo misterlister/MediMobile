@@ -1,4 +1,4 @@
-package com.example.medimobile.ui.screens.settings
+package com.example.medimobile.ui.screens.menus
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,33 +11,32 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.medimobile.ui.components.templates.AdjustableFormFields
+import com.example.medimobile.data.eventdata.EventList
+import com.example.medimobile.data.utils.toDisplayValues
+import com.example.medimobile.data.utils.toEventNames
+import com.example.medimobile.ui.components.templates.BaseDropdown
+import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
-import com.example.medimobile.ui.theme.screenTitleTextLandscapeStyle
 import com.example.medimobile.ui.theme.screenTitleTextStyle
 import com.example.medimobile.ui.theme.userNameTextStyle
+import com.example.medimobile.viewmodel.MediMobileViewModel
 
 
 @Composable
-fun SettingsScreen(navController: NavController) {
-    val expandedEventState = remember { mutableStateOf(false) }
-    val expandedLocationState = remember { mutableStateOf(false) }
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel) {
+
+    val selectedEvent = viewModel.selectedEvent.collectAsState().value
+    val selectedLocation = viewModel.selectedLocation.collectAsState().value
+    val username = viewModel.currentUser.collectAsState().value
 
     Box(
         modifier = Modifier
@@ -54,7 +53,10 @@ fun SettingsScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(top = 16.dp, bottom = 16.dp, start = 8.dp, end = 8.dp)
             ) {
-                Text(text = "User Name", style = userNameTextStyle)
+                Text(
+                    text = username ?: "User",
+                    style = userNameTextStyle
+                )
             }
 
             Column(
@@ -65,47 +67,34 @@ fun SettingsScreen(navController: NavController) {
                 verticalArrangement = Arrangement.Center
             ) {
 
-                Text(text = "Settings", style = if (isLandscape) {
-                    screenTitleTextLandscapeStyle
-                } else {
-                    screenTitleTextStyle
-                } )
+                Text(text = "Settings", style = screenTitleTextStyle)
 
                 Spacer(modifier = Modifier.weight(0.5f))
 
                 val formSections = listOf(
                     FormSectionData("Event") {
-                        Box(modifier = Modifier.wrapContentSize()) {
-                            Column {
-                                Button(onClick = { expandedEventState.value = !expandedEventState.value }) {
-                                    Text(text = "Select Event")
-                                }
-                                DropdownMenu(
-                                    expanded = expandedEventState.value,
-                                    onDismissRequest = { expandedEventState.value = false }
-                                ) {
-                                    DropdownMenuItem(text = { Text("Shambhala") }, onClick = { expandedEventState.value = false })
-                                }
+                        BaseDropdown(
+                            currentSelection = selectedEvent?.eventName ?: "",
+                            options = EventList.EVENTS.toEventNames(),
+                            dropDownLabel = "Event",
+                            onSelectionChanged = { newEvent ->
+                                viewModel.setSelectedEvent(newEvent)
                             }
-                        }
+                        )
                     },
+
                     FormSectionData("Location") {
-                        Box(modifier = Modifier.wrapContentSize()) {
-                            Column {
-                                Button(onClick = { expandedLocationState.value = !expandedLocationState.value }) {
-                                    Text(text = "Select Location")
-                                }
-                                DropdownMenu(
-                                    expanded = expandedLocationState.value,
-                                    onDismissRequest = { expandedLocationState.value = false }
-                                ) {
-                                    DropdownMenuItem(text = { Text("Main Medical") }, onClick = { expandedLocationState.value = false })
-                                }
+                        BaseDropdown(
+                            currentSelection = selectedLocation ?: "",
+                            options = selectedEvent?.locations?.toDisplayValues(),
+                            dropDownLabel = "Location",
+                            onSelectionChanged = { newLocation ->
+                                viewModel.setSelectedLocation(newLocation)
                             }
-                        }
+                        )
                     },
                 )
-                AdjustableFormFields(formSections = formSections, isLandscape = isLandscape)
+                DividedFormSections(formSections = formSections)
 
                 Spacer(modifier = Modifier.weight(1f))
             }

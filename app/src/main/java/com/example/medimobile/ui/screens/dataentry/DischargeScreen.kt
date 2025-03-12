@@ -1,57 +1,62 @@
 package com.example.medimobile.ui.screens.dataentry
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.medimobile.ui.components.dropdowns.ArrivalMethodDropdown
-import com.example.medimobile.ui.components.dropdowns.DepartureDestinationDropdown
+import com.example.medimobile.data.utils.toDisplayValues
+import com.example.medimobile.ui.components.errorscreens.NoEncounterError
+import com.example.medimobile.ui.components.errorscreens.NoEventError
 import com.example.medimobile.ui.components.inputfields.DateTimeSelector
-import com.example.medimobile.ui.components.templates.AdjustableFormFields
+import com.example.medimobile.ui.components.templates.BaseDropdown
+import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
-import com.example.medimobile.viewmodel.PatientEncounterViewModel
+import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
-fun DischargeScreen(viewModel: PatientEncounterViewModel, isLandscape: Boolean = false) {
-    val encounter = viewModel.encounter.value
-    val formSections = listOf(
-        FormSectionData("Departure Time") {
-            DateTimeSelector(
-                encounter.departureDate,
-                encounter.departureTime,
-                onDateChange = { viewModel.setDepartureDate(it) },
-                onTimeChange = { viewModel.setDepartureTime(it) }
-            )
-        },
-        FormSectionData("Departure Destination") {
-            DepartureDestinationDropdown(
-                currentDisplayValue = encounter.departureDest,  // Initial value
-                onChanged = { newDisplayValue ->
-                    viewModel.setDepartureDest(newDisplayValue)  // Store the displayValue
-                }
-            )
-        },
-        FormSectionData("Discharge Diagnosis") {
-            TextField(
-                value = encounter.dischargeDiagnosis, // Bind to ViewModel
-                onValueChange = { viewModel.setDischargeDiagnosis(it) }, // Update ViewModel
-                placeholder = { Text("Enter Discharge Diagnosis (optional)") },
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .height(150.dp)
-            )
-        },
-    )
-    AdjustableFormFields(formSections = formSections, isLandscape = isLandscape)
+fun DischargeScreen(viewModel: MediMobileViewModel) {
+    val encounter = viewModel.currentEncounter.collectAsState().value
+    val selectedEvent = viewModel.selectedEvent.collectAsState().value
+
+    if (encounter == null) {
+        NoEncounterError()
+    } else if (selectedEvent == null) {
+        NoEventError()
+    } else {
+        val formSections = listOf(
+            FormSectionData("Departure Time") {
+                DateTimeSelector(
+                    encounter.departureDate,
+                    encounter.departureTime,
+                    onDateChange = { viewModel.setDepartureDate(it) },
+                    onTimeChange = { viewModel.setDepartureTime(it) }
+                )
+            },
+            FormSectionData("Departure Destination") {
+                BaseDropdown (
+                    currentSelection = encounter.departureDest,
+                    options = selectedEvent.dropdowns.departureDestinations.toDisplayValues(),
+                    dropDownLabel = "Departure Destination",
+                    onSelectionChanged = { newDisplayValue ->
+                        viewModel.setDepartureDest(newDisplayValue)
+                    }
+                )
+            },
+            FormSectionData("Discharge Diagnosis") {
+                TextField(
+                    value = encounter.dischargeDiagnosis, // Bind to ViewModel
+                    onValueChange = { viewModel.setDischargeDiagnosis(it) }, // Update ViewModel
+                    placeholder = { Text("Enter Discharge Diagnosis (optional)") },
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .height(150.dp)
+                )
+            },
+        )
+        DividedFormSections(formSections = formSections)
+    }
 }
