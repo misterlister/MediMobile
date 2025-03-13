@@ -13,7 +13,7 @@ import java.time.LocalTime
 class MediMobileViewModel: ViewModel() {
 
 
-    //// User variables and methods ////
+    // **User variables and methods**
 
 
     // State to hold the current user
@@ -31,7 +31,7 @@ class MediMobileViewModel: ViewModel() {
     }
 
 
-    //// Event variables and methods ////
+    // **Event variables and methods**
 
 
     // State to hold the selected event
@@ -44,7 +44,7 @@ class MediMobileViewModel: ViewModel() {
     }
 
 
-    //// Location variables and methods ////
+    // **Location variables and methods**
 
 
     // State to hold the selected event
@@ -55,7 +55,6 @@ class MediMobileViewModel: ViewModel() {
     fun setSelectedLocation(location: String) {
         _selectedLocation.value = location
     }
-
 
     // Initialize the selected event and location if they are null
     init {
@@ -68,7 +67,7 @@ class MediMobileViewModel: ViewModel() {
     }
 
 
-    //// Encounter variables and methods ////
+    // **Encounter variables and methods**
 
 
     // State to hold the current encounter
@@ -79,7 +78,16 @@ class MediMobileViewModel: ViewModel() {
     fun setCurrentEncounter(patientEncounter: PatientEncounter) {
         _currentEncounter.value = patientEncounter.copy()
     }
-    // Individual setter functions for each field
+
+    // Clear the current encounter
+    fun clearCurrentEncounter() {
+        _currentEncounter.value = null
+    }
+
+
+    // **Individual setter functions for each field**
+
+
     fun setAge(age: Int) {
         _currentEncounter.value = _currentEncounter.value?.copy(age = age)
     }

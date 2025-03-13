@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalFocusManager
 import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
 import com.example.medimobile.ui.components.errorscreens.NoEventError
@@ -18,6 +19,7 @@ import com.example.medimobile.viewmodel.MediMobileViewModel
 fun TriageScreen(viewModel: MediMobileViewModel) {
     val encounter = viewModel.currentEncounter.collectAsState().value
     val selectedEvent = viewModel.selectedEvent.collectAsState().value
+    val focusManager = LocalFocusManager.current
 
     if (encounter == null) {
         NoEncounterError()
@@ -29,8 +31,14 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                 DateTimeSelector(
                     encounter.arrivalDate,
                     encounter.arrivalTime,
-                    onDateChange = { viewModel.setArrivalDate(it) },
-                    onTimeChange = { viewModel.setArrivalTime(it) }
+                    onDateChange = {
+                        viewModel.setArrivalDate(it)
+                        focusManager.clearFocus()
+                    },
+                    onTimeChange = {
+                        viewModel.setArrivalTime(it)
+                        focusManager.clearFocus()
+                    }
                 )
             },
             FormSectionData("Triage") {
@@ -53,6 +61,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     dropDownLabel = "Arrival Method",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setArrivalMethod(newDisplayValue)
+                        focusManager.clearFocus()
                     }
                 )
             }

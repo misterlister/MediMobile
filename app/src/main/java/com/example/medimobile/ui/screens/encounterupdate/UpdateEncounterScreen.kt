@@ -82,7 +82,8 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                                 EncounterTable(
                                     records = getDummyEncounters(),
                                     onRowClick = { selectedRecord ->
-                                        println("Selected Encounter: ${selectedRecord.documentNum}")
+                                        viewModel.setCurrentEncounter(selectedRecord)
+                                        navController.navigate("dataEntry")
                                     }
                                 )
                             }

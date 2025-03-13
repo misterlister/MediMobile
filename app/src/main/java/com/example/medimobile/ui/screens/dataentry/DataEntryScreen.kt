@@ -1,6 +1,7 @@
 package com.example.medimobile.ui.screens.dataentry
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,17 +12,23 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.data.model.PatientEncounter
@@ -30,7 +37,7 @@ import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
 fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel) {
-
+    val focusManager = LocalFocusManager.current
     val currentEncounter = viewModel.currentEncounter.collectAsState().value
     val username = viewModel.currentUser.collectAsState().value
 
@@ -38,6 +45,9 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
     if (currentEncounter == null) {
         viewModel.setCurrentEncounter(PatientEncounter())
     }
+
+    // State for the cancellation pop-up
+    var showCancelPopup by remember { mutableStateOf(false) }
 
     // Navigation tabs
     val tabs = listOf("Triage", "Information Collection", "Discharge")
@@ -48,6 +58,14 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
             .fillMaxSize()
             .background(Color.Cyan)
             .navigationBarsPadding()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        // Clears focus when tapping outside of fields
+                        focusManager.clearFocus()
+                    }
+                )
+        }
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -117,7 +135,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(onClick = { navController.navigate("mainMenu")  }) {
+                Button(onClick = { showCancelPopup = true }) {
                     Text(text = "Cancel", color = Color.Black)
                 }
                 Button(onClick = { navController.navigate("mainMenu")  }) {
@@ -125,5 +143,35 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 }
             }
         }
+    }
+    // **Confirm Cancel Popup**
+    if (showCancelPopup) {
+        AlertDialog(
+            onDismissRequest = { showCancelPopup = false },
+            title = { Text(text = "Are you sure you want to cancel?") },
+            text = { Text("Any entered data will be lost.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        // Navigate to main menu and discard the current entry if "Yes" is clicked
+                        viewModel.clearCurrentEncounter()
+                        navController.navigate("mainMenu")
+                        showCancelPopup = false
+                    }
+                ) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        // Dismiss the dialog if "No" is clicked
+                        showCancelPopup = false
+                    }
+                ) {
+                    Text("No")
+                }
+            }
+        )
     }
 }

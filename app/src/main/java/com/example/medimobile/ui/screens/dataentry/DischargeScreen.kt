@@ -7,6 +7,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
@@ -21,6 +22,7 @@ import com.example.medimobile.viewmodel.MediMobileViewModel
 fun DischargeScreen(viewModel: MediMobileViewModel) {
     val encounter = viewModel.currentEncounter.collectAsState().value
     val selectedEvent = viewModel.selectedEvent.collectAsState().value
+    val focusManager = LocalFocusManager.current
 
     if (encounter == null) {
         NoEncounterError()
@@ -32,8 +34,14 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                 DateTimeSelector(
                     encounter.departureDate,
                     encounter.departureTime,
-                    onDateChange = { viewModel.setDepartureDate(it) },
-                    onTimeChange = { viewModel.setDepartureTime(it) }
+                    onDateChange = {
+                        viewModel.setDepartureDate(it)
+                        focusManager.clearFocus()
+                    },
+                    onTimeChange = {
+                        viewModel.setDepartureTime(it)
+                        focusManager.clearFocus()
+                    }
                 )
             },
             FormSectionData("Departure Destination") {
@@ -43,6 +51,7 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                     dropDownLabel = "Departure Destination",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setDepartureDest(newDisplayValue)
+                        focusManager.clearFocus()
                     }
                 )
             },

@@ -104,7 +104,7 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter) // Ensure it's at the bottom
+                .align(Alignment.BottomCenter)
                 .background(Color.LightGray)
                 .padding(16.dp)
                 .navigationBarsPadding()

@@ -7,6 +7,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
@@ -21,6 +22,8 @@ import com.example.medimobile.viewmodel.MediMobileViewModel
 fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
     val encounter = viewModel.currentEncounter.collectAsState().value
     val selectedEvent = viewModel.selectedEvent.collectAsState().value
+    val focusManager = LocalFocusManager.current
+
 
     if (encounter == null) {
         NoEncounterError()
@@ -31,7 +34,9 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
             FormSectionData("Age") {
                 AgeInputField(
                     age = encounter.age,
-                    onAgeChange = { newAge -> viewModel.setAge(newAge) }
+                    onAgeChange = { newAge ->
+                        viewModel.setAge(newAge)
+                    }
                 )
             },
             FormSectionData("Role") {
@@ -41,6 +46,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     dropDownLabel = "Role",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setRole(newDisplayValue)
+                        focusManager.clearFocus()
                     }
                 )
             },
@@ -51,6 +57,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     dropDownLabel = "Chief Complaint",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setChiefComplaint(newDisplayValue)
+                        focusManager.clearFocus()
                     }
                 )
             },
