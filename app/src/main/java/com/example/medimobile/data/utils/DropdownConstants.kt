@@ -11,4 +11,6 @@ object DropdownConstants {
         "Red",
         "White"
     )
+
+    const val OTHER_PREFIX = "other: "
 }

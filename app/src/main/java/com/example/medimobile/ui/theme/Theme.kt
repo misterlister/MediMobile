@@ -70,6 +70,11 @@ val errorMessageTextStyle = TextStyle(
     color = Color.Red // Set text color to red for error messages
 )
 
+val placeholderTextStyle = TextStyle(
+    fontWeight = FontWeight.Normal, // Normal text
+    color = Color.Gray // Set text color to gray for placeholders
+)
+
 @Composable
 fun MediMobileTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

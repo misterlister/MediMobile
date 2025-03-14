@@ -16,9 +16,10 @@ import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
 import com.example.medimobile.ui.components.errorscreens.NoEventError
 import com.example.medimobile.ui.components.inputfields.AgeInputField
-import com.example.medimobile.ui.components.templates.BaseDropdown
 import com.example.medimobile.ui.components.templates.DividedFormSections
+import com.example.medimobile.ui.components.templates.DropdownWithOtherField
 import com.example.medimobile.ui.components.templates.FormSectionData
+import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
@@ -43,10 +44,10 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                 )
             },
             FormSectionData("Role") {
-                BaseDropdown (
+                DropdownWithOtherField (
                     currentSelection = encounter.role,
                     options = selectedEvent.dropdowns.roles.toDisplayValues(),
-                    dropDownLabel = "Role",
+                    dropdownLabel = "Role",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setRole(newDisplayValue)
                         focusManager.clearFocus()
@@ -54,10 +55,10 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                 )
             },
             FormSectionData("Chief Complaint") {
-                BaseDropdown (
+                DropdownWithOtherField (
                     currentSelection = encounter.chiefComplaint,
                     options = selectedEvent.dropdowns.chiefComplaints.toDisplayValues(),
-                    dropDownLabel = "Chief Complaint",
+                    dropdownLabel = "Chief Complaint",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setChiefComplaint(newDisplayValue)
                         focusManager.clearFocus()
@@ -68,7 +69,12 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                 TextField(
                     value = encounter.comment, // Bind to ViewModel
                     onValueChange = { viewModel.setComment(it) }, // Update ViewModel
-                    placeholder = { Text("Enter comments (optional)") },
+                    placeholder = {
+                        Text(
+                            text = "Enter comments (optional)",
+                            style = placeholderTextStyle
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
                     ),

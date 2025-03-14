@@ -16,9 +16,10 @@ import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
 import com.example.medimobile.ui.components.errorscreens.NoEventError
 import com.example.medimobile.ui.components.inputfields.DateTimeSelector
-import com.example.medimobile.ui.components.templates.BaseDropdown
 import com.example.medimobile.ui.components.templates.DividedFormSections
+import com.example.medimobile.ui.components.templates.DropdownWithOtherField
 import com.example.medimobile.ui.components.templates.FormSectionData
+import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
@@ -48,10 +49,10 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                 )
             },
             FormSectionData("Departure Destination") {
-                BaseDropdown (
+                DropdownWithOtherField (
                     currentSelection = encounter.departureDest,
                     options = selectedEvent.dropdowns.departureDestinations.toDisplayValues(),
-                    dropDownLabel = "Departure Destination",
+                    dropdownLabel = "Departure Destination",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setDepartureDest(newDisplayValue)
                         focusManager.clearFocus()
@@ -62,7 +63,12 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                 TextField(
                     value = encounter.dischargeDiagnosis, // Bind to ViewModel
                     onValueChange = { viewModel.setDischargeDiagnosis(it) }, // Update ViewModel
-                    placeholder = { Text("Enter Discharge Diagnosis (optional)") },
+                    placeholder = {
+                        Text(
+                            text = "Enter Discharge Diagnosis (optional)",
+                            style = placeholderTextStyle
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
                     ),

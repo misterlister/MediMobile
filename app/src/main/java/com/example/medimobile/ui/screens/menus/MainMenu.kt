@@ -96,7 +96,7 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
             onClick = { navController.navigate("settings") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp)
+                .padding(12.dp)
         ) {
             Text(text = "Settings")
         }

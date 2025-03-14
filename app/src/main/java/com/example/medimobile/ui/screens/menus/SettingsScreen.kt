@@ -76,7 +76,7 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                         BaseDropdown(
                             currentSelection = selectedEvent?.eventName ?: "",
                             options = EventList.EVENTS.toEventNames(),
-                            dropDownLabel = "Event",
+                            dropdownLabel = "Event",
                             onSelectionChanged = { newEvent ->
                                 viewModel.setSelectedEvent(newEvent)
                             },
@@ -88,7 +88,7 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                         BaseDropdown(
                             currentSelection = selectedLocation ?: "",
                             options = selectedEvent?.locations?.toDisplayValues(),
-                            dropDownLabel = "Location",
+                            dropdownLabel = "Location",
                             onSelectionChanged = { newLocation ->
                                 viewModel.setSelectedLocation(newLocation)
                             },
@@ -108,7 +108,7 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .background(Color.LightGray)
-                .padding(16.dp)
+                .padding(12.dp)
                 .navigationBarsPadding()
                 .wrapContentHeight(),
             contentAlignment = Alignment.Center

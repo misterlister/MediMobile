@@ -28,6 +28,7 @@ import com.example.medimobile.ui.components.templates.FormSectionData
 import com.example.medimobile.ui.theme.screenTitleTextStyle
 import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.data.eventdata.getDummyEncounters
+import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
@@ -109,7 +110,12 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                                 TextField(
                                     value = "",
                                     onValueChange = {},
-                                    placeholder = { Text("Doc ID") },
+                                    placeholder = {
+                                        Text(
+                                            text = "Doc ID",
+                                            style = placeholderTextStyle
+                                        )
+                                    },
                                     modifier = Modifier.fillMaxWidth(0.6f))
 
                                 Spacer(modifier = Modifier.width(16.dp))
@@ -127,7 +133,12 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                                 TextField(
                                     value = "",
                                     onValueChange = {},
-                                    placeholder = { Text("VisitID") },
+                                    placeholder = {
+                                        Text(
+                                            text = "Visit ID",
+                                            style = placeholderTextStyle
+                                        )
+                                    },
                                     modifier = Modifier.fillMaxWidth(0.6f))
 
                                 Spacer(modifier = Modifier.width(16.dp))
@@ -149,7 +160,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .background(Color.LightGray)
-                .padding(16.dp)
+                .padding(12.dp)
                 .navigationBarsPadding()
                 .wrapContentHeight(),
             contentAlignment = Alignment.Center

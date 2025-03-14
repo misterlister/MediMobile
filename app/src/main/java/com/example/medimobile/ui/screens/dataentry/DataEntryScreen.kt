@@ -130,7 +130,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.LightGray)
-                    .padding(16.dp)
+                    .padding(12.dp)
                     .navigationBarsPadding()
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -146,7 +146,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                     enabled = selectedTabIndex.intValue > 0,  // Disable when index is 0
                     modifier = Modifier.padding(start = 16.dp)  // Ensure it is 16.dp from the edge
                 ) {
-                    Text(text = "Previous")
+                    Text(text = "Prev")
                 }
 
                 // Cancel Button

@@ -13,9 +13,10 @@ import com.example.medimobile.ui.components.errorscreens.NoEncounterError
 import com.example.medimobile.ui.components.errorscreens.NoEventError
 import com.example.medimobile.ui.components.inputfields.DateTimeSelector
 import com.example.medimobile.ui.components.inputfields.TriageRadioButtons
-import com.example.medimobile.ui.components.templates.BaseDropdown
 import com.example.medimobile.ui.components.templates.DividedFormSections
+import com.example.medimobile.ui.components.templates.DropdownWithOtherField
 import com.example.medimobile.ui.components.templates.FormSectionData
+import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
@@ -54,7 +55,12 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                 TextField(
                     value = encounter.visitId,
                     onValueChange = { viewModel.setVisitId(it) },
-                    placeholder = { Text("Enter Visit ID") },
+                    placeholder = {
+                        Text(
+                            "Enter Visit ID",
+                            style = placeholderTextStyle
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
                     ),
@@ -66,10 +72,10 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                 )
             },
             FormSectionData("Arrival Method") {
-                BaseDropdown (
+                DropdownWithOtherField (
                     currentSelection = encounter.arrivalMethod,
                     options = selectedEvent.dropdowns.arrivalMethods.toDisplayValues(),
-                    dropDownLabel = "Arrival Method",
+                    dropdownLabel = "Arrival Method",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setArrivalMethod(newDisplayValue)
                         focusManager.clearFocus()
