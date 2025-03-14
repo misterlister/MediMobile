@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -135,11 +136,52 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(onClick = { showCancelPopup = true }) {
-                    Text(text = "Cancel", color = Color.Black)
+                // Back Button
+                Button(
+                    onClick = {
+                        if (selectedTabIndex.intValue > 0) {
+                            selectedTabIndex.intValue -= 1 // Go back one page
+                        }
+                    },
+                    enabled = selectedTabIndex.intValue > 0,  // Disable when index is 0
+                    modifier = Modifier.padding(start = 16.dp)  // Ensure it is 16.dp from the edge
+                ) {
+                    Text(text = "Previous")
                 }
-                Button(onClick = { navController.navigate("mainMenu")  }) {
-                    Text(text = "Save", color = Color.Black)
+
+                // Cancel Button
+                Button(
+                    onClick = { showCancelPopup = true },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = "Cancel")
+                }
+
+                // Save Button
+                Button(
+                    onClick = { navController.navigate("mainMenu")  },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Green,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = "Save")
+                }
+
+                // Forward Button
+                Button(
+                    onClick = {
+                        if (selectedTabIndex.intValue < tabs.size - 1) {
+                            selectedTabIndex.intValue += 1 // Increment tab index
+                        }
+                    },
+                    enabled = selectedTabIndex.intValue < tabs.size - 1,  // Disable when index is at max
+                    modifier = Modifier.padding(end = 16.dp)  // Ensure it is 16.dp from the edge
+                ) {
+                    Text(text = "Next")
                 }
             }
         }
@@ -154,7 +196,6 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 Button(
                     onClick = {
                         // Navigate to main menu and discard the current entry if "Yes" is clicked
-                        viewModel.clearCurrentEncounter()
                         navController.navigate("mainMenu")
                         showCancelPopup = false
                     }

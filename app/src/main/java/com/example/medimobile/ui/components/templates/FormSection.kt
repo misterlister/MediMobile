@@ -18,7 +18,7 @@ fun FormSection(
     content: @Composable (modifier: Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val spacing: Dp = 10.dp
+    val spacing: Dp = 12.dp
 
     Column(
         modifier = modifier.fillMaxWidth(),

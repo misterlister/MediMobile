@@ -1,10 +1,13 @@
 package com.example.medimobile.ui.screens.dataentry
 
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
 import com.example.medimobile.ui.components.errorscreens.NoEventError
@@ -51,7 +54,15 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                 TextField(
                     value = encounter.visitId,
                     onValueChange = { viewModel.setVisitId(it) },
-                    placeholder = { Text("Enter Visit ID") }
+                    placeholder = { Text("Enter Visit ID") },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    ),
                 )
             },
             FormSectionData("Arrival Method") {

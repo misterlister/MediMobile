@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -19,9 +21,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +40,14 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
+
+    val usernameFocusRequester = remember { FocusRequester() }
+    val passwordFocusRequester = remember { FocusRequester() }
+
+    fun handleLogin() {
+        viewModel.setCurrentUser(username)
+        navController.navigate("mainMenu")
+    }
 
     Box(
         modifier = Modifier
@@ -72,21 +85,43 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
             TextField(
                 value = username,
                 onValueChange = { username = it },
-                placeholder = { Text("username") })
+                placeholder = { Text("username") },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        passwordFocusRequester.requestFocus()
+                    },
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                ),
+                modifier = Modifier.focusRequester(usernameFocusRequester)
+            )
+
             Spacer(modifier = Modifier.weight(0.125f))
             TextField(
                 value = password,
                 onValueChange = { password = it },
                 placeholder = { Text("password") },
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        handleLogin()
+                    }
+                ),
+                modifier = Modifier.focusRequester(passwordFocusRequester)
             )
 
             Spacer(modifier = Modifier.weight(0.5f))
 
             // Login Button
             Button(onClick = {
-                viewModel.setCurrentUser(username)
-                navController.navigate("mainMenu")
+                handleLogin()
             }) {
                 Text(text = "Login")
             }

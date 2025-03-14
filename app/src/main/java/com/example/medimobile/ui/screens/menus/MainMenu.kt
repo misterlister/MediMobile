@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +29,11 @@ import com.example.medimobile.viewmodel.MediMobileViewModel
 fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel) {
 
     val username = viewModel.currentUser.collectAsState().value
+
+    LaunchedEffect(Unit) {
+        // Clear the current encounter navigating to the Main Page
+        viewModel.clearCurrentEncounter()
+    }
 
     Box(
         modifier = Modifier

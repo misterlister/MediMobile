@@ -79,7 +79,8 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                             dropDownLabel = "Event",
                             onSelectionChanged = { newEvent ->
                                 viewModel.setSelectedEvent(newEvent)
-                            }
+                            },
+                            width = 0.8f
                         )
                     },
 
@@ -90,7 +91,8 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                             dropDownLabel = "Location",
                             onSelectionChanged = { newLocation ->
                                 viewModel.setSelectedLocation(newLocation)
-                            }
+                            },
+                            width = 0.8f
                         )
                     },
                 )

@@ -30,7 +30,8 @@ fun BaseDropdown(
     currentSelection: String,
     options: List<String>?,
     dropDownLabel: String,
-    onSelectionChanged: (String) -> Unit
+    onSelectionChanged: (String) -> Unit,
+    width: Float = 1f
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -60,7 +61,7 @@ fun BaseDropdown(
                 disabledSuffixColor = MaterialTheme.colorScheme.onSurfaceVariant
             ),
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(width)
                 .clickable{ expanded = true }, // Make area clickable
 
             trailingIcon = { Icon(Icons.Default.ArrowDropDown,

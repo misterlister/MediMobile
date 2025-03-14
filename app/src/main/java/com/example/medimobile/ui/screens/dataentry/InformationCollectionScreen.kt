@@ -2,12 +2,15 @@ package com.example.medimobile.ui.screens.dataentry
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
@@ -66,6 +69,14 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     value = encounter.comment, // Bind to ViewModel
                     onValueChange = { viewModel.setComment(it) }, // Update ViewModel
                     placeholder = { Text("Enter comments (optional)") },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    ),
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
                         .height(150.dp)
