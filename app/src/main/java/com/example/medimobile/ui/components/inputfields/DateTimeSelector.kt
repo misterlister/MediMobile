@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.ui.components.dropdowns.HourDropdown
 import com.example.medimobile.ui.components.dropdowns.MinuteDropdown
@@ -39,14 +41,15 @@ fun DateTimeSelector(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(max = 180.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+            .heightIn(max = 180.dp)
+            .padding(horizontal = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // "Now" button column
         Column(
             modifier = Modifier
-                .weight(1f),
+                .weight(0.8f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(onClick = {
@@ -75,7 +78,7 @@ fun DateTimeSelector(
         // Time input column
         Column(
             modifier = Modifier
-                .weight(1f)
+                .weight(0.8f)
                 .wrapContentHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(0.dp)
@@ -111,4 +114,10 @@ fun DateTimeSelector(
         ).show()
         datePickerState.value = false // Close dialog after showing
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun DateTimeSelectorPreview() {
+    DateTimeSelector(date = LocalDate.now(), time = LocalTime.now(), onDateChange = {}, onTimeChange = {})
 }

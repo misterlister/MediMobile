@@ -1,15 +1,12 @@
 package com.example.medimobile.ui.components.templates
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.foundation.background
-import androidx.compose.ui.graphics.Color
-import androidx.compose.material3.TextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -21,6 +18,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.utils.DropdownConstants
@@ -37,12 +37,14 @@ fun DropdownWithOtherField(
     var otherText by remember {
         mutableStateOf(if (isOtherSelected) currentSelection.removePrefix(DropdownConstants.OTHER_PREFIX) else "") }
 
+    val focusManager = LocalFocusManager.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Box(modifier = Modifier.weight(1f)) {
             BaseDropdown(
@@ -86,7 +88,15 @@ fun DropdownWithOtherField(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
                 disabledContainerColor = TextFieldDefaults.colors().disabledContainerColor
-            )
+            ),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                }
+            ),
 
         )
     }
