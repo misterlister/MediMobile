@@ -2,6 +2,7 @@ package com.example.medimobile.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.medimobile.data.eventdata.EventList
+import com.example.medimobile.data.eventdata.getDummyEncounters
 import com.example.medimobile.data.model.MassGatheringEvent
 import com.example.medimobile.data.model.PatientEncounter
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +12,6 @@ import java.time.LocalTime
 
 
 class MediMobileViewModel: ViewModel() {
-
 
     // **User variables and methods**
 
@@ -135,6 +135,22 @@ class MediMobileViewModel: ViewModel() {
     }
     fun setDbKey(dbKey: String) {
         _currentEncounter.value = _currentEncounter.value?.copy(dbKey = dbKey)
+    }
+
+
+    // **Database functions**
+
+    private var _encounterList = MutableStateFlow<List<PatientEncounter>>(emptyList())
+    val encounterList: StateFlow<List<PatientEncounter>> get() = _encounterList
+
+    fun findEncounterByVisitId(visitId: String): PatientEncounter? {
+        return _encounterList.value?.find { it.visitId == visitId }
+    }
+
+    // Load encounters from database
+    fun loadEncountersFromDatabase() {
+        _encounterList.value = getDummyEncounters()
+        // TODO
     }
 
     // Save encounter to database
