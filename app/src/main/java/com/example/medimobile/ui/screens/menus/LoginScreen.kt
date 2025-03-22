@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -25,10 +26,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.ui.theme.appTitleTextStyle
@@ -71,7 +74,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.5f))
 
             Text(
                 text = "MediMobile",
@@ -79,7 +82,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.5f))
 
             // Login Form
             TextField(
@@ -97,7 +100,10 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                         focusManager.clearFocus()
                     }
                 ),
-                modifier = Modifier.focusRequester(usernameFocusRequester)
+                singleLine = true,
+                modifier = Modifier
+                    .focusRequester(usernameFocusRequester)
+                    .width(300.dp)
             )
 
             Spacer(modifier = Modifier.weight(0.125f))
@@ -107,17 +113,20 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                 placeholder = { Text("password") },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
+                    imeAction = ImeAction.Go
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = {
+                    onGo = {
                         handleLogin()
                     }
                 ),
-                modifier = Modifier.focusRequester(passwordFocusRequester)
+                singleLine = true,
+                modifier = Modifier
+                    .focusRequester(passwordFocusRequester)
+                    .width(300.dp)
             )
 
-            Spacer(modifier = Modifier.weight(0.5f))
+            Spacer(modifier = Modifier.weight(0.25f))
 
             // Login Button
             Button(onClick = {
@@ -129,4 +138,10 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
             Spacer(modifier = Modifier.weight(1f))
         }
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun LoginScreenPreview() {
+    LoginScreen(navController = NavController(LocalContext.current), viewModel = MediMobileViewModel())
 }

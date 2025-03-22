@@ -97,6 +97,7 @@ fun DropdownWithOtherField(
                     focusManager.clearFocus()
                 }
             ),
+            singleLine = true,
 
         )
     }
