@@ -1,17 +1,26 @@
 package com.example.medimobile.ui.screens.dataentry
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
 import com.example.medimobile.ui.components.errorscreens.NoEventError
 import com.example.medimobile.ui.components.inputfields.DateTimeSelector
+import com.example.medimobile.ui.components.inputfields.QRScannerButton
 import com.example.medimobile.ui.components.inputfields.TriageRadioButtons
 import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.DropdownWithOtherField
@@ -52,24 +61,46 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                 )
             },
             FormSectionData("Visit ID") {
-                TextField(
-                    value = encounter.visitId,
-                    onValueChange = { viewModel.setVisitId(it) },
-                    placeholder = {
-                        Text(
-                            "Enter Visit ID",
-                            style = placeholderTextStyle
-                        )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    QRScannerButton(onResult = { scannedValue: String ->
+                        viewModel.setVisitId(scannedValue)
                     },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                        }
-                    ),
-                )
+                        modifier = Modifier.weight(0.5f)
+                    )
+
+                    TextField(
+                        value = encounter.visitId,
+                        onValueChange = { viewModel.setVisitId(it) },
+                        placeholder = {
+                            Text(
+                                "Scan or generate visit ID",
+                                style = placeholderTextStyle
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                            }
+                        ),
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Button(onClick = { /*TODO*/ },
+                        modifier = Modifier.weight(0.5f)
+                    ) {
+                        Text(text = "Generate ID")
+                    }
+                }
             },
             FormSectionData("Arrival Method") {
                 DropdownWithOtherField (
