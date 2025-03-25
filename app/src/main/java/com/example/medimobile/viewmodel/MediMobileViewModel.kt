@@ -1,12 +1,19 @@
 package com.example.medimobile.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.medimobile.data.eventdata.EventList
 import com.example.medimobile.data.eventdata.getDummyEncounters
 import com.example.medimobile.data.model.MassGatheringEvent
 import com.example.medimobile.data.model.PatientEncounter
+import com.example.medimobile.data.remote.ApiConstants
+import com.example.medimobile.data.remote.AuthApi
+import com.example.medimobile.data.remote.LoginRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -16,9 +23,11 @@ class MediMobileViewModel: ViewModel() {
     // **User variables and methods**
 
 
-    // State to hold the current user
+    // States to hold the current user and user group
     private val _currentUser = MutableStateFlow<String?>(null)
     val currentUser: StateFlow<String?> = _currentUser
+    private val _userGroup = MutableStateFlow<String?>(null)
+    val userGroup: StateFlow<String?> = _userGroup
 
     // Set the current user
     fun setCurrentUser(user: String) {
@@ -28,6 +37,11 @@ class MediMobileViewModel: ViewModel() {
     // Clear the current user
     fun clearCurrentUser() {
         _currentUser.value = null
+    }
+
+    // Set the user group
+    fun setUserGroup(group: String) {
+        _userGroup.value = group
     }
 
 
@@ -138,13 +152,54 @@ class MediMobileViewModel: ViewModel() {
     }
 
 
+    // **API functions**
+
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(ApiConstants.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+
+    // **Login functions**
+
+
+    private val authApi = retrofit.create(AuthApi::class.java)
+
+    private val _loginResult = MutableStateFlow<Result<String>?>(null)
+    val loginResult: StateFlow<Result<String>?> = _loginResult
+
+    private var authToken: String? = null // holds authentication token
+
+    fun login(username: String, password: String) {
+        viewModelScope.launch {
+            try {
+                val response = authApi.login(LoginRequest(username, password))
+
+                authToken = response.token
+                _loginResult.value = Result.success(response.token)
+            } catch (e: Exception) {
+                _loginResult.value = Result.failure(e)
+            }
+        }
+    }
+
+    fun getToken(): String? {
+        return authToken  // Retrieve token when needed
+    }
+
+    fun logout() {
+        authToken = null  // Clear token when logging out
+        _loginResult.value = null
+    }
+
     // **Database functions**
 
     private var _encounterList = MutableStateFlow<List<PatientEncounter>>(emptyList())
     val encounterList: StateFlow<List<PatientEncounter>> get() = _encounterList
 
     fun findEncounterByVisitId(visitId: String): PatientEncounter? {
-        return _encounterList.value?.find { it.visitId == visitId }
+        return _encounterList.value.find { it.visitId == visitId }
     }
 
     // Load encounters from database
