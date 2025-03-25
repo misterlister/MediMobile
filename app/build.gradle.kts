@@ -61,4 +61,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.mlkit.barcode.scanning)
     implementation(libs.zxing.embedded)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
+    implementation(libs.okhttp)
 }
