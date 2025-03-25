@@ -27,12 +27,11 @@ import com.example.medimobile.ui.components.templates.BaseDropdown
 import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
 import com.example.medimobile.ui.theme.screenTitleTextStyle
-import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 
 @Composable
-fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel) {
+fun EventSelectScreen(navController: NavController, viewModel: MediMobileViewModel) {
 
     val selectedEvent = viewModel.selectedEvent.collectAsState().value
     val selectedLocation = viewModel.selectedLocation.collectAsState().value
@@ -48,17 +47,6 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 16.dp, start = 8.dp, end = 8.dp)
-            ) {
-                Text(
-                    text = username ?: "User",
-                    style = userNameTextStyle
-                )
-            }
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -67,7 +55,7 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                 verticalArrangement = Arrangement.Center
             ) {
 
-                Text(text = "Settings", style = screenTitleTextStyle)
+                Text(text = "Event Select", style = screenTitleTextStyle)
 
                 Spacer(modifier = Modifier.weight(0.5f))
 
@@ -114,7 +102,7 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
             contentAlignment = Alignment.Center
         ) {
             Button(
-                onClick = { navController.navigate("mainMenu") },
+                onClick = { navController.navigate("login") },
                 modifier = Modifier
                     .align(Alignment.BottomStart)
             ) {
