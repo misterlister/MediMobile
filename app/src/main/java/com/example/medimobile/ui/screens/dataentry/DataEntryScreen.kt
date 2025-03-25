@@ -69,14 +69,15 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
         }
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
         ) {
             // **Username, DocID, and Tabs Section**
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .statusBarsPadding()
             ) {
                 // Username and DocID
                 Row(
