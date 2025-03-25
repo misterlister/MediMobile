@@ -11,6 +11,9 @@ object EventList {
             locations = listOf(
                 DropdownItem("Main Medical", "Main Medical")
             ),
+            userGroups = listOf(
+                DropdownItem("Medical", "Medical")
+            ),
             dropdowns = EventDropdowns(
                 arrivalMethods = listOf(
                     DropdownItem("self-presented", "Self Presented"),
