@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -171,20 +172,31 @@ class MediMobileViewModel: ViewModel() {
 
     private var authToken: String? = null // holds authentication token
 
-    fun login(username: String, password: String) {
+    fun login(email: String, password: String, userGroup: String) {
         viewModelScope.launch {
             try {
-                val response = authApi.login(LoginRequest(username, password))
-
-                authToken = response.token
-                _loginResult.value = Result.success(response.token)
+                val response = authApi.login(LoginRequest(email, password, userGroup))
+                if (response.isSuccessful) {
+                    response.body()?.let { loginResponse ->
+                        authToken = loginResponse.accessToken
+                        _loginResult.value = Result.success(loginResponse.accessToken)
+                    } ?: run {
+                        _loginResult.value = Result.failure(Exception("Empty response body"))
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    _loginResult.value = Result.failure(Exception("Login failed: $errorBody"))
+                }
+            } catch (e: IOException) {
+                _loginResult.value = Result.failure(Exception("Network error: ${e.localizedMessage}"))
             } catch (e: Exception) {
-                _loginResult.value = Result.failure(e)
+                _loginResult.value = Result.failure(Exception("Unexpected error: ${e.localizedMessage}"))
             }
         }
     }
 
-    fun getToken(): String? {
+
+    fun getAuthToken(): String? {
         return authToken  // Retrieve token when needed
     }
 
