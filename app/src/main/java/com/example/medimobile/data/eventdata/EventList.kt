@@ -12,7 +12,7 @@ object EventList {
                 DropdownItem("Main Medical", "Main Medical")
             ),
             userGroups = listOf(
-                DropdownItem("Medical", "Medical")
+                DropdownItem("medical", "medical")
             ),
             dropdowns = EventDropdowns(
                 arrivalMethods = listOf(
