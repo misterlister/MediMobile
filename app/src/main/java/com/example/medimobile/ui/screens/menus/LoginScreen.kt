@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -41,6 +40,7 @@ import androidx.navigation.NavController
 import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.templates.BaseDropdown
 import com.example.medimobile.ui.theme.appTitleTextStyle
+import com.example.medimobile.ui.theme.errorMessageTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
@@ -54,7 +54,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
     val group = viewModel.userGroup.collectAsState().value
     val selectedEvent = viewModel.selectedEvent.collectAsState().value
 
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var errorMessage by remember { mutableStateOf<String>("") }
     val loginResult by viewModel.loginResult.collectAsState()
 
     // controls which fields are selected
@@ -107,7 +107,13 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                 textAlign = TextAlign.Center,
             )
 
-            Spacer(modifier = Modifier.weight(0.05f))
+            Text(
+                text = errorMessage,
+                style = errorMessageTextStyle,
+                modifier = Modifier
+                    .fillMaxWidth(0.75f)
+                    .align(Alignment.CenterHorizontally)
+                )
 
             Box(
                 modifier = Modifier
@@ -155,7 +161,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                 ),
                 keyboardActions = KeyboardActions(
                     onGo = {
-                        viewModel.login(username, password)
+                        viewModel.login(username, password, group ?: "")
                     }
                 ),
                 singleLine = true,
@@ -165,7 +171,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
             )
 
             // Login Button
-            Button(onClick = { viewModel.login(username, password) }) {
+            Button(onClick = { viewModel.login(username, password, group ?: "") }) {
                 Text("Login")
             }
             Spacer(modifier = Modifier.weight(1f))
