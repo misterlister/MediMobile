@@ -1,6 +1,7 @@
 package com.example.medimobile.ui.screens.encounterupdate
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,19 +16,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -48,7 +58,27 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
     // State to hold values used in the alert pop-up
     val alertValue = remember { mutableStateOf("") }
 
-    val context = LocalContext.current
+    // States for filter values
+    val docIdFilter = remember { mutableStateOf("") }
+    val visitIdFilter = remember { mutableStateOf("") }
+    val showCompleted = remember { mutableStateOf(false) } // Default to false
+
+    val filteredEncounterList = remember {
+        derivedStateOf {
+            encounterList
+                .sortedByDescending { it.arrivalDate }  // Sort by date (most recent first)
+                .filter { encounter ->
+
+                    val isCompleted = showCompleted.value || !encounter.complete
+                    val isDocIdMatch = docIdFilter.value.isEmpty() || encounter.documentNum.contains(docIdFilter.value, ignoreCase = true)
+                    val isVisitIdMatch = visitIdFilter.value.isEmpty() || encounter.visitId.contains(visitIdFilter.value, ignoreCase = true)
+                    isCompleted && isDocIdMatch && isVisitIdMatch
+                }
+        }
+    }
+
+
+    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = Modifier
@@ -56,6 +86,14 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
             .background(Color.Cyan)
             .navigationBarsPadding()
             .statusBarsPadding()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        // Clears focus when tapping outside of fields
+                        focusManager.clearFocus()
+                    }
+                )
+            }
     ) {
         Column(
             modifier = Modifier
@@ -103,7 +141,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                             .heightIn(max = 320.dp)
                     ) {
                         EncounterTable(
-                            records = encounterList,
+                            records = filteredEncounterList.value,
                             onRowClick = { selectedRecord ->
                                 viewModel.setCurrentEncounter(selectedRecord)
                                 navController.navigate("dataEntry")
@@ -111,7 +149,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                         )
                     }
 
-                    // **Explicit Lookup Section**
+                    // **Lookup and Filter Section**
 
                     QRScannerButton(
                         onResult = { scannedValue ->
@@ -133,35 +171,67 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                         horizontalArrangement = Arrangement.Center
                     ) {
                         TextField(
-                            value = "",
-                            onValueChange = {},
+                            value = docIdFilter.value,
+                            onValueChange = {docIdFilter.value = it},
                             placeholder = { Text("Doc ID", style = placeholderTextStyle) },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    focusManager.clearFocus()
+                                }
+                            ),
                             modifier = Modifier.fillMaxWidth(0.6f)
                         )
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        Button(onClick = { /*TODO*/ }) {
-                            Text(text = "Open")
+                        Button(onClick = { docIdFilter.value = "" }) {
+                            Text(text = "X")
                         }
                     }
 
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         TextField(
-                            value = "",
-                            onValueChange = {},
+                            value = visitIdFilter.value,
+                            onValueChange = { visitIdFilter.value = it },
                             placeholder = { Text("Visit ID", style = placeholderTextStyle) },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    focusManager.clearFocus()
+                                }
+                            ),
                             modifier = Modifier.fillMaxWidth(0.6f)
                         )
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        Button(onClick = { /*TODO*/ }) {
-                            Text(text = "Open")
+                        Button(onClick = { visitIdFilter.value = "" }) {
+                            Text(text = "X")
                         }
+                    }
+
+                    // **Show Completed Filter**
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Show Completed:",
+                            style = TextStyle(fontWeight = FontWeight.Bold))
+                        Checkbox(
+                            checked = showCompleted.value,
+                            onCheckedChange = { showCompleted.value = it }
+                        )
                     }
                 }
             }
