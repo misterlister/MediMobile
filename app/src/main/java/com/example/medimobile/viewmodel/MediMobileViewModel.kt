@@ -1,14 +1,18 @@
 package com.example.medimobile.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.medimobile.data.eventdata.EventList
-import com.example.medimobile.data.eventdata.getDummyEncounters
 import com.example.medimobile.data.model.MassGatheringEvent
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.remote.ApiConstants
+import com.example.medimobile.data.remote.GetEncountersApi
 import com.example.medimobile.data.remote.AuthApi
+import com.example.medimobile.data.remote.LocalDateDeserializer
+import com.example.medimobile.data.remote.LocalTimeDeserializer
 import com.example.medimobile.data.remote.LoginRequest
+import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -47,7 +51,6 @@ class MediMobileViewModel: ViewModel() {
 
 
     // **Event variables and methods**
-
 
     // State to hold the selected event
     private val _selectedEvent = MutableStateFlow<MassGatheringEvent?>(null)
@@ -109,10 +112,10 @@ class MediMobileViewModel: ViewModel() {
     fun setArrivalMethod(arrivalMethod: String) {
         _currentEncounter.value = _currentEncounter.value?.copy(arrivalMethod = arrivalMethod)
     }
-    fun setArrivalDate(arrivalDate: LocalDate) {
+    fun setArrivalDate(arrivalDate: LocalDate?) {
         _currentEncounter.value = _currentEncounter.value?.copy(arrivalDate = arrivalDate)
     }
-    fun setArrivalTime(arrivalTime: LocalTime) {
+    fun setArrivalTime(arrivalTime: LocalTime?) {
         _currentEncounter.value = _currentEncounter.value?.copy(arrivalTime = arrivalTime)
     }
     fun setChiefComplaint(chiefComplaint: String) {
@@ -121,10 +124,10 @@ class MediMobileViewModel: ViewModel() {
     fun setComment(comment: String) {
         _currentEncounter.value = _currentEncounter.value?.copy(comment = comment)
     }
-    fun setDepartureDate(departureDate: LocalDate) {
+    fun setDepartureDate(departureDate: LocalDate?) {
         _currentEncounter.value = _currentEncounter.value?.copy(departureDate = departureDate)
     }
-    fun setDepartureTime(departureTime: LocalTime) {
+    fun setDepartureTime(departureTime: LocalTime?) {
         _currentEncounter.value = _currentEncounter.value?.copy(departureTime = departureTime)
     }
     fun setDepartureDest(departureDest: String) {
@@ -155,10 +158,15 @@ class MediMobileViewModel: ViewModel() {
 
     // **API functions**
 
+    // custom deserializers to fix date/time parsing
+    private val gson = GsonBuilder()
+        .registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer())
+        .registerTypeAdapter(LocalTime::class.java, LocalTimeDeserializer())
+        .create()
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(ApiConstants.BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
 
@@ -195,9 +203,11 @@ class MediMobileViewModel: ViewModel() {
         }
     }
 
-
-    fun getAuthToken(): String? {
-        return authToken  // Retrieve token when needed
+    fun getAuthToken(): String {
+        if (authToken == null) {
+            return ""
+        }
+        return "Bearer $authToken"
     }
 
     fun logout() {
@@ -207,6 +217,8 @@ class MediMobileViewModel: ViewModel() {
 
     // **Database functions**
 
+    private val apiService = retrofit.create(GetEncountersApi::class.java)
+
     private var _encounterList = MutableStateFlow<List<PatientEncounter>>(emptyList())
     val encounterList: StateFlow<List<PatientEncounter>> get() = _encounterList
 
@@ -215,9 +227,35 @@ class MediMobileViewModel: ViewModel() {
     }
 
     // Load encounters from database
-    fun loadEncountersFromDatabase() {
-        _encounterList.value = getDummyEncounters()
-        // TODO
+    fun loadEncountersFromDatabase(userUuid: String? = null, arrivalDateMin: String? = null, arrivalDateMax: String? = null) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.getPatientEncounters(userUuid, arrivalDateMin, arrivalDateMax, getAuthToken())
+
+                if (response.isSuccessful) {
+                    response.body()?.let { encounters ->
+
+                        Log.d("DatabaseDebug", "Encounters fetched: ${encounters.toString()}")
+
+                        _encounterList.value = encounters
+                    } ?: run {
+
+                        Log.d("DatabaseDebug", "No encounters found.")
+
+                        _encounterList.value = emptyList()
+                    }
+                } else {
+                    // Handle error response
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("DatabaseDebug", "Error: $errorBody")
+                }
+            } catch (e: IOException) {
+                Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
+            } catch (e: Exception) {
+                // Log unexpected errors
+                Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
+            }
+        }
     }
 
     // Save encounter to database
