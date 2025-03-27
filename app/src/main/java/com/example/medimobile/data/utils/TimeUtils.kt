@@ -11,6 +11,5 @@ private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yy")
 
 // Formatter for dd/MM/yy-HH:mm
 fun formatArrivalDateTime(encounter: PatientEncounter): String {
-    return "${encounter.arrivalDate.format(dateFormatter)}-${encounter.arrivalTime.format(
-        timeFormatter)}"
+    return "${encounter.arrivalTime.format(timeFormatter)} ${encounter.arrivalDate.format(dateFormatter)}"
 }
