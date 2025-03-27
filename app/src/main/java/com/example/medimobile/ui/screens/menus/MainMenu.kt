@@ -30,11 +30,6 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
 
     val username = viewModel.currentUser.collectAsState().value
 
-    LaunchedEffect(Unit) {
-        // Clear the current encounter navigating to the Main Page
-        viewModel.clearCurrentEncounter()
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -78,13 +73,20 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
                 Spacer(modifier = Modifier.weight(0.5f))
 
                 // Menu Options
-                Button(onClick = { navController.navigate("dataEntry") }) {
+                Button(onClick = {
+                    viewModel.clearCurrentEncounter()
+                    navController.navigate("dataEntry")
+                }) {
                     Text(text = "Create New Encounter")
                 }
 
                 Spacer(modifier = Modifier.weight(0.25f))
 
-                Button(onClick = { navController.navigate("updateEncounter") }) {
+                Button(onClick = {
+                    viewModel.clearCurrentEncounter()
+                    viewModel.loadEncountersFromDatabase()
+                    navController.navigate("updateEncounter")
+                }) {
                     Text(text = "Update Existing Encounter")
                 }
 
