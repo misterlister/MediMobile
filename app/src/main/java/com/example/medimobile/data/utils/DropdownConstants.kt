@@ -5,6 +5,8 @@ object DropdownConstants {
 
     val MINUTES = (0..59).map { "%02d".format(it) }
 
+    val NOT_SET = "Not Set"
+
     val TRIAGE_LEVELS = listOf(
         "Green",
         "Yellow",

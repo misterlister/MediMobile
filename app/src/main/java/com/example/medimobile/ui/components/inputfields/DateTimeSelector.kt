@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.medimobile.data.utils.DropdownConstants.NOT_SET
 import com.example.medimobile.ui.components.dropdowns.HourDropdown
 import com.example.medimobile.ui.components.dropdowns.MinuteDropdown
 import java.time.LocalDate
@@ -29,10 +30,10 @@ import java.time.LocalTime
 
 @Composable
 fun DateTimeSelector(
-    date: LocalDate,
-    time: LocalTime,
-    onDateChange: (LocalDate) -> Unit,
-    onTimeChange: (LocalTime) -> Unit
+    date: LocalDate?,
+    time: LocalTime?,
+    onDateChange: (LocalDate?) -> Unit,
+    onTimeChange: (LocalTime?) -> Unit
     ) {
 
     // Keeps track of whether the date picker is open
@@ -71,7 +72,7 @@ fun DateTimeSelector(
             Text(text = "Select Date", fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = { datePickerState.value = true }) {
-                Text(text = date.toString())
+                Text(text = date?.toString() ?: "Not Set")
             }
         }
 
@@ -84,16 +85,16 @@ fun DateTimeSelector(
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
             HourDropdown(
-                currentHour = "%02d".format(time.hour), // Format the current hour as a string
+                currentHour = "%02d".format(time?.hour ?: 0), // Format the current hour as a string
                 onHourChanged = { newHour ->
-                    onTimeChange(time.withHour(newHour.toInt()))
+                    onTimeChange(time?.withHour(newHour.toInt()))
                 }
             )
 
             MinuteDropdown(
-                currentMinute = "%02d".format(time.minute), // Format the current minute as a string
+                currentMinute = "%02d".format(time?.minute ?: 0), // Format the current minute as a string
                 onMinuteChanged = { newMinute ->
-                    onTimeChange(time.withMinute(newMinute.toInt()))
+                    onTimeChange(time?.withMinute(newMinute.toInt()))
                 }
             )
         }
@@ -108,9 +109,9 @@ fun DateTimeSelector(
                 val newDate = LocalDate.of(year, month + 1, dayOfMonth)
                 onDateChange(newDate)
             },
-            date.year,
-            date.monthValue - 1,
-            date.dayOfMonth
+            date?.year ?: LocalDate.now().year,
+            date?.monthValue?.minus(1) ?: LocalDate.now().monthValue.minus(1),
+            date?.dayOfMonth ?: LocalDate.now().dayOfMonth
         ).show()
         datePickerState.value = false // Close dialog after showing
     }
