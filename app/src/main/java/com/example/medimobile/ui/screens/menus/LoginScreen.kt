@@ -1,5 +1,6 @@
 package com.example.medimobile.ui.screens.menus
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -47,8 +48,8 @@ import com.example.medimobile.viewmodel.MediMobileViewModel
 fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
 
     // variables to hold user input for username and password
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("default_user@default.com") }//{ mutableStateOf("") }
+    var password by remember { mutableStateOf("Password123!") }//{ mutableStateOf("") }
 
     // currently selected group event
     val group = viewModel.userGroup.collectAsState().value
@@ -72,6 +73,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                 navController.navigate("mainMenu")
             }.onFailure { error ->
                 errorMessage = "Login failed: ${error.message}"
+                Log.e("LoginScreen", "Login failed", error)
             }
         }
     }
