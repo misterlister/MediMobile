@@ -213,6 +213,8 @@ class MediMobileViewModel: ViewModel() {
     fun logout() {
         authToken = null  // Clear token when logging out
         _loginResult.value = null
+        _userGroup.value = null
+        _currentUser.value = null
     }
 
     // **Database functions**
