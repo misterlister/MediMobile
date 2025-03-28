@@ -65,9 +65,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
 
     val filteredEncounterList = remember {
         derivedStateOf {
-            encounterList
-                .sortedByDescending { it.arrivalDate }  // Sort by date (most recent first)
-                .filter { encounter ->
+            encounterList.filter { encounter ->
 
                     val isCompleted = showCompleted.value || !encounter.complete
                     val isDocIdMatch = docIdFilter.value.isEmpty() || encounter.documentNum.contains(docIdFilter.value, ignoreCase = true)
