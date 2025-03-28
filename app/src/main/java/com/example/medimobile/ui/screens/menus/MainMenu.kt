@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,10 +48,13 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = username ?: "User",
+                    text = username ?: "",
                     style = userNameTextStyle
                 )
-                Button(onClick = { navController.navigate("login")  }) {
+                Button(onClick = {
+                    viewModel.logout()
+                    navController.navigate("login")
+                }) {
                     Text(text = "Logout")
                 }
             }
