@@ -66,7 +66,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         focusManager.clearFocus()
                     }
                 )
-        }
+            }
     ) {
         Column(
             modifier = Modifier
@@ -197,7 +197,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 Button(
                     onClick = {
                         // Navigate to main menu and discard the current entry if "Yes" is clicked
-                        navController.navigate("mainMenu")
+                        navController.popBackStack()
                         showCancelPopup = false
                     }
                 ) {
