@@ -1,5 +1,6 @@
 package com.example.medimobile.ui.screens.encounterupdate
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,7 +29,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.graphicsLayer
-import java.util.Date
 
 // Cell Headers for the Encounter Table
 @Composable
@@ -70,12 +70,15 @@ fun TableCell(text: String, modifier: Modifier = Modifier) {
     )
 }
 
+// Suppress warnings about experimental use of stickyHeader
+// If it is deprecated or supported in the future, this can be adjusted
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EncounterTable(
     records: List<PatientEncounter>,
     onRowClick: (PatientEncounter) -> Unit,
 ) {
-    var sortColumn by remember { mutableStateOf<SortColumn>(SortColumn.Date) }
+    var sortColumn by remember { mutableStateOf(SortColumn.Date) }
     var isDescending by remember { mutableStateOf(false) }
 
     // Sort Encounters based on the selected column
@@ -85,7 +88,6 @@ fun EncounterTable(
             SortColumn.VisitId -> records.sortedWith(compareBy { it.visitId })
             SortColumn.Date -> records.sortedWith(compareBy { it.arrivalDate })
             SortColumn.Status -> records.sortedWith(compareBy { it.complete })
-            else -> records
         }.let {
             if (isDescending) it.reversed() else it
         }
@@ -98,7 +100,7 @@ fun EncounterTable(
             .border(2.dp, Color.Black)
     ) {
         // Table Header
-        item {
+        stickyHeader {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
