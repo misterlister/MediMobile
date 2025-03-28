@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 fun RadioButtonWithText(option: String, selectedOption: String?, onOptionSelected: (String) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         RadioButton(
-            selected = selectedOption == option,
+            selected = selectedOption?.equals(option, ignoreCase = true) == true,
             onClick = { onOptionSelected(option) }
         )
         Text(text = option)
