@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.medimobile.data.eventdata.EventList
+import com.example.medimobile.data.model.DropdownItem
 import com.example.medimobile.data.model.MassGatheringEvent
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.remote.ApiConstants
@@ -12,6 +13,7 @@ import com.example.medimobile.data.remote.AuthApi
 import com.example.medimobile.data.remote.LocalDateDeserializer
 import com.example.medimobile.data.remote.LocalTimeDeserializer
 import com.example.medimobile.data.remote.LoginRequest
+import com.example.medimobile.data.remote.PatientEncounterDeserializer
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,11 +39,6 @@ class MediMobileViewModel: ViewModel() {
     // Set the current user
     fun setCurrentUser(user: String) {
         _currentUser.value = user
-    }
-
-    // Clear the current user
-    fun clearCurrentUser() {
-        _currentUser.value = null
     }
 
     // Set the user group
@@ -158,10 +155,21 @@ class MediMobileViewModel: ViewModel() {
 
     // **API functions**
 
+    fun getDropdownMappings(): Map<String, List<DropdownItem>> {
+        val event = _selectedEvent.value ?: return emptyMap()
+        return mapOf(
+            "arrival_method" to event.dropdowns.arrivalMethods,
+            "departure_dest" to event.dropdowns.departureDestinations,
+            "role" to event.dropdowns.roles,
+            "chief_complaint" to event.dropdowns.chiefComplaints
+        )
+    }
+
     // custom deserializers to fix date/time parsing
     private val gson = GsonBuilder()
         .registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer())
         .registerTypeAdapter(LocalTime::class.java, LocalTimeDeserializer())
+        .registerTypeAdapter(PatientEncounter::class.java, PatientEncounterDeserializer(getDropdownMappings()))
         .create()
 
     private val retrofit = Retrofit.Builder()
