@@ -50,6 +50,9 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
     // State for the cancellation pop-up
     var showCancelPopup by remember { mutableStateOf(false) }
 
+    // State for the save pop-up
+    var showSavePopup by remember { mutableStateOf(false) }
+
     // Navigation tabs
     val tabs = listOf("Triage", "Information Collection", "Discharge")
     val selectedTabIndex = remember { mutableIntStateOf(0) }
@@ -163,7 +166,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
 
                 // Save Button
                 Button(
-                    onClick = { navController.navigate("mainMenu")  },
+                    onClick = { showSavePopup = true },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Green,
                         contentColor = Color.White
@@ -196,7 +199,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
             confirmButton = {
                 Button(
                     onClick = {
-                        // Navigate to main menu and discard the current entry if "Yes" is clicked
+                        // Go back to the previous page and discard current content
                         navController.popBackStack()
                         showCancelPopup = false
                     }
@@ -209,6 +212,46 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                     onClick = {
                         // Dismiss the dialog if "No" is clicked
                         showCancelPopup = false
+                    }
+                ) {
+                    Text("No")
+                }
+            }
+        )
+    }
+
+    if (showSavePopup) {
+        AlertDialog(
+            onDismissRequest = { showSavePopup = false },
+            title = { Text(text = "Confirm save?") },
+            text = { Text("Data will be submitted to the database.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        // Save data to database and continue entry
+                        viewModel.saveEncounterToDatabase()
+                        showSavePopup = false
+                    }
+                ) {
+                    Text("Save & Continue")
+                }
+
+                Button(
+                    onClick = {
+                        // Save data to database and go back to the previous page
+                        viewModel.saveEncounterToDatabase()
+                        navController.popBackStack()
+                        showSavePopup = false
+                    }
+                ) {
+                    Text("Save & Exit")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        // Dismiss the dialog if "No" is clicked
+                        showSavePopup = false
                     }
                 ) {
                     Text("No")
