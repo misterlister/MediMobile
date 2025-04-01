@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
@@ -96,9 +97,11 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     )
 
                     Button(onClick = { /*TODO*/ },
-                        modifier = Modifier.weight(0.5f)
+                        modifier = Modifier.weight(0.6f)
                     ) {
-                        Text(text = "Generate ID")
+                        Text(
+                            text = "Generate ID",
+                            textAlign = TextAlign.Center)
                     }
                 }
             },
