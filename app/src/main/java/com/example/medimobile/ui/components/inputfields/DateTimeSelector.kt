@@ -72,7 +72,7 @@ fun DateTimeSelector(
             Text(text = "Select Date", fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = { datePickerState.value = true }) {
-                Text(text = date?.toString() ?: "Not Set")
+                Text(text = date?.toString() ?: NOT_SET)
             }
         }
 
