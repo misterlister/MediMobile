@@ -35,7 +35,6 @@ fun EventSelectScreen(navController: NavController, viewModel: MediMobileViewMod
 
     val selectedEvent = viewModel.selectedEvent.collectAsState().value
     val selectedLocation = viewModel.selectedLocation.collectAsState().value
-    val username = viewModel.currentUser.collectAsState().value
 
     Box(
         modifier = Modifier
