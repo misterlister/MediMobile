@@ -164,7 +164,7 @@ fun EncounterTable(
                 TableCell(record.documentNum, modifier = Modifier.weight(DOC_WEIGHT))
                 TableCell(record.visitId, modifier = Modifier.weight(VISIT_ID_WEIGHT))
                 TableCell(formatArrivalDateTime(record), modifier = Modifier.weight(DATE_WEIGHT))
-                TableCell(if (record.complete) "Complete" else "Incomplete", modifier = Modifier.weight(
+                TableCell(if (record.complete) "Comp." else "Incomp.", modifier = Modifier.weight(
                     STATUS_WEIGHT))
             }
         }
@@ -177,5 +177,5 @@ enum class SortColumn {
 
 const val DOC_WEIGHT = 1f
 const val VISIT_ID_WEIGHT = 1.5f
-const val DATE_WEIGHT = 1.5f
-const val STATUS_WEIGHT = 1f
+const val DATE_WEIGHT = 1.2f
+const val STATUS_WEIGHT = 0.9f
