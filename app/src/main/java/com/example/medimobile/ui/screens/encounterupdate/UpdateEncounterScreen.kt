@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -29,6 +30,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,11 +43,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.medimobile.data.utils.dateFormatter
+import com.example.medimobile.ui.components.inputfields.DateSelector
 import com.example.medimobile.ui.components.inputfields.QRScannerButton
 import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.ui.theme.screenTitleTextStyle
 import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
+import java.time.LocalDate
 
 @Composable
 fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileViewModel) {
@@ -58,8 +63,12 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
     // State to hold values used in the alert pop-up
     val alertValue = remember { mutableStateOf("") }
 
+    var showDateDialog by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
     // States for filter values
-    val docIdFilter = remember { mutableStateOf("") }
+    val dateFilter = remember { mutableStateOf<LocalDate?>(null) }
     val visitIdFilter = remember { mutableStateOf("") }
     val showCompleted = remember { mutableStateOf(false) } // Default to false
 
@@ -68,9 +77,9 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
             encounterList.filter { encounter ->
 
                     val isCompleted = showCompleted.value || !encounter.complete
-                    val isDocIdMatch = docIdFilter.value.isEmpty() || encounter.documentNum.contains(docIdFilter.value, ignoreCase = true)
                     val isVisitIdMatch = visitIdFilter.value.isEmpty() || encounter.visitId.contains(visitIdFilter.value, ignoreCase = true)
-                    isCompleted && isDocIdMatch && isVisitIdMatch
+                    val isDateMatch = dateFilter.value == null || encounter.arrivalDate == dateFilter.value
+                    isCompleted && isDateMatch && isVisitIdMatch
                 }
         }
     }
@@ -168,24 +177,13 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        TextField(
-                            value = docIdFilter.value,
-                            onValueChange = {docIdFilter.value = it},
-                            placeholder = { Text("Doc ID", style = placeholderTextStyle) },
-                            keyboardOptions = KeyboardOptions.Default.copy(
-                                imeAction = ImeAction.Done
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    focusManager.clearFocus()
-                                }
-                            ),
-                            modifier = Modifier.fillMaxWidth(0.6f)
-                        )
+                        OutlinedButton(onClick = { showDateDialog = true }) {
+                            Text(text = dateFilter.value?.format(dateFormatter) ?: "Filter by Date")
+                        }
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        Button(onClick = { docIdFilter.value = "" }) {
+                        Button(onClick = { dateFilter.value = null }) {
                             Text(text = "X")
                         }
                     }
@@ -194,12 +192,13 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight(),
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         TextField(
                             value = visitIdFilter.value,
                             onValueChange = { visitIdFilter.value = it },
-                            placeholder = { Text("Visit ID", style = placeholderTextStyle) },
+                            placeholder = { Text("Filter by Visit ID", style = placeholderTextStyle) },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 imeAction = ImeAction.Done
                             ),
@@ -275,6 +274,16 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                 ) {
                     Text("OK")
                 }
+            }
+        )
+    }
+    if (showDateDialog) {
+        DateSelector (
+            context = context,
+            date = dateFilter.value,
+            onDateSelected = { newDate ->
+                dateFilter.value = newDate
+                showDateDialog = false
             }
         )
     }
