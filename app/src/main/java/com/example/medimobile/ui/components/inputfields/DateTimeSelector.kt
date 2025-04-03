@@ -1,6 +1,5 @@
 package com.example.medimobile.ui.components.inputfields
 
-import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,8 +35,8 @@ fun DateTimeSelector(
     onTimeChange: (LocalTime?) -> Unit
     ) {
 
-    // Keeps track of whether the date picker is open
-    val datePickerState = remember { mutableStateOf(false) }
+    // Keeps track of whether the date selector window is open
+    val dateSelectorState = remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
@@ -71,7 +70,7 @@ fun DateTimeSelector(
         ) {
             Text(text = "Select Date", fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { datePickerState.value = true }) {
+            Button(onClick = { dateSelectorState.value = true }) {
                 Text(text = date?.toString() ?: NOT_SET)
             }
         }
@@ -100,20 +99,17 @@ fun DateTimeSelector(
         }
     }
 
-    // Show DatePickerDialog when triggered
-    if (datePickerState.value) {
+    // Show DateSelectorDialog when triggered
+    if (dateSelectorState.value) {
         val context = LocalContext.current
-        DatePickerDialog(
-            context,
-            { _, year, month, dayOfMonth ->
-                val newDate = LocalDate.of(year, month + 1, dayOfMonth)
+        DateSelector(
+            context = context,
+            date = date,
+            onDateSelected = { newDate ->
                 onDateChange(newDate)
-            },
-            date?.year ?: LocalDate.now().year,
-            date?.monthValue?.minus(1) ?: LocalDate.now().monthValue.minus(1),
-            date?.dayOfMonth ?: LocalDate.now().dayOfMonth
-        ).show()
-        datePickerState.value = false // Close dialog after showing
+                dateSelectorState.value = false
+            }
+        )
     }
 }
 
