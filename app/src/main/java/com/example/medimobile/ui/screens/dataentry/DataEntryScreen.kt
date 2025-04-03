@@ -41,10 +41,13 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
     val focusManager = LocalFocusManager.current
     val currentEncounter = viewModel.currentEncounter.collectAsState().value
     val username = viewModel.currentUser.collectAsState().value
+    val encounter = viewModel.currentEncounter.collectAsState().value
 
     // Initialize the current encounter if it's null
     if (currentEncounter == null) {
         viewModel.setCurrentEncounter(PatientEncounter())
+        viewModel.setCurrentUser(viewModel.currentUser.value ?: "")
+        viewModel.setLocation(viewModel.selectedLocation.value ?: "")
     }
 
     // State for the cancellation pop-up
@@ -95,7 +98,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         style = userNameTextStyle
                     )
                     Text(
-                        text = "Doc ID",
+                        text = encounter?.visitId ?: "Visit ID not set",
                         style = userNameTextStyle
                     )
                 }

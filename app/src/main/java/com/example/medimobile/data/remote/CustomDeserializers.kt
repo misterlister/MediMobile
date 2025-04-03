@@ -47,7 +47,6 @@ class PatientEncounterDeserializer(
             departureDate = context?.deserialize(jsonObject.get("departure_date"), LocalDate::class.java),
             departureTime = context?.deserialize(jsonObject.get("departure_time"), LocalTime::class.java),
             departureDest = getMappedValue("departure_dest"),
-            documentNum = jsonObject.get("document_num")?.asString ?: "",
             location = jsonObject.get("location")?.asString ?: "",
             role = getMappedValue("role"),
             visitId = jsonObject.get("qr_code")?.asString ?: "",
