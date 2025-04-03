@@ -1,6 +1,7 @@
 package com.example.medimobile.data.remote
 
 import com.example.medimobile.data.model.PatientEncounter
+import com.example.medimobile.data.model.PatientEncounterFormData
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -22,4 +23,18 @@ interface GetEncountersApi {
         @Query("arrival_date_max") arrivalDateMax: String? = null,
         @Header("Authorization") token: String
     ): Response<List<PatientEncounter>>
+
+    @GET("api/medical/form")
+    suspend fun getSinglePatientEncounter(
+        @Query("user_uuid") userUuid: String,
+        @Header("Authorization") token: String
+    ): Response<PatientEncounter>
+}
+
+interface PostEncountersApi {
+    @POST("api/medical/form")
+    suspend fun postPatientEncounter(
+        @Body patientEncounter: PatientEncounterFormData,
+        @Header("Authorization") token: String
+    ): Response<PatientEncounter>
 }
