@@ -79,12 +79,11 @@ fun EncounterTable(
     onRowClick: (PatientEncounter) -> Unit,
 ) {
     var sortColumn by remember { mutableStateOf(SortColumn.Date) }
-    var isDescending by remember { mutableStateOf(false) }
+    var isDescending by remember { mutableStateOf(true) }
 
     // Sort Encounters based on the selected column
     val sortedRecords = remember(sortColumn, isDescending, records) {
         when (sortColumn) {
-            SortColumn.DocId -> records.sortedWith(compareBy { it.documentNum })
             SortColumn.VisitId -> records.sortedWith(compareBy { it.visitId })
             SortColumn.Date -> records.sortedWith(compareBy { it.arrivalDate })
             SortColumn.Status -> records.sortedWith(compareBy { it.complete })
@@ -109,16 +108,6 @@ fun EncounterTable(
                     .padding(vertical = 8.dp)
             ) {
                 TableHeaderCell(
-                    "DocID",
-                    modifier = Modifier.weight(DOC_WEIGHT),
-                    onClick = {
-                        sortColumn = SortColumn.DocId
-                        isDescending = !isDescending
-                    },
-                    isSorted = sortColumn == SortColumn.DocId,
-                    isDescending = isDescending
-                )
-                TableHeaderCell(
                     "VisitID",
                     modifier = Modifier.weight(VISIT_ID_WEIGHT),
                     onClick = {
@@ -129,7 +118,7 @@ fun EncounterTable(
                     isDescending = isDescending
                 )
                 TableHeaderCell(
-                    "Date",
+                    "Date (D/M/Y)",
                     modifier = Modifier.weight(DATE_WEIGHT),
                     onClick = {
                         sortColumn = SortColumn.Date
@@ -161,7 +150,6 @@ fun EncounterTable(
                     .border(1.dp, Color.Black)
                     .padding(vertical = 8.dp)
             ) {
-                TableCell(record.documentNum, modifier = Modifier.weight(DOC_WEIGHT))
                 TableCell(record.visitId, modifier = Modifier.weight(VISIT_ID_WEIGHT))
                 TableCell(formatArrivalDateTime(record), modifier = Modifier.weight(DATE_WEIGHT))
                 TableCell(if (record.complete) "Comp." else "Incomp.", modifier = Modifier.weight(
@@ -172,10 +160,9 @@ fun EncounterTable(
 }
 
 enum class SortColumn {
-    DocId, VisitId, Date, Status
+    VisitId, Date, Status
 }
 
-const val DOC_WEIGHT = 1f
-const val VISIT_ID_WEIGHT = 1.5f
-const val DATE_WEIGHT = 1.2f
-const val STATUS_WEIGHT = 0.9f
+const val VISIT_ID_WEIGHT = 1f
+const val DATE_WEIGHT = 1f
+const val STATUS_WEIGHT = 0.5f
