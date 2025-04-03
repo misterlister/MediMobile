@@ -7,6 +7,7 @@ import com.example.medimobile.data.eventdata.EventList
 import com.example.medimobile.data.model.DropdownItem
 import com.example.medimobile.data.model.MassGatheringEvent
 import com.example.medimobile.data.model.PatientEncounter
+import com.example.medimobile.data.model.mapToPatientEncounterFormData
 import com.example.medimobile.data.remote.ApiConstants
 import com.example.medimobile.data.remote.GetEncountersApi
 import com.example.medimobile.data.remote.AuthApi
@@ -14,6 +15,7 @@ import com.example.medimobile.data.remote.LocalDateDeserializer
 import com.example.medimobile.data.remote.LocalTimeDeserializer
 import com.example.medimobile.data.remote.LoginRequest
 import com.example.medimobile.data.remote.PatientEncounterDeserializer
+import com.example.medimobile.data.remote.PostEncountersApi
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -130,9 +132,6 @@ class MediMobileViewModel: ViewModel() {
     fun setDepartureDest(departureDest: String) {
         _currentEncounter.value = _currentEncounter.value?.copy(departureDest = departureDest)
     }
-    fun setDocumentNum(documentNum: String) {
-        _currentEncounter.value = _currentEncounter.value?.copy(documentNum = documentNum)
-    }
     fun setLocation(location: String) {
         _currentEncounter.value = _currentEncounter.value?.copy(location = location)
     }
@@ -148,14 +147,11 @@ class MediMobileViewModel: ViewModel() {
     fun setDischargeDiagnosis(dischargeDiagnosis: String) {
         _currentEncounter.value = _currentEncounter.value?.copy(dischargeDiagnosis = dischargeDiagnosis)
     }
-    fun setDbKey(dbKey: String) {
-        _currentEncounter.value = _currentEncounter.value?.copy(dbKey = dbKey)
-    }
 
 
     // **API functions**
 
-    fun getDropdownMappings(): Map<String, List<DropdownItem>> {
+    private fun getDropdownMappings(): Map<String, List<DropdownItem>> {
         val event = _selectedEvent.value ?: return emptyMap()
         return mapOf(
             "arrival_method" to event.dropdowns.arrivalMethods,
@@ -211,7 +207,7 @@ class MediMobileViewModel: ViewModel() {
         }
     }
 
-    fun getAuthToken(): String {
+    private fun getAuthToken(): String {
         if (authToken == null) {
             return ""
         }
@@ -227,7 +223,7 @@ class MediMobileViewModel: ViewModel() {
 
     // **Database functions**
 
-    private val apiService = retrofit.create(GetEncountersApi::class.java)
+    private val getApi = retrofit.create(GetEncountersApi::class.java)
 
     private var _encounterList = MutableStateFlow<List<PatientEncounter>>(emptyList())
     val encounterList: StateFlow<List<PatientEncounter>> get() = _encounterList
@@ -237,10 +233,14 @@ class MediMobileViewModel: ViewModel() {
     }
 
     // Load encounters from database
-    fun loadEncountersFromDatabase(userUuid: String? = null, arrivalDateMin: String? = null, arrivalDateMax: String? = null) {
+    fun loadEncountersFromDatabase() {
         viewModelScope.launch {
             try {
-                val response = apiService.getPatientEncounters(userUuid, arrivalDateMin, arrivalDateMax, getAuthToken())
+                val response = getApi.getPatientEncounters(
+                    userUuid = null,
+                    arrivalDateMin = null,
+                    arrivalDateMax = null,
+                    getAuthToken())
 
                 if (response.isSuccessful) {
                     response.body()?.let { encounters ->
@@ -268,8 +268,73 @@ class MediMobileViewModel: ViewModel() {
         }
     }
 
+    fun loadSingleEncounterFromDatabase(userUuid: String) {
+        viewModelScope.launch {
+            try {
+                val response = getApi.getSinglePatientEncounter(
+                    userUuid = userUuid,
+                    getAuthToken())
+
+                if (response.isSuccessful) {
+                    response.body()?.let { encounter ->
+                        _currentEncounter.value = encounter
+                    }
+                } else {
+                    // Handle error response
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("DatabaseDebug", "Error: $errorBody")
+                }
+            }
+            catch (e: IOException) {
+                Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
+            }
+            catch (e: Exception) {
+                // Log unexpected errors
+                Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    private val postApi = retrofit.create(PostEncountersApi::class.java)
+
+    private fun submitNewEncounter() {
+        viewModelScope.launch {
+            try {
+                val formData = mapToPatientEncounterFormData(_currentEncounter.value!!)
+                val response = postApi.postPatientEncounter(formData, getAuthToken())
+
+                if (response.isSuccessful) {
+                    // Handle successful response
+                    response.body()?.let { createdEncounter ->
+                        Log.d("DatabaseDebug", "Encounter created: $createdEncounter")
+                    } ?: run {
+                        Log.d("DatabaseDebug", "Encounter creation succeeded but response body is null.")
+                    }
+                } else {
+                    // Handle error response
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("DatabaseDebug", "Error creating encounter: $errorBody")
+                }
+            } catch (e: IOException) {
+                Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
+            } catch (e: Exception) {
+                Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
+            }
+        }
+    }
+
     // Save encounter to database
     fun saveEncounterToDatabase() {
-        // TODO
+        if (_currentEncounter.value == null) {
+            return
+        }
+
+        if (_currentEncounter.value!!.dbKey.isEmpty()) {
+            // Create a new encounter in Database
+            submitNewEncounter()
+            // Update the encounter with the new dbKey
+        } else {
+            // Update an existing encounter in Database
+        }
     }
 }
