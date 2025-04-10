@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.data.utils.dateFormatter
+import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.components.inputfields.DateSelector
 import com.example.medimobile.ui.components.inputfields.QRScannerButton
 import com.example.medimobile.ui.theme.placeholderTextStyle
@@ -56,6 +57,7 @@ import java.time.LocalDate
 fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileViewModel) {
     // Reference to viewModel's encounterList
     val encounterList by viewModel.encounterList.collectAsState()
+    val isLoading = viewModel.isLoading.collectAsState().value
 
     // State used to trigger the alert pop-up
     val showNotFoundDialog = remember { mutableStateOf(false) }
@@ -252,6 +254,10 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
             }
         }
     }
+
+    // Freeze screen and show loading indicator when loading
+    LoadingIndicator(isLoading)
+
     // Show pop-up dialog if no encounter is found
     if (showNotFoundDialog.value) {
         AlertDialog(

@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.data.model.PatientEncounter
+import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
@@ -42,6 +43,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
     val currentEncounter = viewModel.currentEncounter.collectAsState().value
     val username = viewModel.currentUser.collectAsState().value
     val encounter = viewModel.currentEncounter.collectAsState().value
+    val isLoading = viewModel.isLoading.collectAsState().value
 
     // Initialize the current encounter if it's null
     if (currentEncounter == null) {
@@ -193,6 +195,10 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
             }
         }
     }
+
+    // Freeze screen and show loading indicator when loading
+    LoadingIndicator(isLoading)
+
     // **Confirm Cancel Popup**
     if (showCancelPopup) {
         AlertDialog(
