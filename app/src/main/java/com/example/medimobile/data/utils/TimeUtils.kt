@@ -48,3 +48,8 @@ fun convertToUTCDateTimeString(date: LocalDate?, time: LocalTime?): String? {
         .toLocalDateTime()
         .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 }
+
+enum class DateRangeOption {
+    DAY, WEEK, MONTH, YEAR, ALL_TIME
+}
+
