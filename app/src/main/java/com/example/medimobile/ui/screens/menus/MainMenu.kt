@@ -95,5 +95,13 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
                 Spacer(modifier = Modifier.weight(1f))
             }
         }
+        Button(
+            onClick = { navController.navigate("settings") },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(12.dp)
+        ) {
+            Text(text = "Settings")
+        }
     }
 }
