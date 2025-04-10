@@ -15,6 +15,7 @@ import com.example.medimobile.ui.screens.encounterupdate.UpdateEncounterScreen
 import com.example.medimobile.ui.screens.menus.LoginScreen
 import com.example.medimobile.ui.screens.menus.MainMenuScreen
 import com.example.medimobile.ui.screens.menus.EventSelectScreen
+import com.example.medimobile.ui.screens.menus.SettingsScreen
 import com.example.medimobile.ui.theme.MediMobileTheme
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
                     composable("dataEntry") { DataEntryScreen(navController, viewModel) }
                     composable("eventSelect") { EventSelectScreen(navController, viewModel) }
                     composable("updateEncounter") { UpdateEncounterScreen(navController, viewModel) }
+                    composable("settings") { SettingsScreen(navController, viewModel) }
                 }
             }
         }
@@ -57,14 +59,6 @@ fun LoginPreview() {
 fun MainMenuPreview() {
     MediMobileTheme {
         MainMenuScreen(navController = rememberNavController(), MediMobileViewModel())
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun SettingsPreview() {
-    MediMobileTheme {
-        EventSelectScreen(navController = rememberNavController(), MediMobileViewModel())
     }
 }
 
