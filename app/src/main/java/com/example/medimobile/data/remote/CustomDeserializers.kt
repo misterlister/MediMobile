@@ -11,6 +11,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 
 // Deserializer for Patient Encounters
 class PatientEncounterDeserializer(
@@ -49,12 +50,11 @@ class PatientEncounterDeserializer(
             departureDest = getMappedValue("departure_dest"),
             location = jsonObject.get("location")?.asString ?: "",
             role = getMappedValue("role"),
-            visitId = jsonObject.get("qr_code")?.asString ?: "",
+            visitId = jsonObject.get("visit_id")?.asString ?: "",
             triageAcuity = jsonObject.get("triage_acuity")?.asString ?: "",
             dischargeDiagnosis = jsonObject.get("discharge_diagnosis")?.asString ?: "",
-            dbKey = jsonObject.get("patient_encounter_uuid")?.asString ?: "",
+            encounterUuid = jsonObject.get("patient_encounter_uuid")?.asString ?: "",
             userUuid = jsonObject.get("user_uuid")?.asString ?: "",
-            userEmail = jsonObject.get("user_email")?.asString ?: ""
         )
     }
 }
@@ -66,13 +66,17 @@ class LocalDateDeserializer : JsonDeserializer<LocalDate?> {
         val dateTimeString = json?.asString
         return if (dateTimeString != null) {
             try {
-                // Parse as LocalDateTime (since there's no timezone in the string)
-                val localDateTime = LocalDateTime.parse(dateTimeString)
+                // Parse the datetime string
+                val utcDateTime = LocalDateTime.parse(dateTimeString)
 
-                // Convert to ZonedDateTime (with system default time zone) if needed
-                val localDate = localDateTime.atZone(ZoneId.systemDefault()).toLocalDate()
+                // Convert to ZonedDateTime with UTC
+                val utcZonedDateTime = utcDateTime.atZone(ZoneOffset.UTC)
 
-                localDate
+                // Convert UTC to system default
+                val localZonedDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault())
+
+                // Get LocalDate in the local time zone
+                localZonedDateTime.toLocalDate()
             } catch (e: Exception) {
                 println("Error parsing date: $e")
                 null
@@ -90,12 +94,16 @@ class LocalTimeDeserializer : JsonDeserializer<LocalTime?> {
         return if (dateTimeString != null) {
             try {
                 // Parse as LocalDateTime
-                val localDateTime = LocalDateTime.parse(dateTimeString)
+                val utcDateTime = LocalDateTime.parse(dateTimeString)
 
-                // Extract the time part from the LocalDateTime
-                val localTime = localDateTime.toLocalTime()
+                // Convert to ZonedDateTime with UTC
+                val utcZonedDateTime = utcDateTime.atZone(ZoneOffset.UTC)
 
-                localTime
+                // Convert to system default time zone
+                val localZonedDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault())
+
+                // Extract the time part in the local time zone
+                localZonedDateTime.toLocalTime()
             } catch (e: Exception) {
                 println("Error parsing time: $e")
                 null
