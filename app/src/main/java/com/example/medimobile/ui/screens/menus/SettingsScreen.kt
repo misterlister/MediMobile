@@ -21,11 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.medimobile.data.eventdata.EventList
 import com.example.medimobile.data.utils.DateRangeOption
 import com.example.medimobile.data.utils.toDateRangeOption
 import com.example.medimobile.data.utils.toDisplayValue
-import com.example.medimobile.data.utils.toEventNames
 import com.example.medimobile.ui.components.dropdowns.BaseDropdown
 import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
