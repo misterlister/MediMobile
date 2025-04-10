@@ -16,6 +16,7 @@ import com.example.medimobile.data.remote.LocalTimeDeserializer
 import com.example.medimobile.data.remote.LoginRequest
 import com.example.medimobile.data.remote.PatientEncounterDeserializer
 import com.example.medimobile.data.remote.SubmitEncountersApi
+import com.example.medimobile.data.utils.DateRangeOption
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +36,26 @@ class MediMobileViewModel: ViewModel() {
 
     private fun setLoading(loading: Boolean) {
         _isLoading.value = loading
+    }
+
+    // Currently selected date range for display in the encounter table
+    private val _selectedDateRange = MutableStateFlow(DateRangeOption.WEEK)
+    val selectedDateRange: StateFlow<DateRangeOption> = _selectedDateRange
+
+    fun setSelectedDateRange(dateRange: DateRangeOption) {
+        _selectedDateRange.value = dateRange
+    }
+
+    private fun getMinDate(): String? {
+        val currentDate = LocalDate.now()
+        val minDate: String? = when (_selectedDateRange.value) {
+            DateRangeOption.DAY -> currentDate.minusDays(1).toString()
+            DateRangeOption.WEEK -> currentDate.minusWeeks(1).toString()
+            DateRangeOption.MONTH -> currentDate.minusMonths(1).toString()
+            DateRangeOption.YEAR -> currentDate.minusYears(1).toString()
+            DateRangeOption.ALL_TIME -> null
+        }
+        return minDate
     }
 
     // **User variables and methods**
@@ -268,7 +289,7 @@ class MediMobileViewModel: ViewModel() {
             try {
                 val response = getApi.getPatientEncounters(
                     userUuid = null,
-                    arrivalDateMin = null,
+                    arrivalDateMin = getMinDate(),
                     arrivalDateMax = null,
                     getAuthToken())
 
