@@ -24,7 +24,7 @@ import com.example.medimobile.ui.components.inputfields.DateTimeSelector
 import com.example.medimobile.ui.components.inputfields.QRScannerButton
 import com.example.medimobile.ui.components.inputfields.TriageRadioButtons
 import com.example.medimobile.ui.components.templates.DividedFormSections
-import com.example.medimobile.ui.components.templates.DropdownWithOtherField
+import com.example.medimobile.ui.components.dropdowns.DropdownWithOtherField
 import com.example.medimobile.ui.components.templates.FormSectionData
 import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
