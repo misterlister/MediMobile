@@ -15,7 +15,7 @@ import com.example.medimobile.data.remote.LocalDateDeserializer
 import com.example.medimobile.data.remote.LocalTimeDeserializer
 import com.example.medimobile.data.remote.LoginRequest
 import com.example.medimobile.data.remote.PatientEncounterDeserializer
-import com.example.medimobile.data.remote.PostEncountersApi
+import com.example.medimobile.data.remote.SubmitEncountersApi
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,12 +29,21 @@ import java.time.LocalTime
 
 class MediMobileViewModel: ViewModel() {
 
+    // Keeps track of loading state (blocks user interaction when true)
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+    private fun setLoading(loading: Boolean) {
+        _isLoading.value = loading
+    }
+
     // **User variables and methods**
 
 
     // States to hold the current user and user group
     private val _currentUser = MutableStateFlow<String?>(null)
     val currentUser: StateFlow<String?> = _currentUser
+    private var userUuid: String? = null
     private val _userGroup = MutableStateFlow<String?>(null)
     val userGroup: StateFlow<String?> = _userGroup
 
@@ -190,6 +199,7 @@ class MediMobileViewModel: ViewModel() {
                 val response = authApi.login(LoginRequest(email, password, userGroup))
                 if (response.isSuccessful) {
                     response.body()?.let { loginResponse ->
+                        Log.d("LoginDebug", "Login successful: $loginResponse")
                         authToken = loginResponse.accessToken
                         _loginResult.value = Result.success(loginResponse.accessToken)
                     } ?: run {
@@ -232,8 +242,28 @@ class MediMobileViewModel: ViewModel() {
         return _encounterList.value.find { it.visitId == visitId }
     }
 
+    private fun updateEncounterListEntry(updatedEncounter: PatientEncounter) {
+        // Check if the encounter already exists by encounterUuid
+        val existingEncounter = _encounterList.value.find { it.encounterUuid == updatedEncounter.encounterUuid }
+
+        if (existingEncounter != null) {
+            // Encounter exists, replace the old encounter with the updated one
+            _encounterList.value = _encounterList.value.map {
+                if (it.encounterUuid == updatedEncounter.encounterUuid) {
+                    updatedEncounter // Replace with the updated encounter
+                } else {
+                    it // Keep the other encounters unchanged
+                }
+            }
+        } else {
+            // Encounter doesn't exist, add the new encounter to the list
+            _encounterList.value += updatedEncounter
+        }
+    }
+
     // Load encounters from database
     fun loadEncountersFromDatabase() {
+        setLoading(true)
         viewModelScope.launch {
             try {
                 val response = getApi.getPatientEncounters(
@@ -245,7 +275,7 @@ class MediMobileViewModel: ViewModel() {
                 if (response.isSuccessful) {
                     response.body()?.let { encounters ->
 
-                        Log.d("DatabaseDebug", "Encounters fetched: ${encounters.toString()}")
+                        Log.d("DatabaseDebug", "Encounters fetched: $encounters")
 
                         _encounterList.value = encounters
                     } ?: run {
@@ -264,40 +294,16 @@ class MediMobileViewModel: ViewModel() {
             } catch (e: Exception) {
                 // Log unexpected errors
                 Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
+            } finally {
+                setLoading(false)
             }
         }
     }
 
-    fun loadSingleEncounterFromDatabase(userUuid: String) {
-        viewModelScope.launch {
-            try {
-                val response = getApi.getSinglePatientEncounter(
-                    userUuid = userUuid,
-                    getAuthToken())
-
-                if (response.isSuccessful) {
-                    response.body()?.let { encounter ->
-                        _currentEncounter.value = encounter
-                    }
-                } else {
-                    // Handle error response
-                    val errorBody = response.errorBody()?.string()
-                    Log.e("DatabaseDebug", "Error: $errorBody")
-                }
-            }
-            catch (e: IOException) {
-                Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
-            }
-            catch (e: Exception) {
-                // Log unexpected errors
-                Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
-            }
-        }
-    }
-
-    private val postApi = retrofit.create(PostEncountersApi::class.java)
+    private val postApi = retrofit.create(SubmitEncountersApi::class.java)
 
     private fun submitNewEncounter() {
+        setLoading(true)
         viewModelScope.launch {
             try {
                 val formData = mapToPatientEncounterFormData(_currentEncounter.value!!)
@@ -307,6 +313,9 @@ class MediMobileViewModel: ViewModel() {
                     // Handle successful response
                     response.body()?.let { createdEncounter ->
                         Log.d("DatabaseDebug", "Encounter created: $createdEncounter")
+                        // Update the encounter with the new encounterUuid
+                        _currentEncounter.value = createdEncounter
+                        updateEncounterListEntry(createdEncounter)
                     } ?: run {
                         Log.d("DatabaseDebug", "Encounter creation succeeded but response body is null.")
                     }
@@ -319,9 +328,45 @@ class MediMobileViewModel: ViewModel() {
                 Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
             } catch (e: Exception) {
                 Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
+            } finally {
+                setLoading(false)
             }
         }
     }
+
+    private fun updateExistingEncounter() {
+        setLoading(true)
+        viewModelScope.launch {
+            try {
+                val formData = mapToPatientEncounterFormData(_currentEncounter.value!!)
+                val response = postApi.updatePatientEncounter(formData, getAuthToken())
+
+                if (response.isSuccessful) {
+                    // Handle successful response
+                    response.body()?.let { createdEncounter ->
+                        Log.d("DatabaseDebug", "Encounter updated: $createdEncounter")
+                        // Update the encounter with the new encounterUuid
+                        _currentEncounter.value = createdEncounter
+                        updateEncounterListEntry(createdEncounter)
+                    } ?: run {
+                        Log.d("DatabaseDebug", "Encounter update succeeded but response body is null.")
+                    }
+                } else {
+                    // Handle error response
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("DatabaseDebug", "Error updating encounter: $errorBody")
+                }
+            } catch (e: IOException) {
+                Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
+            } catch (e: Exception) {
+                Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
+            } finally {
+                setLoading(false)
+            }
+        }
+    }
+
+
 
     // Save encounter to database
     fun saveEncounterToDatabase() {
@@ -329,12 +374,12 @@ class MediMobileViewModel: ViewModel() {
             return
         }
 
-        if (_currentEncounter.value!!.dbKey.isEmpty()) {
+        if (_currentEncounter.value!!.encounterUuid == null) {
             // Create a new encounter in Database
             submitNewEncounter()
-            // Update the encounter with the new dbKey
         } else {
             // Update an existing encounter in Database
+            updateExistingEncounter()
         }
     }
 }
