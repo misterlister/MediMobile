@@ -1,5 +1,7 @@
 package com.example.medimobile.data.model
 
+import com.example.medimobile.data.utils.convertToUTCDateString
+import com.example.medimobile.data.utils.convertToUTCDateTimeString
 import com.example.medimobile.data.utils.convertToUTCString
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
@@ -20,13 +22,13 @@ data class PatientEncounter (
     @SerializedName("visit_id") val visitId: String = "",
     @SerializedName("triage_acuity") val triageAcuity: String = "",
     @SerializedName("discharge_diagnosis") val dischargeDiagnosis: String = "",
-    @SerializedName("patient_encounter_uuid") val dbKey: String = "",
+    @SerializedName("patient_encounter_uuid") val encounterUuid: String? = null,
+    @SerializedName("user_uuid") val userUuid: String? = null,
     val triageStatus: StageStatus = StageStatus.NOT_STARTED,
     val informationCollectionStatus: StageStatus = StageStatus.NOT_STARTED,
     val dischargeStatus: StageStatus = StageStatus.NOT_STARTED,
     val complete: Boolean = false,
-    @SerializedName("user_uuid") val userUuid: String = "",
-    @SerializedName("user_email") val userEmail: String = ""
+
 )
 
 enum class StageStatus {
@@ -50,21 +52,23 @@ data class PatientEncounterFormData(
     val role: String,
     @SerializedName("triage_acuity") val triageAcuity: String,
     @SerializedName("discharge_diagnosis") val dischargeDiagnosis: String,
-    @SerializedName("user_uuid") val userUuid: String? = null,
-    @SerializedName("user_email") val userEmail: String
+    @SerializedName("patient_encounter_uuid") val encounterUuid: String? = null,
 )
 
 fun mapToPatientEncounterFormData(encounter: PatientEncounter): PatientEncounterFormData {
-    val arrivalUTC = convertToUTCString(encounter.arrivalDate, encounter.arrivalTime)
-    val departureUTC = convertToUTCString(encounter.departureDate, encounter.departureTime)
+    val arrivalDateUTC = convertToUTCDateString(encounter.arrivalDate)
+    val arrivalTimeUTC = convertToUTCDateTimeString(encounter.arrivalDate, encounter.arrivalTime)
+
+    val departureDateUTC = convertToUTCDateString(encounter.departureDate)
+    val departureTimeUTC = convertToUTCDateTimeString(encounter.departureDate, encounter.departureTime)
 
     return PatientEncounterFormData(
         age = encounter.age,
         arrivalMethod = encounter.arrivalMethod,
-        arrivalDate = arrivalUTC,
-        arrivalTime = arrivalUTC,
-        departureDate = departureUTC,
-        departureTime = departureUTC,
+        arrivalDate = arrivalDateUTC,
+        arrivalTime = arrivalTimeUTC,
+        departureDate = departureDateUTC,
+        departureTime = departureTimeUTC,
         chiefComplaint = encounter.chiefComplaint,
         comment = encounter.comment,
         departureDest = encounter.departureDest,
@@ -73,6 +77,6 @@ fun mapToPatientEncounterFormData(encounter: PatientEncounter): PatientEncounter
         visitId = encounter.visitId,
         triageAcuity = encounter.triageAcuity,
         dischargeDiagnosis = encounter.dischargeDiagnosis,
-        userEmail = encounter.userEmail
+        encounterUuid = encounter.encounterUuid,
     )
 }
