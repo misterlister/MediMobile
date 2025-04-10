@@ -1,9 +1,5 @@
 package com.example.medimobile.data.utils
 
-fun String.toRegularCase(): String {
-    return this.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }
-}
-
 // Convert enum to display value
 fun DateRangeOption.toDisplayValue(): String {
     return when (this) {
