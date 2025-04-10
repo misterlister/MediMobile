@@ -2,7 +2,6 @@ package com.example.medimobile.data.model
 
 import com.example.medimobile.data.utils.convertToUTCDateString
 import com.example.medimobile.data.utils.convertToUTCDateTimeString
-import com.example.medimobile.data.utils.convertToUTCString
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 import java.time.LocalTime
