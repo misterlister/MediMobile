@@ -7,6 +7,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Query
 
 // Retrofit API Interface
@@ -16,6 +17,7 @@ interface AuthApi {
 }
 
 interface GetEncountersApi {
+    // Get list of patient encounters
     @GET("api/medical/forms")
     suspend fun getPatientEncounters(
         @Query("user_uuid") userUuid: String? = null,
@@ -23,17 +25,19 @@ interface GetEncountersApi {
         @Query("arrival_date_max") arrivalDateMax: String? = null,
         @Header("Authorization") token: String
     ): Response<List<PatientEncounter>>
-
-    @GET("api/medical/form")
-    suspend fun getSinglePatientEncounter(
-        @Query("user_uuid") userUuid: String,
-        @Header("Authorization") token: String
-    ): Response<PatientEncounter>
 }
 
-interface PostEncountersApi {
+interface SubmitEncountersApi {
+    // Submit a new patient encounter
     @POST("api/medical/form")
     suspend fun postPatientEncounter(
+        @Body patientEncounter: PatientEncounterFormData,
+        @Header("Authorization") token: String
+    ): Response<PatientEncounter>
+
+    // Update a patient encounter
+    @PUT("api/medical/form")
+    suspend fun updatePatientEncounter(
         @Body patientEncounter: PatientEncounterFormData,
         @Header("Authorization") token: String
     ): Response<PatientEncounter>
