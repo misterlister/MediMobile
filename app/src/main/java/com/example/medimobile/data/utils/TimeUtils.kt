@@ -24,15 +24,6 @@ fun formatArrivalDateTime(encounter: PatientEncounter): String {
     return "$datePart - $timePart"
 }
 
-// Convert local date and time to UTC string
-fun convertToUTCString(date: LocalDate?, time: LocalTime?): String {
-    if (date == null || time == null) return "" // Handle missing values if needed
-    val zoneId = ZoneId.systemDefault() // Adjust if needed
-    val dateTime = LocalDateTime.of(date, time)
-    val instant = dateTime.atZone(zoneId).toInstant()
-    return DateTimeFormatter.ISO_INSTANT.format(instant) // Format as "2025-04-01T23:00:08.273Z"
-}
-
 fun convertToUTCDateString(date: LocalDate?): String? {
     return date?.atStartOfDay(ZoneId.systemDefault())
         ?.withZoneSameInstant(ZoneOffset.UTC)
