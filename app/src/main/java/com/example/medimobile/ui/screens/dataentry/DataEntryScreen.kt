@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.data.model.PatientEncounter
+import com.example.medimobile.data.model.getStatusColour
 import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
@@ -61,6 +62,11 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
     // Navigation tabs
     val tabs = listOf("Triage", "Information Collection", "Discharge")
     val selectedTabIndex = remember { mutableIntStateOf(0) }
+
+    // Tab Colours based on stage status
+    val triageStatusColour = getStatusColour(currentEncounter?.triageStatus)
+    val informationCollectionStatusColour = getStatusColour(currentEncounter?.informationCollectionStatus)
+    val dischargeStatusColour = getStatusColour(currentEncounter?.dischargeStatus)
 
     Box(
         modifier = Modifier
@@ -111,10 +117,17 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     tabs.forEachIndexed { index, title ->
+                        val tabColour = when (index) {
+                            0 -> triageStatusColour
+                            1 -> informationCollectionStatusColour
+                            2 -> dischargeStatusColour
+                            else -> Color.LightGray
+                        }
                         Tab(
                             selected = selectedTabIndex.intValue == index,
                             onClick = { selectedTabIndex.intValue = index },
-                            text = { Text(text = title) }
+                            text = { Text(text = title) },
+                            modifier = Modifier.background(tabColour)
                         )
                     }
                 }
