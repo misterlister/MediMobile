@@ -59,6 +59,11 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
     // State for the save pop-up
     var showSavePopup by remember { mutableStateOf(false) }
 
+    // State for error pop-up
+    var showErrorPopup by remember { mutableStateOf(false) }
+
+    var errorText by remember { mutableStateOf("") }
+
     // Navigation tabs
     val tabs = listOf("Triage", "Information Collection", "Discharge")
     val selectedTabIndex = remember { mutableIntStateOf(0) }
@@ -184,7 +189,17 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
 
                 // Save Button
                 Button(
-                    onClick = { showSavePopup = true },
+                    onClick = {
+                        if (currentEncounter == null) {
+                            showErrorPopup = true
+                            errorText = "Encounter not found"
+                        } else if (currentEncounter.visitId == "") {
+                            showErrorPopup = true
+                            errorText = "Visit ID field must be filled"
+                        } else {
+                            showSavePopup = true
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Green,
                         contentColor = Color.White
@@ -239,6 +254,25 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                     Text("No")
                 }
             }
+        )
+    }
+
+    // **Error Popup**
+    if (showErrorPopup) {
+        AlertDialog(
+            onDismissRequest = { showErrorPopup = false },
+            title = { Text(text = "Error") },
+            text = { Text(errorText) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        // Dismiss the dialog
+                        showErrorPopup = false
+                    }
+                ) {
+                    Text("Ok")
+                }
+            },
         )
     }
 
