@@ -63,6 +63,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     dropdownLabel = "Chief Complaint",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setChiefComplaint(newDisplayValue)
+                        viewModel.updateInformationCollectionStatus()
                         focusManager.clearFocus()
                     }
                 )
