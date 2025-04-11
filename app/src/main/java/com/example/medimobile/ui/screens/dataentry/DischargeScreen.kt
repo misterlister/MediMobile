@@ -40,10 +40,12 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                     encounter.departureTime,
                     onDateChange = {
                         viewModel.setDepartureDate(it)
+                        viewModel.updateDischargeStatus()
                         focusManager.clearFocus()
                     },
                     onTimeChange = {
                         viewModel.setDepartureTime(it)
+                        viewModel.updateDischargeStatus()
                         focusManager.clearFocus()
                     }
                 )
@@ -55,6 +57,7 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                     dropdownLabel = "Departure Destination",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setDepartureDest(newDisplayValue)
+                        viewModel.updateDischargeStatus()
                         focusManager.clearFocus()
                     }
                 )

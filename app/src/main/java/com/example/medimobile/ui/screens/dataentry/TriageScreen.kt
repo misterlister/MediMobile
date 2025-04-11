@@ -47,10 +47,12 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     encounter.arrivalTime,
                     onDateChange = {
                         viewModel.setArrivalDate(it)
+                        viewModel.updateTriageStatus()
                         focusManager.clearFocus()
                     },
                     onTimeChange = {
                         viewModel.setArrivalTime(it)
+                        viewModel.updateTriageStatus()
                         focusManager.clearFocus()
                     }
                 )
@@ -58,10 +60,13 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
             FormSectionData("Triage") {
                 TriageRadioButtons(
                     selectedOption = encounter.triageAcuity,
-                    onOptionSelected = { viewModel.setTriageAcuity(it) }
+                    onOptionSelected = {
+                        viewModel.setTriageAcuity(it)
+                        viewModel.updateTriageStatus()
+                    }
                 )
             },
-            FormSectionData("Visit ID") {
+            FormSectionData("Visit ID (Required)") {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -71,16 +76,19 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                 ) {
                     QRScannerButton(onResult = { scannedValue: String ->
                         viewModel.setVisitId(scannedValue)
+                        viewModel.updateTriageStatus()
                     },
                         modifier = Modifier.weight(0.5f)
                     )
 
                     TextField(
                         value = encounter.visitId,
-                        onValueChange = { viewModel.setVisitId(it) },
+                        onValueChange = {
+                            viewModel.setVisitId(it)
+                            viewModel.updateTriageStatus()},
                         placeholder = {
                             Text(
-                                "Scan or generate visit ID",
+                                "Scan/generate visit ID (Required)",
                                 style = placeholderTextStyle
                             )
                         },
@@ -112,6 +120,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     dropdownLabel = "Arrival Method",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setArrivalMethod(newDisplayValue)
+                        viewModel.updateTriageStatus()
                         focusManager.clearFocus()
                     }
                 )

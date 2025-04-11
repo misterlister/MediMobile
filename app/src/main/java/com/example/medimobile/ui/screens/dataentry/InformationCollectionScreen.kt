@@ -40,6 +40,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     age = encounter.age,
                     onAgeChange = { newAge ->
                         viewModel.setAge(newAge)
+                        viewModel.updateInformationCollectionStatus()
                     }
                 )
             },
@@ -50,6 +51,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     dropdownLabel = "Role",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setRole(newDisplayValue)
+                        viewModel.updateInformationCollectionStatus()
                         focusManager.clearFocus()
                     }
                 )

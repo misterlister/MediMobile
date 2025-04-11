@@ -7,6 +7,7 @@ import com.example.medimobile.data.eventdata.EventList
 import com.example.medimobile.data.model.DropdownItem
 import com.example.medimobile.data.model.MassGatheringEvent
 import com.example.medimobile.data.model.PatientEncounter
+import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.mapToPatientEncounterFormData
 import com.example.medimobile.data.remote.ApiConstants
 import com.example.medimobile.data.remote.GetEncountersApi
@@ -17,6 +18,7 @@ import com.example.medimobile.data.remote.LoginRequest
 import com.example.medimobile.data.remote.PatientEncounterDeserializer
 import com.example.medimobile.data.remote.SubmitEncountersApi
 import com.example.medimobile.data.utils.DateRangeOption
+import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -124,6 +126,7 @@ class MediMobileViewModel: ViewModel() {
     // Copy and open an existing encounter
     fun setCurrentEncounter(patientEncounter: PatientEncounter) {
         _currentEncounter.value = patientEncounter.copy()
+        updateAllStageStatuses() // Make sure all stage statuses are up to date
     }
 
     // Clear the current encounter
@@ -178,6 +181,98 @@ class MediMobileViewModel: ViewModel() {
         _currentEncounter.value = _currentEncounter.value?.copy(dischargeDiagnosis = dischargeDiagnosis)
     }
 
+    // Update the entry status of the Triage stage
+    fun updateTriageStatus() {
+        val encounter = currentEncounter.value
+        if (encounter != null) {
+            // List of fields to check
+            val fieldsToCheck = listOf(
+                encounter.arrivalDate,
+                encounter.arrivalTime,
+                encounter.triageAcuity,
+                encounter.visitId,
+                encounter.arrivalMethod
+            )
+
+            // Check if all fields are filled
+            val allFieldsFilled = fieldsToCheck.all { !isDataEmptyOrNull(it) }
+            // Check if at least one field is filled
+            val atLeastOneFieldFilled = fieldsToCheck.any { !isDataEmptyOrNull(it) }
+
+            // Update triage status based on field checks
+            val triageStatus = when {
+                allFieldsFilled -> StageStatus.COMPLETE
+                atLeastOneFieldFilled -> StageStatus.IN_PROGRESS
+                else -> StageStatus.NOT_STARTED
+            }
+
+            // Apply the new triage status
+            _currentEncounter.value = encounter.copy(triageStatus = triageStatus)
+        }
+    }
+
+    // Update the entry status of the Information Collection stage
+    fun updateInformationCollectionStatus() {
+        val encounter = currentEncounter.value
+        if (encounter != null) {
+            // List of fields to check for information collection
+            val fieldsToCheck = listOf(
+                encounter.age,
+                encounter.role,
+                encounter.chiefComplaint
+            )
+
+            // Check if all fields are filled
+            val allFieldsFilled = fieldsToCheck.all { !isDataEmptyOrNull(it) }
+            // Check if at least one field is filled
+            val atLeastOneFieldFilled = fieldsToCheck.any { !isDataEmptyOrNull(it) }
+
+            // Update information collection status based on field checks
+            val informationCollectionStatus = when {
+                allFieldsFilled -> StageStatus.COMPLETE
+                atLeastOneFieldFilled -> StageStatus.IN_PROGRESS
+                else -> StageStatus.NOT_STARTED
+            }
+
+            // Apply the new information collection status
+            _currentEncounter.value = encounter.copy(informationCollectionStatus = informationCollectionStatus)
+        }
+    }
+
+    // Update the entry status of the Discharge stage
+    fun updateDischargeStatus() {
+        val encounter = currentEncounter.value
+        if (encounter != null) {
+            // List of fields to check for discharge
+            val fieldsToCheck = listOf(
+                encounter.departureDate,
+                encounter.departureTime,
+                encounter.departureDest
+            )
+
+            // Check if all fields are filled
+            val allFieldsFilled = fieldsToCheck.all { !isDataEmptyOrNull(it) }
+            // Check if at least one field is filled
+            val atLeastOneFieldFilled = fieldsToCheck.any { !isDataEmptyOrNull(it) }
+
+            // Update discharge status based on field checks
+            val dischargeStatus = when {
+                allFieldsFilled -> StageStatus.COMPLETE
+                atLeastOneFieldFilled -> StageStatus.IN_PROGRESS
+                else -> StageStatus.NOT_STARTED
+            }
+
+            // Apply the new discharge status
+            _currentEncounter.value = encounter.copy(dischargeStatus = dischargeStatus)
+        }
+    }
+
+    // Update all stage statuses
+    private fun updateAllStageStatuses() {
+        updateTriageStatus()
+        updateInformationCollectionStatus()
+        updateDischargeStatus()
+    }
 
     // **API functions**
 
