@@ -66,7 +66,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     }
                 )
             },
-            FormSectionData("Visit ID (Required)") {
+            FormSectionData("Visit ID") {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
