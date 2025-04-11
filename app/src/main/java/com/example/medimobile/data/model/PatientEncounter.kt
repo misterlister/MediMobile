@@ -1,5 +1,6 @@
 package com.example.medimobile.data.model
 
+import androidx.compose.ui.graphics.Color
 import com.example.medimobile.data.utils.convertToUTCDateString
 import com.example.medimobile.data.utils.convertToUTCDateTimeString
 import com.google.gson.annotations.SerializedName
@@ -27,13 +28,21 @@ data class PatientEncounter (
     val informationCollectionStatus: StageStatus = StageStatus.NOT_STARTED,
     val dischargeStatus: StageStatus = StageStatus.NOT_STARTED,
     val complete: Boolean = false,
-
 )
 
 enum class StageStatus {
     NOT_STARTED,
     IN_PROGRESS,
     COMPLETE
+}
+
+fun getStatusColour(stageStatus: StageStatus?): Color {
+    return when (stageStatus) {
+        StageStatus.COMPLETE -> Color.Green
+        StageStatus.IN_PROGRESS -> Color.Yellow
+        StageStatus.NOT_STARTED -> Color.LightGray
+        else -> Color.LightGray  // Default color if status is unknown
+    }
 }
 
 data class PatientEncounterFormData(
