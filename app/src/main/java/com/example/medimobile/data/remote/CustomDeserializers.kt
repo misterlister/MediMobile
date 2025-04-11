@@ -3,6 +3,7 @@ package com.example.medimobile.data.remote
 import com.example.medimobile.data.model.DropdownItem
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.utils.DropdownConstants
+import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -22,7 +23,12 @@ class PatientEncounterDeserializer(
 
         // Get equivalent display value from the dbvalue
         fun getMappedValue(field: String): String {
+
             val dbValue = jsonObject.get(field)?.asString ?: ""
+
+            if (isDataEmptyOrNull(dbValue)) {
+                return "" // Return empty string if the value is null or empty
+            }
 
             // Check if the dbValue starts with the OTHER_PREFIX, if so return it as is
             if (dbValue.startsWith(DropdownConstants.OTHER_PREFIX, ignoreCase = true)) {
