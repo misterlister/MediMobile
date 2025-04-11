@@ -20,6 +20,9 @@ fun formatArrivalDateTime(encounter: PatientEncounter): String {
     // Handle null values for date and time with "Not Set"
     val datePart = encounter.arrivalDate?.format(dateFormatter) ?: NOT_SET
     val timePart = encounter.arrivalTime?.format(timeFormatter) ?: NOT_SET
+    if (datePart == NOT_SET && timePart == NOT_SET) {
+        return NOT_SET
+    }
 
     return "$datePart - $timePart"
 }
