@@ -85,7 +85,10 @@ fun EncounterTable(
     val sortedRecords = remember(sortColumn, isDescending, records) {
         when (sortColumn) {
             SortColumn.VisitId -> records.sortedWith(compareBy { it.visitId })
-            SortColumn.Date -> records.sortedWith(compareBy { it.arrivalDate })
+            SortColumn.Date -> records.sortedWith(
+                compareBy<PatientEncounter> { it.arrivalDate }
+                    .thenBy { it.arrivalTime }
+            )
             SortColumn.Status -> records.sortedWith(compareBy { it.complete })
         }.let {
             if (isDescending) it.reversed() else it
@@ -118,7 +121,7 @@ fun EncounterTable(
                     isDescending = isDescending
                 )
                 TableHeaderCell(
-                    "Date (D/M/Y)",
+                    "Date (D/M/Y-H:M)",
                     modifier = Modifier.weight(DATE_WEIGHT),
                     onClick = {
                         sortColumn = SortColumn.Date
