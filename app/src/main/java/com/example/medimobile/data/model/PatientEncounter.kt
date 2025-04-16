@@ -61,6 +61,7 @@ data class PatientEncounterFormData(
     @SerializedName("triage_acuity") val triageAcuity: String,
     @SerializedName("discharge_diagnosis") val dischargeDiagnosis: String,
     @SerializedName("patient_encounter_uuid") val encounterUuid: String? = null,
+    val complete: Boolean
 )
 
 fun mapToPatientEncounterFormData(encounter: PatientEncounter): PatientEncounterFormData {
@@ -86,5 +87,6 @@ fun mapToPatientEncounterFormData(encounter: PatientEncounter): PatientEncounter
         triageAcuity = encounter.triageAcuity,
         dischargeDiagnosis = encounter.dischargeDiagnosis,
         encounterUuid = encounter.encounterUuid,
+        complete = encounter.complete
     )
 }

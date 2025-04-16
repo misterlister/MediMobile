@@ -61,6 +61,7 @@ class PatientEncounterDeserializer(
             dischargeDiagnosis = jsonObject.get("discharge_diagnosis")?.asString ?: "",
             encounterUuid = jsonObject.get("patient_encounter_uuid")?.asString ?: "",
             userUuid = jsonObject.get("user_uuid")?.asString ?: "",
+            complete = jsonObject.get("complete")?.asBoolean ?: false
         )
     }
 }
