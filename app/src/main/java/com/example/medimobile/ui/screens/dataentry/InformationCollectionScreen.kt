@@ -40,6 +40,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     age = encounter.age,
                     onAgeChange = { newAge ->
                         viewModel.setAge(newAge)
+                        viewModel.markDataChanged()
                         viewModel.updateInformationCollectionStatus()
                     }
                 )
@@ -51,6 +52,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     dropdownLabel = "Role",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setRole(newDisplayValue)
+                        viewModel.markDataChanged()
                         viewModel.updateInformationCollectionStatus()
                         focusManager.clearFocus()
                     }
@@ -63,6 +65,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     dropdownLabel = "Chief Complaint",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setChiefComplaint(newDisplayValue)
+                        viewModel.markDataChanged()
                         viewModel.updateInformationCollectionStatus()
                         focusManager.clearFocus()
                     }
@@ -71,7 +74,10 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
             FormSectionData("Comments") {
                 TextField(
                     value = encounter.comment, // Bind to ViewModel
-                    onValueChange = { viewModel.setComment(it) }, // Update ViewModel
+                    onValueChange = {
+                        viewModel.setComment(it)
+                        viewModel.markDataChanged()
+                    },
                     placeholder = {
                         Text(
                             text = "Enter comments (optional)",

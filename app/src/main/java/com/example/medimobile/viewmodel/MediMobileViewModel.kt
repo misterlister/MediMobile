@@ -127,13 +127,26 @@ class MediMobileViewModel: ViewModel() {
     fun setCurrentEncounter(patientEncounter: PatientEncounter) {
         _currentEncounter.value = patientEncounter.copy()
         updateAllStageStatuses() // Make sure all stage statuses are up to date
+        resetDataChanged() // Reset data changed flag
     }
 
     // Clear the current encounter
     fun clearCurrentEncounter() {
         _currentEncounter.value = null
+        resetDataChanged() // Reset data changed flag
     }
 
+    // Keeps track of whether data in the current encounter has been edited
+    private val _dataChanged = MutableStateFlow(false)
+    val dataChanged: StateFlow<Boolean> = _dataChanged
+
+    fun markDataChanged() {
+        _dataChanged.value = true
+    }
+
+    private fun resetDataChanged() {
+        _dataChanged.value = false
+    }
 
     // **Individual setter functions for each field**
 

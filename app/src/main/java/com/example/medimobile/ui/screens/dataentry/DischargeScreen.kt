@@ -40,11 +40,13 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                     encounter.departureTime,
                     onDateChange = {
                         viewModel.setDepartureDate(it)
+                        viewModel.markDataChanged()
                         viewModel.updateDischargeStatus()
                         focusManager.clearFocus()
                     },
                     onTimeChange = {
                         viewModel.setDepartureTime(it)
+                        viewModel.markDataChanged()
                         viewModel.updateDischargeStatus()
                         focusManager.clearFocus()
                     }
@@ -57,6 +59,7 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                     dropdownLabel = "Departure Destination",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setDepartureDest(newDisplayValue)
+                        viewModel.markDataChanged()
                         viewModel.updateDischargeStatus()
                         focusManager.clearFocus()
                     }
@@ -65,7 +68,10 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
             FormSectionData("Discharge Diagnosis") {
                 TextField(
                     value = encounter.dischargeDiagnosis, // Bind to ViewModel
-                    onValueChange = { viewModel.setDischargeDiagnosis(it) }, // Update ViewModel
+                    onValueChange = {
+                        viewModel.setDischargeDiagnosis(it)
+                        viewModel.markDataChanged()
+                    },
                     placeholder = {
                         Text(
                             text = "Enter Discharge Diagnosis (optional)",

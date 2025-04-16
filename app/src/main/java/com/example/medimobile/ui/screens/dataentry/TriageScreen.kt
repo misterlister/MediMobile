@@ -47,11 +47,13 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     encounter.arrivalTime,
                     onDateChange = {
                         viewModel.setArrivalDate(it)
+                        viewModel.markDataChanged()
                         viewModel.updateTriageStatus()
                         focusManager.clearFocus()
                     },
                     onTimeChange = {
                         viewModel.setArrivalTime(it)
+                        viewModel.markDataChanged()
                         viewModel.updateTriageStatus()
                         focusManager.clearFocus()
                     }
@@ -62,6 +64,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     selectedOption = encounter.triageAcuity,
                     onOptionSelected = {
                         viewModel.setTriageAcuity(it)
+                        viewModel.markDataChanged()
                         viewModel.updateTriageStatus()
                     }
                 )
@@ -76,6 +79,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                 ) {
                     QRScannerButton(onResult = { scannedValue: String ->
                         viewModel.setVisitId(scannedValue)
+                        viewModel.markDataChanged()
                         viewModel.updateTriageStatus()
                     },
                         modifier = Modifier.weight(0.5f)
@@ -85,6 +89,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                         value = encounter.visitId,
                         onValueChange = {
                             viewModel.setVisitId(it)
+                            viewModel.markDataChanged()
                             viewModel.updateTriageStatus()},
                         placeholder = {
                             Text(
@@ -120,6 +125,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     dropdownLabel = "Arrival Method",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setArrivalMethod(newDisplayValue)
+                        viewModel.markDataChanged()
                         viewModel.updateTriageStatus()
                         focusManager.clearFocus()
                     }

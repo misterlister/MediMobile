@@ -178,7 +178,15 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
 
                 // Cancel Button
                 Button(
-                    onClick = { showCancelPopup = true },
+                    onClick = {
+                        if (!viewModel.dataChanged.value) {
+                            // If nothing is changed, just go back
+                            navController.popBackStack()
+                        } else {
+                            // Otherwise show the cancel popup
+                            showCancelPopup = true
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Red,
                         contentColor = Color.White
