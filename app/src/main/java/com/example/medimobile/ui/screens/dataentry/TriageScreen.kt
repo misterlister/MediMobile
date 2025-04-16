@@ -105,10 +105,10 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     )
 
                     Button(onClick = { /*TODO*/ },
-                        modifier = Modifier.weight(0.6f)
+                        modifier = Modifier.weight(0.5f)
                     ) {
                         Text(
-                            text = "Generate ID",
+                            text = "Gen. Visit ID",
                             textAlign = TextAlign.Center)
                     }
                 }

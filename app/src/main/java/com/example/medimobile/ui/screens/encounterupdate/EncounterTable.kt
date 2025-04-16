@@ -65,7 +65,7 @@ fun TableHeaderCell(text: String, modifier: Modifier = Modifier, onClick: () -> 
 fun TableCell(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
-        modifier = modifier.padding(horizontal = 8.dp),
+        modifier = modifier.padding(horizontal = 4.dp),
         textAlign = TextAlign.Center
     )
 }
@@ -121,7 +121,7 @@ fun EncounterTable(
                     isDescending = isDescending
                 )
                 TableHeaderCell(
-                    "Date (D/M/Y-H:M)",
+                    "Date (D/M/Y - H:M)",
                     modifier = Modifier.weight(DATE_WEIGHT),
                     onClick = {
                         sortColumn = SortColumn.Date
@@ -166,6 +166,6 @@ enum class SortColumn {
     VisitId, Date, Status
 }
 
-const val VISIT_ID_WEIGHT = 1f
+const val VISIT_ID_WEIGHT = 1.1f
 const val DATE_WEIGHT = 1f
 const val STATUS_WEIGHT = 0.5f
