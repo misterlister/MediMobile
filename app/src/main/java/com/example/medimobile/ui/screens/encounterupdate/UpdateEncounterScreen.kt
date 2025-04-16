@@ -59,6 +59,8 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
     val encounterList by viewModel.encounterList.collectAsState()
     val isLoading = viewModel.isLoading.collectAsState().value
 
+    val username = viewModel.currentUser.collectAsState().value
+
     // State used to trigger the alert pop-up
     val showNotFoundDialog = remember { mutableStateOf(false) }
 
@@ -114,7 +116,10 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
-                Text(text = "User Name", style = userNameTextStyle)
+                Text(
+                    text = username ?: "User",
+                    style = userNameTextStyle
+                )
             }
 
             // **Main Content Section**
