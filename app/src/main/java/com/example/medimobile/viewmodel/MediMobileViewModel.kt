@@ -10,8 +10,8 @@ import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.mapToPatientEncounterFormData
 import com.example.medimobile.data.remote.ApiConstants
-import com.example.medimobile.data.remote.GetEncountersApi
 import com.example.medimobile.data.remote.AuthApi
+import com.example.medimobile.data.remote.GetEncountersApi
 import com.example.medimobile.data.remote.LocalDateDeserializer
 import com.example.medimobile.data.remote.LocalTimeDeserializer
 import com.example.medimobile.data.remote.LoginRequest
@@ -488,6 +488,16 @@ class MediMobileViewModel: ViewModel() {
     fun saveEncounterToDatabase() {
         if (_currentEncounter.value == null) {
             return
+        }
+
+        if(_currentEncounter.value!!.triageStatus == StageStatus.COMPLETE &&
+            _currentEncounter.value!!.dischargeStatus == StageStatus.COMPLETE &&
+            _currentEncounter.value!!.informationCollectionStatus == StageStatus.COMPLETE) {
+            // If all stages are complete, set the encounter as complete
+            _currentEncounter.value = currentEncounter.value!!.copy(complete = true)
+        } else {
+            // If any stage is not complete, set the encounter as incomplete
+            _currentEncounter.value = currentEncounter.value!!.copy(complete = false)
         }
 
         if (_currentEncounter.value!!.encounterUuid == null) {
