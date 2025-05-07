@@ -185,19 +185,13 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        OutlinedButton(
-                            onClick = { showDateDialog = true },
-                            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                                containerColor = MediBlue,
-                                contentColor = TextOnBlue
-                            )
-                        ) {
+                        MediButton(onClick = { showDateDialog = true } ) {
                             Text(text = dateFilter.value?.format(dateFormatter) ?: "Filter by Date")
                         }
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        MediButton(onClick = { dateFilter.value = null }) {
+                        MediButton(onClick = { dateFilter.value = null } ) {
                             Text(text = "X")
                         }
                     }
