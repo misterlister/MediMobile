@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -27,6 +29,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.data.model.PatientEncounter
+import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.getStatusColour
 import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.components.templates.MediButton
@@ -91,6 +94,9 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
         },
         content = {
             Column(modifier = Modifier.fillMaxSize()) {
+
+                // Control Tabs to select between data entry stages
+
                 TabRow(selectedTabIndex = selectedTabIndex.intValue) {
                     tabs.forEachIndexed { index, title ->
                         val tabColour = when (index) {
@@ -100,28 +106,50 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                             else -> MediGrey
                         }
 
+                        val stageStatus = when (index) {
+                            0 -> currentEncounter?.triageStatus
+                            1 -> currentEncounter?.informationCollectionStatus
+                            2 -> currentEncounter?.dischargeStatus
+                            else -> StageStatus.NOT_STARTED
+                        }
+
                         Tab(
                             selected = selectedTabIndex.intValue == index,
                             onClick = { selectedTabIndex.intValue = index },
+                            modifier = Modifier.background(tabColour),
                             text = {
-                                Text(
-                                    text = title,
-                                    color = Color.Black,
-                                    fontWeight = if (selectedTabIndex.intValue == index) {
-                                        FontWeight.ExtraBold
-                                    } else {
-                                        FontWeight.Bold
-                                    },
-                                    textDecoration = if (selectedTabIndex.intValue == index) {
-                                        TextDecoration.Underline
-                                    } else {
-                                        TextDecoration.None
-                                    }
-                            ) },
-                            modifier = Modifier.background(tabColour)
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(14.dp),
+                                        color = Color.Black,
+                                        trackColor = tabColour,
+                                        strokeWidth = 3.dp,
+                                        progress = {
+                                            when (stageStatus) {
+                                                StageStatus.NOT_STARTED -> 0f
+                                                StageStatus.IN_PROGRESS -> 0.5f
+                                                StageStatus.COMPLETE -> 1f
+                                                else -> 0f
+                                            }
+                                        }
+                                    )
+
+                                    Text(
+                                        text = title,
+                                        color = Color.Black,
+                                        fontWeight = if (selectedTabIndex.intValue == index) FontWeight.ExtraBold else FontWeight.Bold,
+                                        textDecoration = if (selectedTabIndex.intValue == index) TextDecoration.Underline else TextDecoration.None
+                                    )
+                                }
+                            }
                         )
                     }
                 }
+
+                // Entry stage content, based on currently selected tab
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     when (selectedTabIndex.intValue) {
@@ -146,7 +174,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                             selectedTabIndex.intValue -= 1 // Go back one page
                         }
                     },
-                    enabled = selectedTabIndex.intValue > 0,  // Disable when index is 0
+                    enabled = selectedTabIndex.intValue > 0,  // Disable when on first tab
                     modifier = Modifier.padding(start = 16.dp)  // Ensure it is 16.dp from the edge
                 ) {
                     Text(text = "Prev")
@@ -174,7 +202,8 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         if (currentEncounter == null) {
                             showErrorPopup = true
                             errorText = "Encounter not found"
-                        } else if (currentEncounter.arrivalDate == null || currentEncounter.arrivalTime == null) {
+                        } else if (currentEncounter.arrivalDate == null
+                            || currentEncounter.arrivalTime == null) {
                             showErrorPopup = true
                             errorText = "Arrival Date and Time fields must be filled"
                         } else if (currentEncounter.visitId == "") {
@@ -196,7 +225,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                             selectedTabIndex.intValue += 1 // Increment tab index
                         }
                     },
-                    enabled = selectedTabIndex.intValue < tabs.size - 1,  // Disable when index is at max
+                    enabled = selectedTabIndex.intValue < tabs.size - 1, // Disable when on last tab
                     modifier = Modifier.padding(end = 16.dp)  // Ensure it is 16.dp from the edge
                 ) {
                     Text(text = "Next")
