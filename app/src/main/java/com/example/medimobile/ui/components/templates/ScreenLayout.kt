@@ -16,23 +16,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import com.example.medimobile.ui.theme.bannerColor
+
 
 @Composable
 fun ScreenLayout(
-    topBar: @Composable () -> Unit,
+    topBar: @Composable (() -> Unit)? = null,
     content: @Composable () -> Unit,
-    bottomBar: @Composable () -> Unit,
+    bottomBar: @Composable (() -> Unit)? = null,
     focusManager: FocusManager = LocalFocusManager.current,
     ) {
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Cyan)
             .navigationBarsPadding()
             .statusBarsPadding()
             .pointerInput(Unit) {
@@ -48,17 +48,19 @@ fun ScreenLayout(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            // **Top Bar Section**
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.LightGray)
-                    .padding(top = 16.dp, bottom = 16.dp, start = 8.dp, end = 8.dp)
-                    .wrapContentHeight(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                topBar()
+            // **Top Bar Section (Optional)**
+            if (topBar != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(bannerColor())
+                        .padding(top = 16.dp, bottom = 16.dp, start = 8.dp, end = 8.dp)
+                        .wrapContentHeight(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    topBar()
+                }
             }
 
             // **Main Content Section**
@@ -71,17 +73,19 @@ fun ScreenLayout(
                 content()
             }
 
-            // **Bottom Button Bar Section**
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.LightGray)
-                    .padding(top = 16.dp, bottom = 16.dp, start = 8.dp, end = 8.dp)
-                    .wrapContentHeight(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                bottomBar()
+            // **Bottom Button Bar Section (Optional)**
+            if (bottomBar != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(bannerColor())
+                        .padding(top = 16.dp, bottom = 16.dp, start = 8.dp, end = 8.dp)
+                        .wrapContentHeight(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    bottomBar()
+                }
             }
         }
     }
