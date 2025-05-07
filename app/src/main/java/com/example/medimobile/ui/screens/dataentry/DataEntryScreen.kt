@@ -1,20 +1,14 @@
 package com.example.medimobile.ui.screens.dataentry
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -28,21 +22,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.model.getStatusColour
 import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.components.templates.MediButton
-import com.example.medimobile.ui.theme.bannerColor
+import com.example.medimobile.ui.components.templates.ScreenLayout
+import com.example.medimobile.ui.theme.ButtonStatus
+import com.example.medimobile.ui.theme.MediGrey
 import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
 fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel) {
-    val focusManager = LocalFocusManager.current
     val currentEncounter = viewModel.currentEncounter.collectAsState().value
     val username = viewModel.currentUser.collectAsState().value
     val encounter = viewModel.currentEncounter.collectAsState().value
@@ -75,92 +70,72 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
     val informationCollectionStatusColour = getStatusColour(currentEncounter?.informationCollectionStatus)
     val dischargeStatusColour = getStatusColour(currentEncounter?.dischargeStatus)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = {
-                        // Clears focus when tapping outside of fields
-                        focusManager.clearFocus()
-                    }
+    ScreenLayout(
+        topBar = {
+            // Username and DocID
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = username ?: "User",
+                    style = userNameTextStyle
+                )
+                Text(
+                    text = encounter?.visitId ?: "Visit ID not set",
+                    style = userNameTextStyle
                 )
             }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-        ) {
-            // **Username, DocID, and Tabs Section**
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ) {
-                // Username and DocID
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 16.dp, start = 8.dp, end = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = username ?: "User",
-                        style = userNameTextStyle
-                    )
-                    Text(
-                        text = encounter?.visitId ?: "Visit ID not set",
-                        style = userNameTextStyle
-                    )
-                }
-
-                // Tab selection
-                TabRow(
-                    selectedTabIndex = selectedTabIndex.intValue,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+        },
+        content = {
+            Column(modifier = Modifier.fillMaxSize()) {
+                TabRow(selectedTabIndex = selectedTabIndex.intValue) {
                     tabs.forEachIndexed { index, title ->
                         val tabColour = when (index) {
                             0 -> triageStatusColour
                             1 -> informationCollectionStatusColour
                             2 -> dischargeStatusColour
-                            else -> Color.LightGray
+                            else -> MediGrey
                         }
+
                         Tab(
                             selected = selectedTabIndex.intValue == index,
                             onClick = { selectedTabIndex.intValue = index },
-                            text = { Text(text = title) },
+                            text = {
+                                Text(
+                                    text = title,
+                                    color = Color.Black,
+                                    fontWeight = if (selectedTabIndex.intValue == index) {
+                                        FontWeight.ExtraBold
+                                    } else {
+                                        FontWeight.Bold
+                                    },
+                                    textDecoration = if (selectedTabIndex.intValue == index) {
+                                        TextDecoration.Underline
+                                    } else {
+                                        TextDecoration.None
+                                    }
+                            ) },
                             modifier = Modifier.background(tabColour)
                         )
                     }
                 }
-            }
 
-            // **Main Content Section**
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                contentAlignment = Alignment.Center
-            ) {
-                when (selectedTabIndex.intValue) {
-                    0 -> TriageScreen(viewModel)
-                    1 -> InformationCollectionScreen(viewModel)
-                    2 -> DischargeScreen(viewModel)
+                Box(modifier = Modifier.fillMaxSize()) {
+                    when (selectedTabIndex.intValue) {
+                        0 -> TriageScreen(viewModel)
+                        1 -> InformationCollectionScreen(viewModel)
+                        2 -> DischargeScreen(viewModel)
+                    }
                 }
             }
-
+        },
+        bottomBar = {
             // **Button Section**
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(bannerColor())
-                    .padding(12.dp)
-                    .navigationBarsPadding()
-                    .wrapContentHeight(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -178,7 +153,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 }
 
                 // Cancel Button
-                Button(
+                MediButton(
                     onClick = {
                         if (!viewModel.dataChanged.value) {
                             // If nothing is changed, just go back
@@ -188,16 +163,13 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                             showCancelPopup = true
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red,
-                        contentColor = Color.White
-                    )
+                    status = ButtonStatus.WARNING
                 ) {
                     Text(text = "Cancel")
                 }
 
                 // Save Button
-                Button(
+                MediButton(
                     onClick = {
                         if (currentEncounter == null) {
                             showErrorPopup = true
@@ -212,10 +184,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                             showSavePopup = true
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Green,
-                        contentColor = Color.White
-                    )
+                    status = ButtonStatus.CONFIRM,
                 ) {
                     Text(text = "Save")
                 }
@@ -234,7 +203,8 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 }
             }
         }
-    }
+    )
+
 
     // Freeze screen and show loading indicator when loading
     LoadingIndicator(isLoading)
@@ -251,9 +221,10 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         // Go back to the previous page and discard current content
                         navController.popBackStack()
                         showCancelPopup = false
-                    }
+                    },
+                    status = ButtonStatus.WARNING
                 ) {
-                    Text("Yes")
+                    Text("Cancel")
                 }
             },
             dismissButton = {
@@ -263,7 +234,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         showCancelPopup = false
                     }
                 ) {
-                    Text("No")
+                    Text("Don't Cancel")
                 }
             }
         )
@@ -299,7 +270,8 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         // Save data to database and continue entry
                         viewModel.saveEncounterToDatabase()
                         showSavePopup = false
-                    }
+                    },
+                    status = ButtonStatus.CONFIRM
                 ) {
                     Text("Save & Continue")
                 }
@@ -310,7 +282,9 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         viewModel.saveEncounterToDatabase()
                         navController.popBackStack()
                         showSavePopup = false
-                    }
+                    },
+                    status = ButtonStatus.CONFIRM
+
                 ) {
                     Text("Save & Exit")
                 }
@@ -320,7 +294,9 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                     onClick = {
                         // Dismiss the dialog if "No" is clicked
                         showSavePopup = false
-                    }
+                    },
+                    status = ButtonStatus.WARNING
+
                 ) {
                     Text("No")
                 }
