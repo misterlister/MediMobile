@@ -3,6 +3,9 @@ package com.example.medimobile.data.model
 import androidx.compose.ui.graphics.Color
 import com.example.medimobile.data.utils.convertToUTCDateString
 import com.example.medimobile.data.utils.convertToUTCDateTimeString
+import com.example.medimobile.ui.theme.MediGrey
+import com.example.medimobile.ui.theme.MediGreen
+import com.example.medimobile.ui.theme.MediYellow
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 import java.time.LocalTime
@@ -38,10 +41,10 @@ enum class StageStatus {
 
 fun getStatusColour(stageStatus: StageStatus?): Color {
     return when (stageStatus) {
-        StageStatus.COMPLETE -> Color.Green
-        StageStatus.IN_PROGRESS -> Color.Yellow
-        StageStatus.NOT_STARTED -> Color.LightGray
-        else -> Color.LightGray  // Default color if status is unknown
+        StageStatus.COMPLETE -> MediGreen
+        StageStatus.IN_PROGRESS -> MediYellow
+        StageStatus.NOT_STARTED -> MediGrey
+        else -> MediGrey  // Default to inactive colour if status is unknown
     }
 }
 
