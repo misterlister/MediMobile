@@ -5,7 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,16 +33,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             MediMobileTheme {
                 val navController = rememberNavController()
-                NavHost(
-                    navController = navController,
-                    startDestination = "login"
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
                 ) {
-                    composable("login") { LoginScreen(navController, viewModel) }
-                    composable("mainMenu") { MainMenuScreen(navController, viewModel) }
-                    composable("dataEntry") { DataEntryScreen(navController, viewModel) }
-                    composable("eventSelect") { EventSelectScreen(navController, viewModel) }
-                    composable("updateEncounter") { UpdateEncounterScreen(navController, viewModel) }
-                    composable("settings") { SettingsScreen(navController, viewModel) }
+                    NavHost(
+                        navController = navController,
+                        startDestination = "login"
+                    ) {
+                        composable("login") { LoginScreen(navController, viewModel) }
+                        composable("mainMenu") { MainMenuScreen(navController, viewModel) }
+                        composable("dataEntry") { DataEntryScreen(navController, viewModel) }
+                        composable("eventSelect") { EventSelectScreen(navController, viewModel) }
+                        composable("updateEncounter") { UpdateEncounterScreen(navController, viewModel) }
+                        composable("settings") { SettingsScreen(navController, viewModel) }
+                    }
                 }
             }
         }
