@@ -54,7 +54,7 @@ fun ScreenLayout(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(bannerColor())
-                        .padding(top = 16.dp, bottom = 16.dp, start = 8.dp, end = 8.dp)
+                        .padding(horizontal = 8.dp, vertical = 16.dp)
                         .wrapContentHeight(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -79,7 +79,7 @@ fun ScreenLayout(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(bannerColor())
-                        .padding(top = 16.dp, bottom = 16.dp, start = 8.dp, end = 8.dp)
+                        .padding(horizontal = 8.dp, vertical = 16.dp)
                         .wrapContentHeight(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
