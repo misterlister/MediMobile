@@ -35,6 +35,8 @@ import androidx.navigation.NavController
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.model.getStatusColour
 import com.example.medimobile.ui.components.LoadingIndicator
+import com.example.medimobile.ui.components.templates.MediButton
+import com.example.medimobile.ui.theme.bannerColor
 import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
@@ -76,7 +78,6 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Cyan)
             .navigationBarsPadding()
             .pointerInput(Unit) {
                 detectTapGestures(
@@ -156,7 +157,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.LightGray)
+                    .background(bannerColor())
                     .padding(12.dp)
                     .navigationBarsPadding()
                     .wrapContentHeight(),
@@ -164,7 +165,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Back Button
-                Button(
+                MediButton(
                     onClick = {
                         if (selectedTabIndex.intValue > 0) {
                             selectedTabIndex.intValue -= 1 // Go back one page
@@ -201,6 +202,9 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         if (currentEncounter == null) {
                             showErrorPopup = true
                             errorText = "Encounter not found"
+                        } else if (currentEncounter.arrivalDate == null || currentEncounter.arrivalTime == null) {
+                            showErrorPopup = true
+                            errorText = "Arrival Date and Time fields must be filled"
                         } else if (currentEncounter.visitId == "") {
                             showErrorPopup = true
                             errorText = "Visit ID field must be filled"
@@ -217,7 +221,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 }
 
                 // Forward Button
-                Button(
+                MediButton(
                     onClick = {
                         if (selectedTabIndex.intValue < tabs.size - 1) {
                             selectedTabIndex.intValue += 1 // Increment tab index
@@ -242,7 +246,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
             title = { Text(text = "Are you sure you want to cancel?") },
             text = { Text("Any entered data will be lost.") },
             confirmButton = {
-                Button(
+                MediButton(
                     onClick = {
                         // Go back to the previous page and discard current content
                         navController.popBackStack()
@@ -253,7 +257,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 }
             },
             dismissButton = {
-                Button(
+                MediButton(
                     onClick = {
                         // Dismiss the dialog if "No" is clicked
                         showCancelPopup = false
@@ -272,7 +276,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
             title = { Text(text = "Error") },
             text = { Text(errorText) },
             confirmButton = {
-                Button(
+                MediButton(
                     onClick = {
                         // Dismiss the dialog
                         showErrorPopup = false
@@ -290,7 +294,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
             title = { Text(text = "Confirm save?") },
             text = { Text("Data will be submitted to the database.") },
             confirmButton = {
-                Button(
+                MediButton(
                     onClick = {
                         // Save data to database and continue entry
                         viewModel.saveEncounterToDatabase()
@@ -300,7 +304,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                     Text("Save & Continue")
                 }
 
-                Button(
+                MediButton(
                     onClick = {
                         // Save data to database and go back to the previous page
                         viewModel.saveEncounterToDatabase()
@@ -312,7 +316,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 }
             },
             dismissButton = {
-                Button(
+                MediButton(
                     onClick = {
                         // Dismiss the dialog if "No" is clicked
                         showSavePopup = false
