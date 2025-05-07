@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,6 +26,7 @@ import com.example.medimobile.data.utils.toDisplayValue
 import com.example.medimobile.ui.components.dropdowns.BaseDropdown
 import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
+import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.theme.screenTitleTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
@@ -60,11 +60,11 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                 Spacer(modifier = Modifier.weight(0.5f))
 
                 val formSections = listOf(
-                    FormSectionData("Event") {
+                    FormSectionData("Encounter Table Date Range") {
                         BaseDropdown(
                             currentSelection = encounterDateRange.value.toDisplayValue(),
                             options = dateRangeOptions,
-                            dropdownLabel = "Encounter Table Date Range",
+                            dropdownLabel = "Date Range",
                             onSelectionChanged = { selectedDisplayValue ->
                                 // Convert the selected display value back to DateRangeOption
                                 val selectedOption = selectedDisplayValue.toDateRangeOption()
@@ -91,7 +91,7 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                 .wrapContentHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Button(
+            MediButton(
                 onClick = { navController.navigate("mainMenu") },
                 modifier = Modifier
                     .align(Alignment.BottomStart)

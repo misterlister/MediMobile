@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -47,6 +46,9 @@ import com.example.medimobile.data.utils.dateFormatter
 import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.components.inputfields.DateSelector
 import com.example.medimobile.ui.components.inputfields.QRScannerButton
+import com.example.medimobile.ui.components.templates.MediButton
+import com.example.medimobile.ui.theme.MediBlue
+import com.example.medimobile.ui.theme.TextOnBlue
 import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.ui.theme.screenTitleTextStyle
 import com.example.medimobile.ui.theme.userNameTextStyle
@@ -94,7 +96,6 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Cyan)
             .navigationBarsPadding()
             .statusBarsPadding()
             .pointerInput(Unit) {
@@ -145,7 +146,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // **Refresh Button**
-                    Button(onClick = { viewModel.loadEncountersFromDatabase() }) {
+                    MediButton(onClick = { viewModel.loadEncountersFromDatabase() }) {
                         Text(text = "Refresh Table")
                     }
 
@@ -184,13 +185,19 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        OutlinedButton(onClick = { showDateDialog = true }) {
+                        OutlinedButton(
+                            onClick = { showDateDialog = true },
+                            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                                containerColor = MediBlue,
+                                contentColor = TextOnBlue
+                            )
+                        ) {
                             Text(text = dateFilter.value?.format(dateFormatter) ?: "Filter by Date")
                         }
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        Button(onClick = { dateFilter.value = null }) {
+                        MediButton(onClick = { dateFilter.value = null }) {
                             Text(text = "X")
                         }
                     }
@@ -219,7 +226,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        Button(onClick = { visitIdFilter.value = "" }) {
+                        MediButton(onClick = { visitIdFilter.value = "" }) {
                             Text(text = "X")
                         }
                     }
@@ -250,7 +257,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(
+                MediButton(
                     onClick = { navController.navigate("mainMenu") },
                     modifier = Modifier
                 ) {
@@ -276,7 +283,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                 Text("No Encounter matches visit ID: ${alertValue.value}")
             },
             confirmButton = {
-                Button(
+                MediButton(
                     onClick = {
                         // Dismiss the dialog when clicking OK
                         showNotFoundDialog.value = false

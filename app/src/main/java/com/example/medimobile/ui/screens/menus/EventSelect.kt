@@ -26,6 +26,7 @@ import com.example.medimobile.data.utils.toEventNames
 import com.example.medimobile.ui.components.dropdowns.BaseDropdown
 import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
+import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.theme.screenTitleTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
@@ -39,7 +40,6 @@ fun EventSelectScreen(navController: NavController, viewModel: MediMobileViewMod
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Cyan)
             .navigationBarsPadding()
             .statusBarsPadding()
     ) {
@@ -100,7 +100,7 @@ fun EventSelectScreen(navController: NavController, viewModel: MediMobileViewMod
                 .wrapContentHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Button(
+            MediButton(
                 onClick = { navController.navigate("login") },
                 modifier = Modifier
                     .align(Alignment.BottomStart)

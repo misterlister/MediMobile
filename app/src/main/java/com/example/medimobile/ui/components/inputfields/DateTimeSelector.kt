@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.utils.DropdownConstants.NOT_SET
 import com.example.medimobile.ui.components.dropdowns.HourDropdown
 import com.example.medimobile.ui.components.dropdowns.MinuteDropdown
+import com.example.medimobile.ui.components.templates.MediButton
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -52,7 +52,7 @@ fun DateTimeSelector(
                 .weight(0.8f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = {
+            MediButton(onClick = {
                 val nowDate = LocalDate.now()
                 val nowTime = LocalTime.now()
                 onDateChange(nowDate)
@@ -70,7 +70,7 @@ fun DateTimeSelector(
         ) {
             Text(text = "Select Date", fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { dateSelectorState.value = true }) {
+            MediButton(onClick = { dateSelectorState.value = true }) {
                 Text(text = date?.toString() ?: NOT_SET)
             }
         }
