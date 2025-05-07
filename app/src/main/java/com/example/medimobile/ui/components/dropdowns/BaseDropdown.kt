@@ -11,6 +11,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -20,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -42,21 +42,21 @@ fun BaseDropdown(
         onValueChange = {},
         label = { Text(
             text = dropdownLabel,
-            style = MaterialTheme.typography.bodySmall.copy(color = Color.Black))
+            style = MaterialTheme.typography.bodySmall.copy(color = colorScheme.onSurfaceVariant))
         },
         enabled = false, // Disable the text field so it can't be edited
         colors = OutlinedTextFieldDefaults.colors(
             // Restore colour to the disabled text field
-            disabledTextColor = MaterialTheme.colorScheme.onSurface,
-            disabledContainerColor = Color.White,
-            disabledBorderColor = MaterialTheme.colorScheme.outline,
-            disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
-            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            disabledSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            disabledPrefixColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            disabledSuffixColor = MaterialTheme.colorScheme.onSurfaceVariant
+            disabledTextColor = colorScheme.onSurface,
+            disabledContainerColor = colorScheme.surface,
+            disabledBorderColor = colorScheme.outline,
+            disabledLeadingIconColor = colorScheme.onSurfaceVariant,
+            disabledTrailingIconColor = colorScheme.onSurfaceVariant,
+            disabledLabelColor = colorScheme.onSurfaceVariant,
+            disabledPlaceholderColor = colorScheme.onSurfaceVariant,
+            disabledSupportingTextColor = colorScheme.onSurfaceVariant,
+            disabledPrefixColor = colorScheme.onSurfaceVariant,
+            disabledSuffixColor = colorScheme.onSurfaceVariant
         ),
         modifier = modifier
             .fillMaxWidth(width)
@@ -74,7 +74,7 @@ fun BaseDropdown(
         onDismissRequest = { expanded = false },
         modifier = modifier
             .width(240.dp) // Set width for dropdown
-            .background(Color.White) // Background color for the dropdown menu
+            .background(colorScheme.surface)
     ) {
         if (options.isNullOrEmpty()) {
             DropdownMenuItem(
