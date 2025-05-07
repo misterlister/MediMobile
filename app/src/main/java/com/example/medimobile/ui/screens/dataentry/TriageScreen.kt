@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -18,14 +17,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.utils.toDisplayValues
+import com.example.medimobile.ui.components.dropdowns.DropdownWithOtherField
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
 import com.example.medimobile.ui.components.errorscreens.NoEventError
 import com.example.medimobile.ui.components.inputfields.DateTimeSelector
 import com.example.medimobile.ui.components.inputfields.QRScannerButton
 import com.example.medimobile.ui.components.inputfields.TriageRadioButtons
 import com.example.medimobile.ui.components.templates.DividedFormSections
-import com.example.medimobile.ui.components.dropdowns.DropdownWithOtherField
 import com.example.medimobile.ui.components.templates.FormSectionData
+import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
@@ -56,16 +56,6 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                         viewModel.markDataChanged()
                         viewModel.updateTriageStatus()
                         focusManager.clearFocus()
-                    }
-                )
-            },
-            FormSectionData("Triage") {
-                TriageRadioButtons(
-                    selectedOption = encounter.triageAcuity,
-                    onOptionSelected = {
-                        viewModel.setTriageAcuity(it)
-                        viewModel.markDataChanged()
-                        viewModel.updateTriageStatus()
                     }
                 )
             },
@@ -109,7 +99,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                         modifier = Modifier.weight(1f)
                     )
 
-                    Button(onClick = { /*TODO*/ },
+                    MediButton(onClick = { /*TODO*/ },
                         modifier = Modifier.weight(0.5f)
                     ) {
                         Text(
@@ -117,6 +107,16 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                             textAlign = TextAlign.Center)
                     }
                 }
+            },
+            FormSectionData("Triage") {
+                TriageRadioButtons(
+                    selectedOption = encounter.triageAcuity,
+                    onOptionSelected = {
+                        viewModel.setTriageAcuity(it)
+                        viewModel.markDataChanged()
+                        viewModel.updateTriageStatus()
+                    }
+                )
             },
             FormSectionData("Arrival Method") {
                 DropdownWithOtherField (
