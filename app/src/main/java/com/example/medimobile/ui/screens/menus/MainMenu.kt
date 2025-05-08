@@ -89,10 +89,15 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
             }
         },
         bottomBar = {
-            MediButton(
-                onClick = { navController.navigate("settings") },
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
             ) {
-                Text(text = "Settings")
+                MediButton(
+                    onClick = { navController.navigate("settings") },
+                ) {
+                    Text(text = "Settings")
+                }
             }
         }
     )
