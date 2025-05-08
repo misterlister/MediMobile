@@ -9,7 +9,7 @@ import com.example.medimobile.data.model.MassGatheringEvent
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.mapToPatientEncounterFormData
-import com.example.medimobile.data.remote.ApiConstants
+import com.example.medimobile.data.constants.ApiConstants
 import com.example.medimobile.data.remote.AuthApi
 import com.example.medimobile.data.remote.GetEncountersApi
 import com.example.medimobile.data.remote.LocalDateDeserializer

@@ -1,4 +1,4 @@
-package com.example.medimobile.data.utils
+package com.example.medimobile.data.constants
 
 object DropdownConstants {
     val HOURS = (0..23).map { "%02d".format(it) }

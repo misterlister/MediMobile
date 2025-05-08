@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import com.example.medimobile.data.utils.DropdownConstants
+import com.example.medimobile.data.constants.DropdownConstants
 import com.example.medimobile.ui.components.templates.RadioButtonWithText
 
 @Composable

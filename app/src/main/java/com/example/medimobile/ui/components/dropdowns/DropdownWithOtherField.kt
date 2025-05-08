@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.medimobile.data.utils.DropdownConstants
+import com.example.medimobile.data.constants.DropdownConstants
 import com.example.medimobile.ui.theme.placeholderTextStyle
 
 @Composable

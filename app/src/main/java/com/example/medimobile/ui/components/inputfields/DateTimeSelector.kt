@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.medimobile.data.utils.DropdownConstants.NOT_SET
+import com.example.medimobile.data.constants.DropdownConstants.NOT_SET
 import com.example.medimobile.ui.components.dropdowns.HourDropdown
 import com.example.medimobile.ui.components.dropdowns.MinuteDropdown
 import com.example.medimobile.ui.components.templates.MediButton

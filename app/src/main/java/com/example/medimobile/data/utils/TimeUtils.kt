@@ -1,7 +1,7 @@
 package com.example.medimobile.data.utils
 
 import com.example.medimobile.data.model.PatientEncounter
-import com.example.medimobile.data.utils.DropdownConstants.NOT_SET
+import com.example.medimobile.data.constants.DropdownConstants.NOT_SET
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime

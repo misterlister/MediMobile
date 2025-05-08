@@ -1,7 +1,7 @@
 package com.example.medimobile.ui.components.dropdowns
 
 import androidx.compose.runtime.Composable
-import com.example.medimobile.data.utils.DropdownConstants
+import com.example.medimobile.data.constants.DropdownConstants
 
 
 @Composable

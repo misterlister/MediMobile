@@ -2,7 +2,7 @@ package com.example.medimobile.data.remote
 
 import com.example.medimobile.data.model.DropdownItem
 import com.example.medimobile.data.model.PatientEncounter
-import com.example.medimobile.data.utils.DropdownConstants
+import com.example.medimobile.data.constants.DropdownConstants
 import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
