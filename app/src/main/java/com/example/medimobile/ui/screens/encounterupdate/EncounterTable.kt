@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 
 // Cell Headers for the Encounter Table
@@ -86,7 +87,8 @@ fun EncounterTable(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                .border(2.dp, MaterialTheme.colorScheme.outline),
+                .border(2.dp, MaterialTheme.colorScheme.outline)
+                .shadow(elevation = 2.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -120,6 +122,7 @@ fun EncounterTable(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .border(2.dp, MaterialTheme.colorScheme.outline)
+            .shadow(elevation = 2.dp)
     ) {
         // Table Header
         stickyHeader {
