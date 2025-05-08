@@ -42,7 +42,7 @@ fun BaseDropdown(
         onValueChange = {},
         label = { Text(
             text = dropdownLabel,
-            style = MaterialTheme.typography.bodySmall.copy(color = colorScheme.onSurfaceVariant))
+            style = MaterialTheme.typography.bodySmall.copy(color = colorScheme.onSurface))
         },
         enabled = false, // Disable the text field so it can't be edited
         colors = OutlinedTextFieldDefaults.colors(
@@ -50,13 +50,13 @@ fun BaseDropdown(
             disabledTextColor = colorScheme.onSurface,
             disabledContainerColor = colorScheme.primaryContainer,
             disabledBorderColor = colorScheme.outline,
-            disabledLeadingIconColor = colorScheme.onSurfaceVariant,
-            disabledTrailingIconColor = colorScheme.onSurfaceVariant,
-            disabledLabelColor = colorScheme.onSurfaceVariant,
-            disabledPlaceholderColor = colorScheme.onSurfaceVariant,
-            disabledSupportingTextColor = colorScheme.onSurfaceVariant,
-            disabledPrefixColor = colorScheme.onSurfaceVariant,
-            disabledSuffixColor = colorScheme.onSurfaceVariant
+            disabledLeadingIconColor = colorScheme.onSurface,
+            disabledTrailingIconColor = colorScheme.onSurface,
+            disabledLabelColor = colorScheme.onSurface,
+            disabledPlaceholderColor = colorScheme.onSurface,
+            disabledSupportingTextColor = colorScheme.onSurface,
+            disabledPrefixColor = colorScheme.onSurface,
+            disabledSuffixColor = colorScheme.onSurface
         ),
         modifier = modifier
             .fillMaxWidth(width)
@@ -74,7 +74,7 @@ fun BaseDropdown(
         onDismissRequest = { expanded = false },
         modifier = modifier
             .width(240.dp) // Set width for dropdown
-            .background(colorScheme.surfaceVariant)
+            .background(colorScheme.secondaryContainer)
     ) {
         if (options.isNullOrEmpty()) {
             DropdownMenuItem(

@@ -33,13 +33,13 @@ fun MediTextField(
         unfocusedTextColor = colorScheme.onSurface,
         disabledTextColor = colorScheme.onSurface.copy(alpha = 0.4f),
 
-        focusedContainerColor = colorScheme.surfaceVariant,
+        focusedContainerColor = colorScheme.secondaryContainer,
         unfocusedContainerColor = colorScheme.primaryContainer,
         disabledContainerColor = colorScheme.primaryContainer.copy(alpha = 0.3f),
 
         focusedPlaceholderColor = colorScheme.onSurface.copy(alpha = 0.55f),
         unfocusedPlaceholderColor = colorScheme.onSurface.copy(alpha = 0.7f),
-        disabledPlaceholderColor = colorScheme.onSurface.copy(alpha = 0.2f),
+        disabledPlaceholderColor = colorScheme.onSurface.copy(alpha = 0.15f),
     )
 
     TextField(

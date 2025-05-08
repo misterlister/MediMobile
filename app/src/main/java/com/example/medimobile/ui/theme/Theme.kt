@@ -23,6 +23,8 @@ private val DarkColorScheme = darkColorScheme(
     onSurfaceVariant = TextOnDark,
     primaryContainer = DarkContainer,
     onPrimaryContainer = TextOnDark,
+    secondaryContainer = SecondaryDarkContainer,
+    onSecondaryContainer = TextOnDark,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -37,6 +39,8 @@ private val LightColorScheme = lightColorScheme(
     onSurfaceVariant = TextOnLight,
     primaryContainer = LightContainer,
     onPrimaryContainer = TextOnLight,
+    secondaryContainer = SecondaryLightContainer,
+    onSecondaryContainer = TextOnLight,
 )
 
 // Custom TextStyle for app title text
