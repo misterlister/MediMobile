@@ -48,7 +48,7 @@ fun BaseDropdown(
         colors = OutlinedTextFieldDefaults.colors(
             // Restore colour to the disabled text field
             disabledTextColor = colorScheme.onSurface,
-            disabledContainerColor = colorScheme.surface,
+            disabledContainerColor = colorScheme.primaryContainer,
             disabledBorderColor = colorScheme.outline,
             disabledLeadingIconColor = colorScheme.onSurfaceVariant,
             disabledTrailingIconColor = colorScheme.onSurfaceVariant,
@@ -74,7 +74,7 @@ fun BaseDropdown(
         onDismissRequest = { expanded = false },
         modifier = modifier
             .width(240.dp) // Set width for dropdown
-            .background(colorScheme.surface)
+            .background(colorScheme.surfaceVariant)
     ) {
         if (options.isNullOrEmpty()) {
             DropdownMenuItem(
