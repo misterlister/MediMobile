@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,8 +32,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.data.utils.toDisplayValues
+import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.components.dropdowns.BaseDropdown
 import com.example.medimobile.ui.components.templates.MediButton
+import com.example.medimobile.ui.components.templates.MediTextField
 import com.example.medimobile.ui.components.templates.ScreenLayout
 import com.example.medimobile.ui.theme.appTitleTextStyle
 import com.example.medimobile.ui.theme.errorMessageTextStyle
@@ -46,6 +48,8 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val isLoading = viewModel.isLoading.collectAsState().value
 
     // currently selected group event
     val group = viewModel.userGroup.collectAsState().value
@@ -88,7 +92,8 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                     text = "MediMobile",
                     style = appTitleTextStyle,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 48.dp)
+                    modifier = Modifier
+                        .padding(top = 48.dp)
                 )
 
                 Text(
@@ -107,7 +112,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                     BaseDropdown(
                         currentSelection = group ?: "",
                         options = selectedEvent?.userGroups?.toDisplayValues(),
-                        dropdownLabel = "Sign-in to",
+                        dropdownLabel = "Service",
                         onSelectionChanged = { newLocation ->
                             viewModel.setUserGroup(newLocation)
                         },
@@ -115,7 +120,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                 }
 
                 // Login Form
-                TextField(
+                MediTextField(
                     value = username,
                     onValueChange = { username = it },
                     placeholder = { Text("username") },
@@ -136,7 +141,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                         .fillMaxWidth(0.75f)
                 )
 
-                TextField(
+                MediTextField(
                     value = password,
                     onValueChange = { password = it },
                     placeholder = { Text("password") },
@@ -165,14 +170,24 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
             }
         },
         bottomBar = {
-            MediButton(
-                onClick = { navController.navigate("eventSelect") },
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
             ) {
-                Text(text = "Event Select")
+                MediButton(
+                    onClick = { navController.navigate("eventSelect") },
+                ) {
+                    Text(text = "Event Select")
+                }
             }
         }
     )
+
+    // Freeze screen and show loading indicator when loading
+    LoadingIndicator(isLoading)
 }
+
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
