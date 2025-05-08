@@ -11,6 +11,7 @@ import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.mapToPatientEncounterFormData
 import com.example.medimobile.data.constants.ApiConstants
 import com.example.medimobile.data.remote.AuthApi
+import com.example.medimobile.data.remote.ErrorResponse
 import com.example.medimobile.data.remote.GetEncountersApi
 import com.example.medimobile.data.remote.LocalDateDeserializer
 import com.example.medimobile.data.remote.LocalTimeDeserializer
@@ -23,6 +24,7 @@ import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
@@ -323,25 +325,36 @@ class MediMobileViewModel: ViewModel() {
     private var authToken: String? = null // holds authentication token
 
     fun login(email: String, password: String, userGroup: String) {
+        setLoading(true)
         viewModelScope.launch {
             try {
                 val response = authApi.login(LoginRequest(email, password, userGroup))
                 if (response.isSuccessful) {
                     response.body()?.let { loginResponse ->
-                        Log.d("LoginDebug", "Login successful: $loginResponse")
                         authToken = loginResponse.accessToken
                         _loginResult.value = Result.success(loginResponse.accessToken)
                     } ?: run {
-                        _loginResult.value = Result.failure(Exception("Empty response body"))
+                        _loginResult.value = Result.failure(Exception("Server returned no data. Please try again later."))
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
-                    _loginResult.value = Result.failure(Exception("Login failed: $errorBody"))
+                    val detailedMessage = parseErrorDetail(errorBody)
+
+                    val errorMessage = when (response.code()) {
+                        401 -> detailedMessage ?: "Invalid credentials. Please check your username and password."
+                        403 -> detailedMessage ?: "Access denied. Please check your permissions."
+                        500 -> detailedMessage ?: "Server error. Please try again later."
+                        else -> detailedMessage ?: "Login failed (code ${response.code()})."
+                    }
+
+                    _loginResult.value = Result.failure(Exception(errorMessage))
                 }
             } catch (e: IOException) {
-                _loginResult.value = Result.failure(Exception("Network error: ${e.localizedMessage}"))
+                _loginResult.value = Result.failure(Exception("Unable to connect. Please check your internet connection and try again."))
             } catch (e: Exception) {
-                _loginResult.value = Result.failure(Exception("Unexpected error: ${e.localizedMessage}"))
+                _loginResult.value = Result.failure(Exception("Unexpected error occurred. Please try again later."))
+            } finally {
+                setLoading(false)
             }
         }
     }
@@ -429,6 +442,16 @@ class MediMobileViewModel: ViewModel() {
         }
     }
 
+    private fun parseErrorDetail(jsonString: String?): String? {
+        return try {
+            if (!jsonString.isNullOrBlank()) {
+                Json.decodeFromString<ErrorResponse>(jsonString).detail
+            } else null
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     private val postApi = retrofit.create(SubmitEncountersApi::class.java)
 
     private fun submitNewEncounter() {
@@ -494,8 +517,6 @@ class MediMobileViewModel: ViewModel() {
             }
         }
     }
-
-
 
     // Save encounter to database
     fun saveEncounterToDatabase() {
