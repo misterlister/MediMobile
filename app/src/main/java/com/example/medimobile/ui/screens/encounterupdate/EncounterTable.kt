@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,7 @@ import com.example.medimobile.data.utils.formatArrivalDateTime
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.graphicsLayer
 
 // Cell Headers for the Encounter Table
@@ -43,7 +45,7 @@ fun TableHeaderCell(text: String, modifier: Modifier = Modifier, onClick: () -> 
             text = text,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.weight(1f)
         )
         // Show an arrow icon when the column is sorted
@@ -66,7 +68,8 @@ fun TableCell(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         modifier = modifier.padding(horizontal = 4.dp),
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 
@@ -78,6 +81,23 @@ fun EncounterTable(
     records: List<PatientEncounter>,
     onRowClick: (PatientEncounter) -> Unit,
 ) {
+    if (records.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .border(2.dp, MaterialTheme.colorScheme.outline),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "No encounters found in the selected range.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        return
+    }
+
     var sortColumn by remember { mutableStateOf(SortColumn.Date) }
     var isDescending by remember { mutableStateOf(true) }
 
@@ -98,16 +118,16 @@ fun EncounterTable(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .border(2.dp, Color.Black)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .border(2.dp, MaterialTheme.colorScheme.outline)
     ) {
         // Table Header
         stickyHeader {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.LightGray)
-                    .border(1.dp, Color.Black)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .border(1.dp, MaterialTheme.colorScheme.outline)
                     .padding(vertical = 8.dp)
             ) {
                 TableHeaderCell(
@@ -149,8 +169,13 @@ fun EncounterTable(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onRowClick(record) }
-                    .background(if (index % 2 == 0) Color.LightGray else Color.White)
-                    .border(1.dp, Color.Black)
+                    .background(
+                        if (index % 2 == 0)
+                            MaterialTheme.colorScheme.surfaceVariant
+                        else
+                            MaterialTheme.colorScheme.surface
+                    )
+                    .border(1.dp, MaterialTheme.colorScheme.outline)
                     .padding(vertical = 8.dp)
             ) {
                 TableCell(record.visitId, modifier = Modifier.weight(VISIT_ID_WEIGHT))
