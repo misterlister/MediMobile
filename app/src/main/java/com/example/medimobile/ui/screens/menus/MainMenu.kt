@@ -1,23 +1,24 @@
 package com.example.medimobile.ui.screens.menus
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.medimobile.data.constants.UIConstants.NO_USER
 import com.example.medimobile.ui.components.templates.MediButton
+import com.example.medimobile.ui.components.templates.ScreenLayout
 import com.example.medimobile.ui.theme.appTitleTextStyle
 import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
@@ -27,25 +28,16 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
 
     val username = viewModel.currentUser.collectAsState().value
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
-            .statusBarsPadding(),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
+    ScreenLayout(
+        topBar = {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = username ?: "",
+                    text = username ?: NO_USER,
                     style = userNameTextStyle
                 )
                 MediButton(onClick = {
@@ -55,6 +47,8 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
                     Text(text = "Logout")
                 }
             }
+        },
+        content = {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -91,14 +85,19 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
 
                 Spacer(modifier = Modifier.weight(1f))
             }
+        },
+        bottomBar = {
+            MediButton(
+                onClick = { navController.navigate("settings") },
+            ) {
+                Text(text = "Settings")
+            }
         }
-        MediButton(
-            onClick = { navController.navigate("settings") },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(12.dp)
-        ) {
-            Text(text = "Settings")
-        }
-    }
+    )
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun MainMenuScreenPreview() {
+    MainMenuScreen(navController = NavController(LocalContext.current), viewModel = MediMobileViewModel())
 }

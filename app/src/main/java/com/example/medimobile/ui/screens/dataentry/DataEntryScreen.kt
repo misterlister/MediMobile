@@ -24,16 +24,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.medimobile.data.constants.UIConstants.NO_USER
+import com.example.medimobile.data.constants.UIConstants.NO_VISIT_ID
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.getStatusColour
+import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.components.templates.ScreenLayout
+import com.example.medimobile.ui.screens.menus.EventSelectScreen
 import com.example.medimobile.ui.theme.ButtonStatus
 import com.example.medimobile.ui.theme.MediGrey
 import com.example.medimobile.ui.theme.userNameTextStyle
@@ -49,8 +55,6 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
     // Initialize the current encounter if it's null
     if (currentEncounter == null) {
         viewModel.setCurrentEncounter(PatientEncounter())
-        viewModel.setCurrentUser(viewModel.currentUser.value ?: "")
-        viewModel.setLocation(viewModel.selectedLocation.value ?: "")
     }
 
     // State for the cancellation pop-up
@@ -83,11 +87,15 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = username ?: "User",
+                    text = username ?: NO_USER,
                     style = userNameTextStyle
                 )
                 Text(
-                    text = encounter?.visitId ?: "Visit ID not set",
+                    text = if (isDataEmptyOrNull(encounter?.visitId)) {
+                        NO_VISIT_ID
+                    } else {
+                        encounter!!.visitId
+                    },
                     style = userNameTextStyle
                 )
             }
@@ -332,4 +340,10 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
             }
         )
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun DataEntryScreenPreview() {
+    DataEntryScreen(navController = NavController(LocalContext.current), viewModel = MediMobileViewModel())
 }
