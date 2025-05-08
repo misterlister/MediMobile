@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -26,6 +25,7 @@ import com.example.medimobile.ui.components.inputfields.TriageRadioButtons
 import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
 import com.example.medimobile.ui.components.templates.MediButton
+import com.example.medimobile.ui.components.templates.MediTextField
 import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
@@ -75,7 +75,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                         modifier = Modifier.weight(0.5f)
                     )
 
-                    TextField(
+                    MediTextField(
                         value = encounter.visitId,
                         onValueChange = {
                             viewModel.setVisitId(it)

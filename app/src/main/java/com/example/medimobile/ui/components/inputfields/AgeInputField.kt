@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -17,6 +16,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import com.example.medimobile.ui.components.templates.MediTextField
 
 @Composable
 fun AgeInputField(age: Int, onAgeChange: (Int) -> Unit) {
@@ -28,7 +28,7 @@ fun AgeInputField(age: Int, onAgeChange: (Int) -> Unit) {
     // FocusManager to close the keyboard when Done is pressed
     val focusManager = LocalFocusManager.current
 
-    TextField(
+    MediTextField(
         value = if (isFocused && age == 0) "" else age.toString(),
         onValueChange = { newText: String ->
             val newAge = newText.toIntOrNull() ?: 0

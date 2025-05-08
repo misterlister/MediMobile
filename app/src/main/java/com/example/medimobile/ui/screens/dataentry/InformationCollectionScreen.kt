@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -13,12 +12,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.utils.toDisplayValues
+import com.example.medimobile.ui.components.dropdowns.DropdownWithOtherField
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
 import com.example.medimobile.ui.components.errorscreens.NoEventError
 import com.example.medimobile.ui.components.inputfields.AgeInputField
 import com.example.medimobile.ui.components.templates.DividedFormSections
-import com.example.medimobile.ui.components.dropdowns.DropdownWithOtherField
 import com.example.medimobile.ui.components.templates.FormSectionData
+import com.example.medimobile.ui.components.templates.MediTextField
 import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
@@ -72,7 +72,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                 )
             },
             FormSectionData("Comments") {
-                TextField(
+                MediTextField(
                     value = encounter.comment, // Bind to ViewModel
                     onValueChange = {
                         viewModel.setComment(it)
