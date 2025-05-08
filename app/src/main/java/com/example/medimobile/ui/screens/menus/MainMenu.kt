@@ -42,7 +42,9 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
                 )
                 MediButton(onClick = {
                     viewModel.logout()
-                    navController.navigate("login")
+                    navController.navigate("login") {
+                        popUpTo("mainMenu") { inclusive = true }
+                    }
                 }) {
                     Text(text = "Logout")
                 }
