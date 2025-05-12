@@ -2,7 +2,8 @@ package com.example.medimobile.data.model
 
 data class MassGatheringEvent(
     val eventName: String,
-    val locations: List<DropdownItem>,
+    val eventID: String,
+    val locations: List<ServiceLocation>,
     val userGroups: List<DropdownItem>,
-    val dropdowns: EventDropdowns,
+    val dropdowns: EventDropdowns
 )
