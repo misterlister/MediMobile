@@ -3,13 +3,15 @@ package com.example.medimobile.data.eventdata
 import com.example.medimobile.data.model.DropdownItem
 import com.example.medimobile.data.model.EventDropdowns
 import com.example.medimobile.data.model.MassGatheringEvent
+import com.example.medimobile.data.model.ServiceLocation
 
 object EventList {
     val EVENTS: List<MassGatheringEvent> = listOf(
         MassGatheringEvent(
             eventName = "Shambhala",
+            eventID = "SHA",
             locations = listOf(
-                DropdownItem("Main Medical", "Main Medical")
+                ServiceLocation("Main Medical", "M01")
             ),
             userGroups = listOf(
                 DropdownItem("medical", "medical")
