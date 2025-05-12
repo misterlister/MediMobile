@@ -113,7 +113,7 @@ class MediMobileViewModel: ViewModel() {
             _selectedEvent.value = EventList.EVENTS.firstOrNull()
         }
         if (_selectedLocation.value == null) {
-            _selectedLocation.value = _selectedEvent.value?.locations?.firstOrNull()?.displayValue
+            _selectedLocation.value = _selectedEvent.value?.locations?.firstOrNull()?.locationName
         }
     }
 
@@ -333,8 +333,10 @@ class MediMobileViewModel: ViewModel() {
                     response.body()?.let { loginResponse ->
                         authToken = loginResponse.accessToken
                         _loginResult.value = Result.success(loginResponse.accessToken)
+                        Log.d("Login successful", loginResponse.toString())
                     } ?: run {
                         _loginResult.value = Result.failure(Exception("Server returned no data. Please try again later."))
+                        Log.d("Login failed", "Server returned no data.")
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
@@ -346,6 +348,7 @@ class MediMobileViewModel: ViewModel() {
                         500 -> detailedMessage ?: "Server error. Please try again later."
                         else -> detailedMessage ?: "Login failed (code ${response.code()})."
                     }
+                    Log.e("Login failed", errorBody.toString())
 
                     _loginResult.value = Result.failure(Exception(errorMessage))
                 }
