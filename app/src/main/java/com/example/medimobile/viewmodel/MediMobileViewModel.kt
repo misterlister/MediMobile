@@ -199,6 +199,9 @@ class MediMobileViewModel: ViewModel() {
     fun setDischargeDiagnosis(dischargeDiagnosis: String) {
         _currentEncounter.value = _currentEncounter.value?.copy(dischargeDiagnosis = dischargeDiagnosis)
     }
+    fun markAsSubmitted() {
+        _currentEncounter.value = _currentEncounter.value?.copy(submitted = true)
+    }
 
     // Update the entry status of the Triage stage
     fun updateTriageStatus() {
@@ -478,6 +481,7 @@ class MediMobileViewModel: ViewModel() {
                     } ?: run {
                         Log.d("DatabaseDebug", "Encounter creation succeeded but response body is null.")
                     }
+                    markAsSubmitted()
                 } else {
                     // Handle error response
                     val errorBody = response.errorBody()?.string()
@@ -510,6 +514,7 @@ class MediMobileViewModel: ViewModel() {
                     } ?: run {
                         Log.d("DatabaseDebug", "Encounter update succeeded but response body is null.")
                     }
+                    markAsSubmitted()
                 } else {
                     // Handle error response
                     val errorBody = response.errorBody()?.string()
