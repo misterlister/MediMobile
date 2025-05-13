@@ -2,6 +2,7 @@ package com.example.medimobile.data.utils
 
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.constants.DropdownConstants.NOT_SET
+import com.example.medimobile.data.constants.IDConstants.YEAR_LEN
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -41,6 +42,15 @@ fun convertToUTCDateTimeString(date: LocalDate?, time: LocalTime?): String? {
         .withZoneSameInstant(ZoneOffset.UTC)
         .toLocalDateTime()
         .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+}
+
+fun getUTCYearSuffix(date: LocalDate?): String? {
+    return date?.atStartOfDay(ZoneId.systemDefault())
+        ?.withZoneSameInstant(ZoneOffset.UTC)
+        ?.toLocalDate()
+        ?.year
+        ?.toString()
+        ?.takeLast(YEAR_LEN)
 }
 
 enum class DateRangeOption {
