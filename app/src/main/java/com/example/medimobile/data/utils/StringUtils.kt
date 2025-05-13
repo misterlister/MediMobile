@@ -1,5 +1,10 @@
 package com.example.medimobile.data.utils
 
+import com.example.medimobile.data.constants.IDConstants.VISIT_SUFFIX_LEN
+import com.example.medimobile.data.constants.IDConstants.VisitIDCategory
+import java.time.LocalDate
+
+
 // Convert enum to display value
 fun DateRangeOption.toDisplayValue(): String {
     return when (this) {
@@ -21,4 +26,19 @@ fun String.toDateRangeOption(): DateRangeOption {
         "all time" -> DateRangeOption.ALL_TIME
         else -> throw IllegalArgumentException("Unknown DateRangeOption")
     }
+}
+
+// Join the parts of the visit ID together, and format them accordingly
+fun formatVisitID(category: VisitIDCategory, eventID: String, locationID: String, date: LocalDate, visitSuffix: Int): String {
+    var visitCategory = ""
+    visitCategory = when (category) {
+        VisitIDCategory.QR_CODE -> "Q"
+        VisitIDCategory.GENERATED -> "G"
+        else -> "U" // Fallback option if the category is not recognized
+    }
+
+    val paddedVisitSuffix = visitSuffix.toString().padStart(VISIT_SUFFIX_LEN, '0')
+    val year = getUTCYearSuffix(date) ?: "??" // This will prevent errors from blocking submission
+
+    return "$visitCategory$eventID$locationID$year-$paddedVisitSuffix"
 }
