@@ -83,18 +83,18 @@ val screenTitleTextStyle = TextStyle(
 
 // Custom TextStyle for username and DocID text
 val userNameTextStyle = TextStyle(
-    fontWeight = FontWeight.Bold, // Bold text
-    fontSize = 18.sp, // Font size
+    fontWeight = FontWeight.Bold,
+    fontSize = 16.sp,
 )
 
 val errorMessageTextStyle = TextStyle(
-    fontWeight = FontWeight.Bold, // Bold text
-    fontSize = 18.sp, // Font size
+    fontWeight = FontWeight.Bold,
+    fontSize = 18.sp,
     color = Color.Red // Set text color to red for error messages
 )
 
 val placeholderTextStyle = TextStyle(
-    fontWeight = FontWeight.Normal, // Normal text
+    fontWeight = FontWeight.Normal,
     color = Color.Gray // Set text color to gray for placeholders
 )
 
