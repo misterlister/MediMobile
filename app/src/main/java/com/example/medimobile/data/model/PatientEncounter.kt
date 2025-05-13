@@ -31,6 +31,7 @@ data class PatientEncounter (
     val informationCollectionStatus: StageStatus = StageStatus.NOT_STARTED,
     val dischargeStatus: StageStatus = StageStatus.NOT_STARTED,
     val complete: Boolean = false,
+    val submitted: Boolean = false
 )
 
 enum class StageStatus {
