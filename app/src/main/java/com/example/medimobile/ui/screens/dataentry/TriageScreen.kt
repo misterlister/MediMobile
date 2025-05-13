@@ -60,6 +60,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                 )
             },
             FormSectionData("Visit ID") {
+                val isEnabled = !encounter.submitted
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -72,7 +73,8 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                         viewModel.markDataChanged()
                         viewModel.updateTriageStatus()
                     },
-                        modifier = Modifier.weight(0.5f)
+                        modifier = Modifier.weight(0.5f),
+                        enabled = isEnabled
                     )
 
                     MediTextField(
@@ -96,11 +98,13 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                             }
                         ),
                         singleLine = true,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        enabled = isEnabled
                     )
 
                     MediButton(onClick = { viewModel.generateVisitID() },
-                        modifier = Modifier.weight(0.5f)
+                        modifier = Modifier.weight(0.5f),
+                        enabled = isEnabled
                     ) {
                         Text(
                             text = "Gen. Visit ID",
