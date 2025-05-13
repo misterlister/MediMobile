@@ -14,3 +14,11 @@ data class LoginResponse(
     @SerializedName("token_type") val tokenType: String,
     @SerializedName("user_role") val userRole: String
 )
+
+data class ErrorResponse(
+    @SerializedName("detail") val detail: String
+)
+
+data class SequenceResponse(
+    @SerializedName("next_number") val nextNumber: Int
+)
