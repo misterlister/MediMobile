@@ -99,7 +99,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                         modifier = Modifier.weight(1f)
                     )
 
-                    MediButton(onClick = { /*TODO*/ },
+                    MediButton(onClick = { viewModel.generateVisitID() },
                         modifier = Modifier.weight(0.5f)
                     ) {
                         Text(
