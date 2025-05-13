@@ -61,11 +61,16 @@ fun EventSelectScreen(navController: NavController, viewModel: MediMobileViewMod
 
                     FormSectionData("Location") {
                         BaseDropdown(
-                            currentSelection = selectedLocation ?: "",
+                            currentSelection = selectedLocation?.locationName ?: "",
                             options = selectedEvent?.locations?.map { it.locationName },
                             dropdownLabel = "Location",
-                            onSelectionChanged = { newLocation ->
-                                viewModel.setSelectedLocation(newLocation)
+                            onSelectionChanged = { selectedLocation ->
+                                val matchedLocation = selectedEvent?.locations?.find {
+                                    it.locationName == selectedLocation
+                                }
+                                matchedLocation?.let {
+                                    viewModel.setSelectedLocation(it)
+                                }
                             },
                             width = 0.8f
                         )
