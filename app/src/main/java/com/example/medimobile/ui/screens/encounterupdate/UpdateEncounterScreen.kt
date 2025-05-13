@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -88,7 +89,9 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
         topBar = {
             Text(
                 text = username ?: NO_USER,
-                style = userNameTextStyle
+                style = userNameTextStyle,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         },
         content = {
@@ -119,7 +122,10 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                     EncounterTable(
                         records = filteredEncounterList.value,
                         onRowClick = { selectedRecord ->
+                            // Load the selected record into the viewModel
                             viewModel.setCurrentEncounter(selectedRecord)
+                            // Ensure that the record is marked as submitted
+                            viewModel.markAsSubmitted()
                             navController.navigate("dataEntry")
                         }
                     )
