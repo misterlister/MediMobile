@@ -42,3 +42,9 @@ interface SubmitEncountersApi {
         @Header("Authorization") token: String
     ): Response<PatientEncounter>
 }
+
+interface GetSequenceApi {
+    // Get the next visit ID sequence number
+    @GET("api/sequence/next")
+    suspend fun getNextVisitIDSequence(): Response<SequenceResponse>
+}
