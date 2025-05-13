@@ -12,7 +12,8 @@ import com.journeyapps.barcodescanner.ScanOptions
 @Composable
 fun QRScannerButton(
     onResult: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     val launcher = rememberLauncherForActivityResult(
         contract = ScanContract(),
@@ -33,7 +34,8 @@ fun QRScannerButton(
         }
         launcher.launch(options)
     },
-        modifier = modifier
+        modifier = modifier,
+        enabled = enabled
     ) {
         Text(
             text = "Scan QR Code",
