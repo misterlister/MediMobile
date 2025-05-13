@@ -3,22 +3,26 @@ package com.example.medimobile.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.medimobile.data.constants.ApiConstants
+import com.example.medimobile.data.constants.IDConstants
 import com.example.medimobile.data.eventdata.EventList
 import com.example.medimobile.data.model.DropdownItem
 import com.example.medimobile.data.model.MassGatheringEvent
 import com.example.medimobile.data.model.PatientEncounter
+import com.example.medimobile.data.model.ServiceLocation
 import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.mapToPatientEncounterFormData
-import com.example.medimobile.data.constants.ApiConstants
 import com.example.medimobile.data.remote.AuthApi
 import com.example.medimobile.data.remote.ErrorResponse
 import com.example.medimobile.data.remote.GetEncountersApi
+import com.example.medimobile.data.remote.GetSequenceApi
 import com.example.medimobile.data.remote.LocalDateDeserializer
 import com.example.medimobile.data.remote.LocalTimeDeserializer
 import com.example.medimobile.data.remote.LoginRequest
 import com.example.medimobile.data.remote.PatientEncounterDeserializer
 import com.example.medimobile.data.remote.SubmitEncountersApi
 import com.example.medimobile.data.utils.DateRangeOption
+import com.example.medimobile.data.utils.formatVisitID
 import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -99,11 +103,11 @@ class MediMobileViewModel: ViewModel() {
 
 
     // State to hold the selected event
-    private val _selectedLocation = MutableStateFlow<String?>(null)
-    val selectedLocation: StateFlow<String?> = _selectedLocation
+    private val _selectedLocation = MutableStateFlow<ServiceLocation?>(null)
+    val selectedLocation: StateFlow<ServiceLocation?> = _selectedLocation
 
     // Set the selected event
-    fun setSelectedLocation(location: String) {
+    fun setSelectedLocation(location: ServiceLocation) {
         _selectedLocation.value = location
     }
 
@@ -113,7 +117,7 @@ class MediMobileViewModel: ViewModel() {
             _selectedEvent.value = EventList.EVENTS.firstOrNull()
         }
         if (_selectedLocation.value == null) {
-            _selectedLocation.value = _selectedEvent.value?.locations?.firstOrNull()?.locationName
+            _selectedLocation.value = _selectedEvent.value?.locations?.firstOrNull()
         }
     }
 
@@ -521,6 +525,8 @@ class MediMobileViewModel: ViewModel() {
         }
     }
 
+    private val sequenceApi = retrofit.create(GetSequenceApi::class.java)
+
     // Save encounter to database
     fun saveEncounterToDatabase() {
         if (_currentEncounter.value == null) {
@@ -543,6 +549,49 @@ class MediMobileViewModel: ViewModel() {
         } else {
             // Update an existing encounter in Database
             updateExistingEncounter()
+        }
+    }
+
+    fun generateVisitID() {
+        if (_currentEncounter.value == null) {
+            return
+        }
+        if (_selectedEvent.value == null) {
+            return
+        }
+        setLoading(true)
+
+        viewModelScope.launch {
+            try {
+                val response = sequenceApi.getNextVisitIDSequence()
+
+                if (response.isSuccessful) {
+                    response.body()?.let { sequence ->
+                        val nextNumber = sequence.nextNumber
+
+                        val visitID = formatVisitID(
+                            category = IDConstants.VisitIDCategory.GENERATED,
+                            eventID = _selectedEvent.value!!.eventID,
+                            locationID = _selectedLocation.value!!.locationID,
+                            date = _currentEncounter.value!!.arrivalDate ?: LocalDate.now(),
+                            visitSuffix = nextNumber
+                        )
+
+                        setVisitId(visitID)
+                    } ?: run {
+                        Log.e("VisitID", "Response body is null")
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("VisitID", "Error response: $errorBody")
+                }
+            } catch (e: IOException) {
+                Log.e("VisitID", "Network error: ${e.localizedMessage}")
+            } catch (e: Exception) {
+                Log.e("VisitID", "Unexpected error: ${e.localizedMessage}")
+            } finally {
+                setLoading(false)
+            }
         }
     }
 }
