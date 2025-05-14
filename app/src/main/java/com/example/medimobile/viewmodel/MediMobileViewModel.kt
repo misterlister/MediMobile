@@ -205,8 +205,6 @@ class MediMobileViewModel: ViewModel() {
 
     fun setDepartureDest(departureDest: String) = updateEncounterIfChanged { it.copy(departureDest = departureDest) }
 
-    fun setLocation(location: String) = updateEncounterIfChanged { it.copy(location = location) }
-
     fun setRole(role: String) = updateEncounterIfChanged { it.copy(role = role) }
 
     fun setVisitId(visitId: String) = updateEncounterIfChanged { it.copy(visitId = visitId) }
