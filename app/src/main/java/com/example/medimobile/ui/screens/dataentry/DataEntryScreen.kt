@@ -1,5 +1,6 @@
 package com.example.medimobile.ui.screens.dataentry
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,11 +18,13 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,10 +35,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import com.example.medimobile.data.constants.UIConstants.NO_USER
 import com.example.medimobile.data.constants.UIConstants.NO_VISIT_ID
-import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.getStatusColour
 import com.example.medimobile.data.utils.isDataEmptyOrNull
@@ -46,6 +50,7 @@ import com.example.medimobile.ui.theme.ButtonStatus
 import com.example.medimobile.ui.theme.MediGrey
 import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel) {
@@ -56,8 +61,10 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
 
     // Initialize the current encounter if it's null
     if (currentEncounter == null) {
-        viewModel.setCurrentEncounter(PatientEncounter())
+        viewModel.initNewEncounter()
     }
+
+    val context = LocalContext.current
 
     // State for the cancellation pop-up
     var showCancelPopup by remember { mutableStateOf(false) }
@@ -66,9 +73,18 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
     var showSavePopup by remember { mutableStateOf(false) }
 
     // State for error pop-up
+    val lifecycleOwner = LocalLifecycleOwner.current
     var showErrorPopup by remember { mutableStateOf(false) }
-
     var errorText by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow
+            .flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect { error ->
+                errorText = error
+                showErrorPopup = true
+            }
+    }
 
     // Navigation tabs
     val tabs = listOf("Triage", "Information Collection", "Discharge")
@@ -217,6 +233,9 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         if (currentEncounter == null) {
                             showErrorPopup = true
                             errorText = "Encounter not found"
+                        } else if (!viewModel.dataChanged.value) {
+                            showErrorPopup = true
+                            errorText = "No changes to be saved"
                         } else if (currentEncounter.arrivalDate == null
                             || currentEncounter.arrivalTime == null) {
                             showErrorPopup = true
@@ -248,10 +267,6 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
             }
         }
     )
-
-
-    // Freeze screen and show loading indicator when loading
-    LoadingIndicator(isLoading)
 
     // **Confirm Cancel Popup**
     if (showCancelPopup) {
@@ -304,6 +319,8 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
     }
 
     if (showSavePopup) {
+        val coroutineScope = rememberCoroutineScope()
+
         AlertDialog(
             onDismissRequest = { showSavePopup = false },
             title = { Text(text = "Confirm save?") },
@@ -312,8 +329,16 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 MediButton(
                     onClick = {
                         // Save data to database and continue entry
-                        viewModel.saveEncounterToDatabase()
-                        showSavePopup = false
+                        coroutineScope.launch {
+                            val success = viewModel.saveEncounterToDatabase()
+                            showSavePopup = false  // Close the save popup
+
+                            if (success) {
+                                // Show toast message on success
+                                Toast.makeText(context, "Save successful!", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
                     },
                     status = ButtonStatus.CONFIRM
                 ) {
@@ -322,10 +347,17 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
 
                 MediButton(
                     onClick = {
-                        // Save data to database and go back to the previous page
-                        viewModel.saveEncounterToDatabase()
-                        navController.popBackStack()
-                        showSavePopup = false
+                        coroutineScope.launch {
+                            val success = viewModel.saveEncounterToDatabase()
+                            showSavePopup = false  // Close the save popup
+
+                            if (success) {
+                                // Navigate back on successful save
+                                navController.popBackStack()
+                                // Show toast message on success
+                                Toast.makeText(context, "Save successful!", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     },
                     status = ButtonStatus.CONFIRM
 
@@ -347,6 +379,9 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
             }
         )
     }
+
+    // Freeze screen and show loading indicator when loading
+    LoadingIndicator(isLoading)
 }
 
 @Preview(showBackground = true, showSystemUi = true)
