@@ -122,5 +122,4 @@ enum class ButtonStatus(val backgroundColor: Color, val contentColor: Color) {
     DEFAULT(MediBlue, TextOnBlue),
     CONFIRM(MediGreen, TextOnGreen),
     WARNING(MediRed, TextOnRed),
-    DISABLED(MediGrey, TextOnGrey)
 }
