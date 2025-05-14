@@ -17,6 +17,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -33,6 +34,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import com.example.medimobile.data.constants.UIConstants.NO_USER
 import com.example.medimobile.data.utils.dateFormatter
@@ -59,6 +62,20 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
 
     // State used to trigger the alert pop-up
     val showNotFoundDialog = remember { mutableStateOf(false) }
+
+    // State for error pop-up
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var showErrorPopup by remember { mutableStateOf(false) }
+    var errorText by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow
+            .flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect { error ->
+                errorText = error
+                showErrorPopup = true
+            }
+    }
 
     // State to hold values used in the alert pop-up
     val alertValue = remember { mutableStateOf("") }
@@ -226,10 +243,25 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
         }
     )
 
-    // Freeze screen and show loading indicator when loading
-    LoadingIndicator(isLoading)
+    if (showErrorPopup) {
+        AlertDialog(
+            onDismissRequest = { showErrorPopup = false },
+            title = { Text(text = "Error") },
+            text = { Text(errorText) },
+            confirmButton = {
+                MediButton(
+                    onClick = {
+                        // Dismiss the dialog
+                        showErrorPopup = false
+                    }
+                ) {
+                    Text("Ok")
+                }
+            },
+        )
+    }
 
-    // Show pop-up dialog if no encounter is found
+    // Show pop-up dialog if no encounter matches a given VisitID
     if (showNotFoundDialog.value) {
         AlertDialog(
             onDismissRequest = {
@@ -264,6 +296,9 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
             }
         )
     }
+
+    // Freeze screen and show loading indicator when loading
+    LoadingIndicator(isLoading)
 }
 
 @Preview(showBackground = true, showSystemUi = true)
