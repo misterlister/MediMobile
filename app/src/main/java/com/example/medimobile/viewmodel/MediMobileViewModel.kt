@@ -187,7 +187,7 @@ class MediMobileViewModel: ViewModel() {
 
     // **Individual setter functions for each field**
 
-    fun setAge(age: Int) = updateEncounterIfChanged { it.copy(age = age) }
+    fun setAge(age: Int?) = updateEncounterIfChanged { it.copy(age = age) }
 
     fun setArrivalMethod(arrivalMethod: String) = updateEncounterIfChanged { it.copy(arrivalMethod = arrivalMethod) }
 

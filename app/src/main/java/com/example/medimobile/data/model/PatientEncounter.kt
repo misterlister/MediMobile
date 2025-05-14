@@ -13,7 +13,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 data class PatientEncounter (
-    val age: Int = 0,
+    val age: Int? = null,
     @SerializedName("arrival_method") val arrivalMethod: String = "",
     @SerializedName("arrival_date") val arrivalDate: LocalDate? = null,
     @SerializedName("arrival_time") val arrivalTime: LocalTime? = null,
@@ -53,7 +53,7 @@ fun getStatusColour(stageStatus: StageStatus?): Color {
 }
 
 data class PatientEncounterFormData(
-    val age: Int,
+    val age: Int?,
     @SerializedName("arrival_method") val arrivalMethod: String,
     @SerializedName("arrival_date") val arrivalDate: String?,
     @SerializedName("arrival_time") val arrivalTime: String?,
