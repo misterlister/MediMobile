@@ -24,13 +24,13 @@ import com.example.medimobile.data.remote.SubmitEncountersApi
 import com.example.medimobile.data.utils.DateRangeOption
 import com.example.medimobile.data.utils.formatVisitID
 import com.example.medimobile.data.utils.isDataEmptyOrNull
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
@@ -364,6 +364,7 @@ class MediMobileViewModel: ViewModel() {
                     val detailedMessage = parseErrorDetail(errorBody)
 
                     val errorMessage = when (response.code()) {
+                        400 -> detailedMessage ?: "Invalid credentials. Please check your selected Service/Location."
                         401 -> detailedMessage ?: "Invalid credentials. Please check your username and password."
                         403 -> detailedMessage ?: "Access denied. Please check your permissions."
                         500 -> detailedMessage ?: "Server error. Please try again later."
@@ -470,8 +471,11 @@ class MediMobileViewModel: ViewModel() {
     private fun parseErrorDetail(jsonString: String?): String? {
         return try {
             if (!jsonString.isNullOrBlank()) {
-                Json.decodeFromString<ErrorResponse>(jsonString).detail
-            } else null
+                val errorResponse = Gson().fromJson(jsonString, ErrorResponse::class.java)
+                errorResponse.detail
+            } else {
+                null
+            }
         } catch (e: Exception) {
             null
         }
