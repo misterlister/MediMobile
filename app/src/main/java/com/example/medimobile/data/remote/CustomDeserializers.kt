@@ -45,7 +45,7 @@ class PatientEncounterDeserializer(
         }
 
         return PatientEncounter(
-            age = jsonObject.get("age")?.asInt ?: 0,
+            age = jsonObject.get("age")?.takeIf { it.isJsonPrimitive }?.asInt,
             arrivalMethod = getMappedValue("arrival_method"),
             arrivalDate = context?.deserialize(jsonObject.get("arrival_date"), LocalDate::class.java),
             arrivalTime = context?.deserialize(jsonObject.get("arrival_time"), LocalTime::class.java),
