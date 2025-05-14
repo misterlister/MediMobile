@@ -55,6 +55,7 @@ fun DropdownWithOtherField(
                         onSelectionChanged("${DropdownConstants.OTHER_PREFIX}$otherText")
                     } else {
                         isOtherSelected = false
+                        otherText = ""
                         onSelectionChanged(newValue)
                     }
                 },
