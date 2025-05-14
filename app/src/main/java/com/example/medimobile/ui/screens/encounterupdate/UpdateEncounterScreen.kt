@@ -42,6 +42,7 @@ import com.example.medimobile.ui.components.inputfields.QRScannerButton
 import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.components.templates.MediTextField
 import com.example.medimobile.ui.components.templates.ScreenLayout
+import com.example.medimobile.ui.theme.ButtonStatus
 import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.ui.theme.screenTitleTextStyle
 import com.example.medimobile.ui.theme.userNameTextStyle
@@ -158,7 +159,11 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    MediButton(onClick = { dateFilter.value = null } ) {
+                    MediButton(
+                        onClick = { dateFilter.value = null },
+                        status = ButtonStatus.WARNING,
+                        enabled = dateFilter.value != null // Disable when no date is selected
+                    ) {
                         Text(text = "X")
                     }
                 }
@@ -187,7 +192,11 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    MediButton(onClick = { visitIdFilter.value = "" }) {
+                    MediButton(
+                        onClick = { visitIdFilter.value = "" },
+                        status = ButtonStatus.WARNING,
+                        enabled = visitIdFilter.value.isNotEmpty() // Disable when no visit ID is entered
+                    ) {
                         Text(text = "X")
                     }
                 }
