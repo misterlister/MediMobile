@@ -55,6 +55,7 @@ class PatientEncounterDeserializer(
             departureTime = context?.deserialize(jsonObject.get("departure_time"), LocalTime::class.java),
             departureDest = getMappedValue("departure_dest"),
             location = jsonObject.get("location")?.asString ?: "",
+            event = jsonObject.get("event")?.asString ?: "",
             role = getMappedValue("role"),
             visitId = jsonObject.get("visit_id")?.asString ?: "",
             triageAcuity = jsonObject.get("triage_acuity")?.asString ?: "",
