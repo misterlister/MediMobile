@@ -25,8 +25,10 @@ import com.example.medimobile.data.utils.DateRangeOption
 import com.example.medimobile.data.utils.formatVisitID
 import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import retrofit2.Retrofit
@@ -45,6 +47,9 @@ class MediMobileViewModel: ViewModel() {
     private fun setLoading(loading: Boolean) {
         _isLoading.value = loading
     }
+
+    private val _errorFlow = MutableSharedFlow<String>()
+    val errorFlow = _errorFlow.asSharedFlow()
 
     // Currently selected date range for display in the encounter table
     private val _selectedDateRange = MutableStateFlow(DateRangeOption.WEEK)
@@ -142,6 +147,20 @@ class MediMobileViewModel: ViewModel() {
         resetDataChanged() // Reset data changed flag
     }
 
+    // Initialize a new encounter
+    fun initNewEncounter() {
+        if (selectedEvent.value == null ||
+            selectedLocation.value == null) {
+            return
+        }
+        val newEncounter = PatientEncounter(
+            event = _selectedEvent.value!!.eventName,
+            location = _selectedLocation.value!!.locationName,
+            userUuid = userUuid,
+        )
+        setCurrentEncounter(newEncounter)
+    }
+
     // Keeps track of whether data in the current encounter has been edited
     private val _dataChanged = MutableStateFlow(false)
     val dataChanged: StateFlow<Boolean> = _dataChanged
@@ -154,51 +173,48 @@ class MediMobileViewModel: ViewModel() {
         _dataChanged.value = false
     }
 
+    private fun updateEncounterIfChanged(
+        transform: (PatientEncounter) -> PatientEncounter
+    ) {
+        val current = _currentEncounter.value ?: return
+        val updated = transform(current)
+        if (current != updated) {
+            _currentEncounter.value = updated
+            markDataChanged()
+            updateAllStageStatuses()
+        }
+    }
+
     // **Individual setter functions for each field**
 
+    fun setAge(age: Int) = updateEncounterIfChanged { it.copy(age = age) }
 
-    fun setAge(age: Int) {
-        _currentEncounter.value = _currentEncounter.value?.copy(age = age)
-    }
-    fun setArrivalMethod(arrivalMethod: String) {
-        _currentEncounter.value = _currentEncounter.value?.copy(arrivalMethod = arrivalMethod)
-    }
-    fun setArrivalDate(arrivalDate: LocalDate?) {
-        _currentEncounter.value = _currentEncounter.value?.copy(arrivalDate = arrivalDate)
-    }
-    fun setArrivalTime(arrivalTime: LocalTime?) {
-        _currentEncounter.value = _currentEncounter.value?.copy(arrivalTime = arrivalTime)
-    }
-    fun setChiefComplaint(chiefComplaint: String) {
-        _currentEncounter.value = _currentEncounter.value?.copy(chiefComplaint = chiefComplaint)
-    }
-    fun setComment(comment: String) {
-        _currentEncounter.value = _currentEncounter.value?.copy(comment = comment)
-    }
-    fun setDepartureDate(departureDate: LocalDate?) {
-        _currentEncounter.value = _currentEncounter.value?.copy(departureDate = departureDate)
-    }
-    fun setDepartureTime(departureTime: LocalTime?) {
-        _currentEncounter.value = _currentEncounter.value?.copy(departureTime = departureTime)
-    }
-    fun setDepartureDest(departureDest: String) {
-        _currentEncounter.value = _currentEncounter.value?.copy(departureDest = departureDest)
-    }
-    fun setLocation(location: String) {
-        _currentEncounter.value = _currentEncounter.value?.copy(location = location)
-    }
-    fun setRole(role: String) {
-        _currentEncounter.value = _currentEncounter.value?.copy(role = role)
-    }
-    fun setVisitId(visitId: String) {
-        _currentEncounter.value = _currentEncounter.value?.copy(visitId = visitId)
-    }
-    fun setTriageAcuity(triageAcuity: String) {
-        _currentEncounter.value = _currentEncounter.value?.copy(triageAcuity = triageAcuity)
-    }
-    fun setDischargeDiagnosis(dischargeDiagnosis: String) {
-        _currentEncounter.value = _currentEncounter.value?.copy(dischargeDiagnosis = dischargeDiagnosis)
-    }
+    fun setArrivalMethod(arrivalMethod: String) = updateEncounterIfChanged { it.copy(arrivalMethod = arrivalMethod) }
+
+    fun setArrivalDate(arrivalDate: LocalDate?) = updateEncounterIfChanged { it.copy(arrivalDate = arrivalDate) }
+
+    fun setArrivalTime(arrivalTime: LocalTime?) = updateEncounterIfChanged { it.copy(arrivalTime = arrivalTime) }
+
+    fun setChiefComplaint(chiefComplaint: String) = updateEncounterIfChanged { it.copy(chiefComplaint = chiefComplaint) }
+
+    fun setComment(comment: String) = updateEncounterIfChanged { it.copy(comment = comment) }
+
+    fun setDepartureDate(departureDate: LocalDate?) = updateEncounterIfChanged { it.copy(departureDate = departureDate) }
+
+    fun setDepartureTime(departureTime: LocalTime?) = updateEncounterIfChanged { it.copy(departureTime = departureTime) }
+
+    fun setDepartureDest(departureDest: String) = updateEncounterIfChanged { it.copy(departureDest = departureDest) }
+
+    fun setLocation(location: String) = updateEncounterIfChanged { it.copy(location = location) }
+
+    fun setRole(role: String) = updateEncounterIfChanged { it.copy(role = role) }
+
+    fun setVisitId(visitId: String) = updateEncounterIfChanged { it.copy(visitId = visitId) }
+
+    fun setTriageAcuity(triageAcuity: String) = updateEncounterIfChanged { it.copy(triageAcuity = triageAcuity) }
+
+    fun setDischargeDiagnosis(dischargeDiagnosis: String) = updateEncounterIfChanged { it.copy(dischargeDiagnosis = dischargeDiagnosis) }
+
     fun markAsSubmitted() {
         _currentEncounter.value = _currentEncounter.value?.copy(submitted = true)
     }
@@ -415,6 +431,8 @@ class MediMobileViewModel: ViewModel() {
 
     // Load encounters from database
     fun loadEncountersFromDatabase() {
+        // Clear the list
+        _encounterList.value = emptyList()
         setLoading(true)
         viewModelScope.launch {
             try {
@@ -431,20 +449,19 @@ class MediMobileViewModel: ViewModel() {
 
                         _encounterList.value = encounters
                     } ?: run {
-
                         Log.d("DatabaseDebug", "No encounters found.")
-
-                        _encounterList.value = emptyList()
                     }
                 } else {
                     // Handle error response
                     val errorBody = response.errorBody()?.string()
+                    _errorFlow.emit("Failed to fetch encounters. Server responded with an error.")
                     Log.e("DatabaseDebug", "Error: $errorBody")
                 }
             } catch (e: IOException) {
+                _errorFlow.emit("Network issue detected. Please check your internet connection and try again.")
                 Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
             } catch (e: Exception) {
-                // Log unexpected errors
+                _errorFlow.emit("Unexpected error occurred. Please try again later.")
                 Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
             } finally {
                 setLoading(false)
@@ -464,104 +481,123 @@ class MediMobileViewModel: ViewModel() {
 
     private val postApi = retrofit.create(SubmitEncountersApi::class.java)
 
-    private fun submitNewEncounter() {
+    private suspend fun submitNewEncounter(): Boolean {
         setLoading(true)
-        viewModelScope.launch {
-            try {
-                val formData = mapToPatientEncounterFormData(_currentEncounter.value!!)
-                val response = postApi.postPatientEncounter(formData, getAuthToken())
+        return try {
+            val formData = mapToPatientEncounterFormData(
+                _currentEncounter.value!!,
+                getDropdownMappings()
+            )
+            val response = postApi.postPatientEncounter(formData, getAuthToken())
 
-                if (response.isSuccessful) {
-                    // Handle successful response
-                    response.body()?.let { createdEncounter ->
-                        Log.d("DatabaseDebug", "Encounter created: $createdEncounter")
-                        // Update the encounter with the new encounterUuid
-                        _currentEncounter.value = createdEncounter
-                        updateEncounterListEntry(createdEncounter)
-                    } ?: run {
-                        Log.d("DatabaseDebug", "Encounter creation succeeded but response body is null.")
-                    }
-                    markAsSubmitted()
-                } else {
-                    // Handle error response
-                    val errorBody = response.errorBody()?.string()
-                    Log.e("DatabaseDebug", "Error creating encounter: $errorBody")
+            if (response.isSuccessful) {
+                response.body()?.let { createdEncounter ->
+                    Log.d("DatabaseDebug", "Encounter created: $createdEncounter")
+                    setCurrentEncounter(createdEncounter)
+                    updateEncounterListEntry(createdEncounter)
+                } ?: run {
+                    _errorFlow.emit("Encounter creation succeeded, but data couldn't be verified. Please try again.")
+                    Log.d("DatabaseDebug", "Encounter creation succeeded but response body is null.")
                 }
-            } catch (e: IOException) {
-                Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
-            } catch (e: Exception) {
-                Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
-            } finally {
-                setLoading(false)
+                markAsSubmitted()
+                return true
+            } else {
+                val errorBody = response.errorBody()?.string()
+                _errorFlow.emit("Error creating encounter. Please try again later.")
+                Log.e("DatabaseDebug", "Error creating encounter: $errorBody")
+                return false
             }
+        } catch (e: IOException) {
+            _errorFlow.emit("Network issue detected. Please check your internet connection and try again.")
+            Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
+            false
+        } catch (e: Exception) {
+            _errorFlow.emit("Unexpected error occurred. Please try again later.")
+            Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
+            false
+        } finally {
+            setLoading(false)
         }
     }
 
-    private fun updateExistingEncounter() {
-        setLoading(true)
-        viewModelScope.launch {
-            try {
-                val formData = mapToPatientEncounterFormData(_currentEncounter.value!!)
-                val response = postApi.updatePatientEncounter(formData, getAuthToken())
 
-                if (response.isSuccessful) {
-                    // Handle successful response
-                    response.body()?.let { createdEncounter ->
-                        Log.d("DatabaseDebug", "Encounter updated: $createdEncounter")
-                        // Update the encounter with the new encounterUuid
-                        _currentEncounter.value = createdEncounter
-                        updateEncounterListEntry(createdEncounter)
-                    } ?: run {
-                        Log.d("DatabaseDebug", "Encounter update succeeded but response body is null.")
-                    }
-                    markAsSubmitted()
-                } else {
-                    // Handle error response
-                    val errorBody = response.errorBody()?.string()
-                    Log.e("DatabaseDebug", "Error updating encounter: $errorBody")
+    private suspend fun updateExistingEncounter(): Boolean {
+        setLoading(true)
+        return try {
+            val formData = mapToPatientEncounterFormData(
+                _currentEncounter.value!!,
+                getDropdownMappings()
+            )
+            val response = postApi.updatePatientEncounter(formData, getAuthToken())
+
+            if (response.isSuccessful) {
+                response.body()?.let { updatedEncounter ->
+                    Log.d("DatabaseDebug", "Encounter updated: $updatedEncounter")
+                    setCurrentEncounter(updatedEncounter)
+                    updateEncounterListEntry(updatedEncounter)
+                } ?: run {
+                    _errorFlow.emit("Encounter update succeeded, but data couldn't be verified. Please try again.")
+                    Log.d("DatabaseDebug", "Encounter update succeeded but response body is null.")
                 }
-            } catch (e: IOException) {
-                Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
-            } catch (e: Exception) {
-                Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
-            } finally {
-                setLoading(false)
+                markAsSubmitted()
+                return true
+            } else {
+                val errorBody = response.errorBody()?.string()
+                if (response.code() == 403) {
+                    _errorFlow.emit("You do not have permission to update this encounter. Please contact an administrator.")
+                } else {
+                    _errorFlow.emit("Error updating encounter. Please try again later.")
+                }
+                Log.e("DatabaseDebug", "Error updating encounter: $errorBody")
+                return false
             }
+        } catch (e: IOException) {
+            _errorFlow.emit("Network issue detected. Please check your internet connection and try again.")
+            Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
+            false
+        } catch (e: Exception) {
+            _errorFlow.emit("Unexpected error occurred. Please try again later.")
+            Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
+            false
+        } finally {
+            setLoading(false)
         }
     }
+
 
     private val sequenceApi = retrofit.create(GetSequenceApi::class.java)
 
     // Save encounter to database
-    fun saveEncounterToDatabase() {
-        if (_currentEncounter.value == null) {
-            return
-        }
+    suspend fun saveEncounterToDatabase(): Boolean {
+        val encounter = _currentEncounter.value ?: return false
 
-        if(_currentEncounter.value!!.triageStatus == StageStatus.COMPLETE &&
-            _currentEncounter.value!!.dischargeStatus == StageStatus.COMPLETE &&
-            _currentEncounter.value!!.informationCollectionStatus == StageStatus.COMPLETE) {
-            // If all stages are complete, set the encounter as complete
-            _currentEncounter.value = currentEncounter.value!!.copy(complete = true)
-        } else {
-            // If any stage is not complete, set the encounter as incomplete
-            _currentEncounter.value = currentEncounter.value!!.copy(complete = false)
-        }
+        _currentEncounter.value = encounter.copy(
+            complete = encounter.triageStatus == StageStatus.COMPLETE &&
+                    encounter.dischargeStatus == StageStatus.COMPLETE &&
+                    encounter.informationCollectionStatus == StageStatus.COMPLETE
+        )
 
         if (_currentEncounter.value!!.encounterUuid == null) {
-            // Create a new encounter in Database
-            submitNewEncounter()
+            // Create new encounter
+            return submitNewEncounter()
         } else {
-            // Update an existing encounter in Database
-            updateExistingEncounter()
+            // Update existing encounter
+            return updateExistingEncounter()
         }
     }
 
+
     fun generateVisitID() {
         if (_currentEncounter.value == null) {
+            viewModelScope.launch {
+                _errorFlow.emit("Encounter not created properly, please close and try again.")
+            }
             return
         }
         if (_selectedEvent.value == null) {
+            viewModelScope.launch {
+                _errorFlow.emit("No Event is selected, please select an event first.")
+            }
             return
         }
         setLoading(true)
@@ -584,15 +620,19 @@ class MediMobileViewModel: ViewModel() {
 
                         setVisitId(visitID)
                     } ?: run {
+                        _errorFlow.emit("Couldn't generate visit ID. Please try again later.")
                         Log.e("VisitID", "Response body is null")
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
+                    _errorFlow.emit("Couldn't generate visit ID. Please try again later.")
                     Log.e("VisitID", "Error response: $errorBody")
                 }
             } catch (e: IOException) {
+                _errorFlow.emit("Network issue detected. Please check your internet connection and try again.")
                 Log.e("VisitID", "Network error: ${e.localizedMessage}")
             } catch (e: Exception) {
+                _errorFlow.emit("Unexpected error occurred. Please try again later.")
                 Log.e("VisitID", "Unexpected error: ${e.localizedMessage}")
             } finally {
                 setLoading(false)
