@@ -45,6 +45,6 @@ interface SubmitEncountersApi {
 
 interface GetSequenceApi {
     // Get the next visit ID sequence number
-    @GET("api/sequence/next")
+    @GET("api/medical/form/next-visit-id")
     suspend fun getNextVisitIDSequence(): Response<SequenceResponse>
 }
