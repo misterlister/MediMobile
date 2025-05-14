@@ -1,10 +1,12 @@
 package com.example.medimobile.data.model
 
 import androidx.compose.ui.graphics.Color
+import com.example.medimobile.data.constants.DropdownConstants
 import com.example.medimobile.data.utils.convertToUTCDateString
 import com.example.medimobile.data.utils.convertToUTCDateTimeString
-import com.example.medimobile.ui.theme.MediGrey
+import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.example.medimobile.ui.theme.MediGreen
+import com.example.medimobile.ui.theme.MediGrey
 import com.example.medimobile.ui.theme.MediYellow
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
@@ -21,6 +23,7 @@ data class PatientEncounter (
     @SerializedName("departure_time") val departureTime: LocalTime? = null,
     @SerializedName("departure_dest") val departureDest: String = "",
     val location: String = "",
+    val event: String = "",
     val role: String = "",
     @SerializedName("visit_id") val visitId: String = "",
     @SerializedName("triage_acuity") val triageAcuity: String = "",
@@ -61,36 +64,58 @@ data class PatientEncounterFormData(
     @SerializedName("departure_dest") val departureDest: String,
     @SerializedName("visit_id") val visitId: String,
     val location: String,
+    val event: String,
     val role: String,
     @SerializedName("triage_acuity") val triageAcuity: String,
     @SerializedName("discharge_diagnosis") val dischargeDiagnosis: String,
     @SerializedName("patient_encounter_uuid") val encounterUuid: String? = null,
+    @SerializedName("user_uuid") val userUuid: String? = null,
     val complete: Boolean
 )
 
-fun mapToPatientEncounterFormData(encounter: PatientEncounter): PatientEncounterFormData {
+fun mapToPatientEncounterFormData(
+    encounter: PatientEncounter,
+    dropdownMappings: Map<String, List<DropdownItem>>
+): PatientEncounterFormData {
+
+    fun getDbValue(field: String, displayValue: String): String {
+        if (isDataEmptyOrNull(displayValue)) return ""
+
+        if (displayValue.startsWith(DropdownConstants.OTHER_PREFIX, ignoreCase = true)) {
+            return displayValue
+        }
+
+        val dropdownItems = dropdownMappings[field]
+        return dropdownItems?.find { it.displayValue.equals(displayValue, ignoreCase = true) }
+            ?.dbValue
+            ?: "${DropdownConstants.OTHER_PREFIX}$displayValue"
+    }
+
     val arrivalDateUTC = convertToUTCDateString(encounter.arrivalDate)
     val arrivalTimeUTC = convertToUTCDateTimeString(encounter.arrivalDate, encounter.arrivalTime)
 
     val departureDateUTC = convertToUTCDateString(encounter.departureDate)
     val departureTimeUTC = convertToUTCDateTimeString(encounter.departureDate, encounter.departureTime)
 
+
     return PatientEncounterFormData(
         age = encounter.age,
-        arrivalMethod = encounter.arrivalMethod,
+        arrivalMethod = getDbValue("arrival_method", encounter.arrivalMethod),
         arrivalDate = arrivalDateUTC,
         arrivalTime = arrivalTimeUTC,
         departureDate = departureDateUTC,
         departureTime = departureTimeUTC,
-        chiefComplaint = encounter.chiefComplaint,
+        chiefComplaint = getDbValue("chief_complaint", encounter.chiefComplaint),
         comment = encounter.comment,
-        departureDest = encounter.departureDest,
+        departureDest = getDbValue("departure_dest", encounter.departureDest),
         location = encounter.location,
-        role = encounter.role,
+        event = encounter.event,
+        role = getDbValue("role", encounter.role),
         visitId = encounter.visitId,
         triageAcuity = encounter.triageAcuity,
         dischargeDiagnosis = encounter.dischargeDiagnosis,
         encounterUuid = encounter.encounterUuid,
+        userUuid = encounter.userUuid,
         complete = encounter.complete
     )
 }
