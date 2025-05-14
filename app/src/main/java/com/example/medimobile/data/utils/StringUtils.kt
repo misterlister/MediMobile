@@ -30,11 +30,9 @@ fun String.toDateRangeOption(): DateRangeOption {
 
 // Join the parts of the visit ID together, and format them accordingly
 fun formatVisitID(category: VisitIDCategory, eventID: String, locationID: String, date: LocalDate, visitSuffix: Int): String {
-    var visitCategory = ""
-    visitCategory = when (category) {
+    val visitCategory = when (category) {
         VisitIDCategory.QR_CODE -> "Q"
         VisitIDCategory.GENERATED -> "G"
-        else -> "U" // Fallback option if the category is not recognized
     }
 
     val paddedVisitSuffix = visitSuffix.toString().padStart(VISIT_SUFFIX_LEN, '0')
