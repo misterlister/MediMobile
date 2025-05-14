@@ -34,11 +34,11 @@ import androidx.navigation.NavController
 import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.components.dropdowns.BaseDropdown
+import com.example.medimobile.ui.components.templates.ErrorPopup
 import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.components.templates.MediTextField
 import com.example.medimobile.ui.components.templates.ScreenLayout
 import com.example.medimobile.ui.theme.appTitleTextStyle
-import com.example.medimobile.ui.theme.errorMessageTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
@@ -55,7 +55,8 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
     val group = viewModel.userGroup.collectAsState().value
     val selectedEvent = viewModel.selectedEvent.collectAsState().value
 
-    var errorMessage by remember { mutableStateOf<String>("") }
+    var errorText by remember { mutableStateOf<String>("") }
+    var showErrorPopup by remember { mutableStateOf(false) }
     val loginResult by viewModel.loginResult.collectAsState()
 
     // controls which fields are selected
@@ -72,7 +73,8 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                 viewModel.setCurrentUser(username)
                 navController.navigate("mainMenu")
             }.onFailure { error ->
-                errorMessage = "Login failed: ${error.message}"
+                errorText = "${error.message}"
+                showErrorPopup = true
                 Log.e("LoginScreen", "Login failed", error)
             }
         }
@@ -96,13 +98,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                         .padding(top = 48.dp)
                 )
 
-                Text(
-                    text = errorMessage,
-                    style = errorMessageTextStyle,
-                    modifier = Modifier
-                        .fillMaxWidth(0.75f)
-                        .align(Alignment.CenterHorizontally)
-                )
+                Spacer(modifier = Modifier.weight(0.25f))
 
                 Box(
                     modifier = Modifier
@@ -182,6 +178,15 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
             }
         }
     )
+
+    if (showErrorPopup) {
+        ErrorPopup(
+            errorTitle = "Login Failed",
+            errorMessage = errorText,
+            onDismiss = { showErrorPopup = false }
+        )
+    }
+
 
     // Freeze screen and show loading indicator when loading
     LoadingIndicator(isLoading)
