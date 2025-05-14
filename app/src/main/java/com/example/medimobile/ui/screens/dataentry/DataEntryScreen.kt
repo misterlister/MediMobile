@@ -44,6 +44,7 @@ import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.getStatusColour
 import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.example.medimobile.ui.components.LoadingIndicator
+import com.example.medimobile.ui.components.templates.ErrorPopup
 import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.components.templates.ScreenLayout
 import com.example.medimobile.ui.theme.ButtonStatus
@@ -299,22 +300,10 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
         )
     }
 
-    // **Error Popup**
     if (showErrorPopup) {
-        AlertDialog(
-            onDismissRequest = { showErrorPopup = false },
-            title = { Text(text = "Error") },
-            text = { Text(errorText) },
-            confirmButton = {
-                MediButton(
-                    onClick = {
-                        // Dismiss the dialog
-                        showErrorPopup = false
-                    }
-                ) {
-                    Text("Ok")
-                }
-            },
+        ErrorPopup(
+            errorMessage = errorText,
+            onDismiss = { showErrorPopup = false }
         )
     }
 

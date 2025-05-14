@@ -42,6 +42,7 @@ import com.example.medimobile.data.utils.dateFormatter
 import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.components.inputfields.DateSelector
 import com.example.medimobile.ui.components.inputfields.QRScannerButton
+import com.example.medimobile.ui.components.templates.ErrorPopup
 import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.components.templates.MediTextField
 import com.example.medimobile.ui.components.templates.ScreenLayout
@@ -244,20 +245,9 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
     )
 
     if (showErrorPopup) {
-        AlertDialog(
-            onDismissRequest = { showErrorPopup = false },
-            title = { Text(text = "Error") },
-            text = { Text(errorText) },
-            confirmButton = {
-                MediButton(
-                    onClick = {
-                        // Dismiss the dialog
-                        showErrorPopup = false
-                    }
-                ) {
-                    Text("Ok")
-                }
-            },
+        ErrorPopup(
+            errorMessage = errorText,
+            onDismiss = { showErrorPopup = false }
         )
     }
 
