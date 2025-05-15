@@ -367,6 +367,7 @@ class MediMobileViewModel: ViewModel() {
                         400 -> detailedMessage ?: "Invalid credentials. Please check your selected Service/Location."
                         401 -> detailedMessage ?: "Invalid credentials. Please check your username and password."
                         403 -> detailedMessage ?: "Access denied. Please check your permissions."
+                        422 -> detailedMessage ?: "Invalid email format."
                         500 -> detailedMessage ?: "Server error. Please try again later."
                         else -> detailedMessage ?: "Login failed (code ${response.code()})."
                     }
