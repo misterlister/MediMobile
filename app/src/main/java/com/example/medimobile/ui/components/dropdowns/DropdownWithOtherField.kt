@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,15 +27,20 @@ import com.example.medimobile.ui.theme.placeholderTextStyle
 
 @Composable
 fun DropdownWithOtherField(
-    currentSelection: String,
+    currentSelection: String?,
     options: List<String>,
     dropdownLabel: String,
-    onSelectionChanged: (String) -> Unit
+    onSelectionChanged: (String?) -> Unit
 ) {
-    var isOtherSelected by remember { mutableStateOf(currentSelection.startsWith(DropdownConstants.OTHER_PREFIX)) }
-    var otherText by remember {
-        mutableStateOf(if (isOtherSelected) currentSelection.removePrefix(DropdownConstants.OTHER_PREFIX) else "") }
+    var otherText by remember { mutableStateOf("") }
 
+    val isOtherSelected = currentSelection?.startsWith(DropdownConstants.OTHER_PREFIX) == true
+
+    LaunchedEffect(currentSelection) {
+        if (isOtherSelected) {
+            otherText = currentSelection?.removePrefix(DropdownConstants.OTHER_PREFIX) ?: ""
+        }
+    }
     val focusManager = LocalFocusManager.current
 
     Row(
@@ -51,11 +57,8 @@ fun DropdownWithOtherField(
                 dropdownLabel = dropdownLabel,
                 onSelectionChanged = { newValue ->
                     if (newValue == "Other") {
-                        isOtherSelected = true
                         onSelectionChanged("${DropdownConstants.OTHER_PREFIX}$otherText")
                     } else {
-                        isOtherSelected = false
-                        otherText = ""
                         onSelectionChanged(newValue)
                     }
                 },
@@ -76,11 +79,8 @@ fun DropdownWithOtherField(
             modifier = Modifier
                 .weight(1f)
                 .onFocusChanged { focusState ->
-                    if (!focusState.isFocused) {
-                        // Only update if "Other" is selected and text is not empty
-                        if (isOtherSelected && otherText.isNotEmpty()) {
-                            onSelectionChanged("${DropdownConstants.OTHER_PREFIX}$otherText")
-                        }
+                    if (!focusState.isFocused && isOtherSelected && otherText.isNotEmpty()) {
+                        onSelectionChanged("${DropdownConstants.OTHER_PREFIX}$otherText")
                     }
                 },
             keyboardOptions = KeyboardOptions.Default.copy(
