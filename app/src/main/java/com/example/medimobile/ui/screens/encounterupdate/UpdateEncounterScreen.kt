@@ -283,7 +283,8 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
             onDateSelected = { newDate ->
                 dateFilter.value = newDate
                 showDateDialog = false
-            }
+            },
+            onDismiss = { showDateDialog = false }
         )
     }
 
