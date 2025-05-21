@@ -10,7 +10,8 @@ import java.time.LocalDate
 fun DateSelector(
     context: Context,
     date: LocalDate?,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
+    onDismiss: () -> Unit
 ) {
     val year = date?.year ?: LocalDate.now().year
     val month = (date?.monthValue ?: LocalDate.now().monthValue) - 1
@@ -24,6 +25,14 @@ fun DateSelector(
             },
             year, month, day
         )
+
+        datePicker.setOnCancelListener {
+            onDismiss()
+        }
+
+        datePicker.setOnDismissListener {
+            onDismiss()
+        }
 
         datePicker.show()
 
