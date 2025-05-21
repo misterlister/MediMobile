@@ -23,22 +23,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.medimobile.data.constants.DropdownConstants.NOT_SET
 
 
 @Composable
 fun BaseDropdown(
-    currentSelection: String,
+    currentSelection: String? = null,
     options: List<String>?,
     dropdownLabel: String,
-    onSelectionChanged: (String) -> Unit,
+    onSelectionChanged: (String?) -> Unit,
     width: Float = 1f,
+    notNullable: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
 
+    val displayValue = currentSelection ?: NOT_SET
+    val dropdownOptions = if (notNullable) {
+        options ?: emptyList()
+    } else {
+        listOf(NOT_SET) + (options ?: emptyList())
+    }
+
     // OutlinedTextField for the clickable area
     OutlinedTextField(
-        value = currentSelection,
+        value = displayValue,
         onValueChange = {},
         label = { Text(
             text = dropdownLabel,
@@ -61,7 +70,7 @@ fun BaseDropdown(
         modifier = modifier
             .fillMaxWidth(width)
             .clickable{ expanded = true }
-            .padding(bottom = 8.dp), // Make area clickable
+            .padding(bottom = 8.dp),
 
 
         trailingIcon = { Icon(Icons.Default.ArrowDropDown,
@@ -83,11 +92,11 @@ fun BaseDropdown(
                 onClick = {}
             )
         } else {
-            options.forEach { optionChoice ->
+            dropdownOptions.forEach { optionChoice ->
                 DropdownMenuItem(
                     text = { Text(optionChoice) },
                     onClick = {
-                        onSelectionChanged(optionChoice) // Update selection
+                        onSelectionChanged(if (optionChoice == NOT_SET) null else optionChoice)
                         expanded = false // Close dropdown after selection
                     }
                 )
