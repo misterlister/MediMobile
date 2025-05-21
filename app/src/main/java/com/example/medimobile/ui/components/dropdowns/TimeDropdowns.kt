@@ -2,32 +2,35 @@ package com.example.medimobile.ui.components.dropdowns
 
 import androidx.compose.runtime.Composable
 import com.example.medimobile.data.constants.DropdownConstants
+import com.example.medimobile.data.constants.DropdownConstants.NOT_SET
 
 
 @Composable
 fun HourDropdown(
-    currentHour: String,
-    onHourChanged: (String) -> Unit
+    currentHour: String?,
+    onHourChanged: (String?) -> Unit
 ) {
-    // Use the HOURS list from DropdownConstants
     BaseDropdown(
         currentSelection = currentHour,
-        options = DropdownConstants.HOURS,  // Pass the list of hours
-        dropdownLabel = "Hour",
-        onSelectionChanged = onHourChanged
+        options = DropdownConstants.HOURS,
+        dropdownLabel = "Select Hour",
+        onSelectionChanged = { newSelection ->
+            onHourChanged(newSelection)
+        }
     )
 }
 
 @Composable
 fun MinuteDropdown(
-    currentMinute: String,
-    onMinuteChanged: (String) -> Unit
+    currentMinute: String?,
+    onMinuteChanged: (String?) -> Unit
 ) {
-    // Use the MINUTES list from DropdownConstants
     BaseDropdown(
         currentSelection = currentMinute,
-        options = DropdownConstants.MINUTES,  // Pass the list of minutes
-        dropdownLabel = "Minute",
-        onSelectionChanged = onMinuteChanged
+        options = DropdownConstants.MINUTES,
+        dropdownLabel = "Select Minute",
+        onSelectionChanged = { newSelection ->
+            onMinuteChanged(newSelection)
+        }
     )
 }
