@@ -68,10 +68,13 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                             dropdownLabel = "Date Range",
                             onSelectionChanged = { selectedDisplayValue ->
                                 // Convert the selected display value back to DateRangeOption
-                                val selectedOption = selectedDisplayValue.toDateRangeOption()
-                                viewModel.setSelectedDateRange(selectedOption)
+                                val selectedOption = selectedDisplayValue?.toDateRangeOption()
+                                if (selectedOption != null) {
+                                    viewModel.setSelectedDateRange(selectedOption)
+                                }
                             },
-                            width = 0.8f
+                            width = 0.8f,
+                            notNullable = true
                         )
                     },
                 )

@@ -115,7 +115,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     options = selectedEvent.dropdowns.arrivalMethods.toDisplayValues(),
                     dropdownLabel = "Arrival Method",
                     onSelectionChanged = { newDisplayValue ->
-                        viewModel.setArrivalMethod(newDisplayValue)
+                        viewModel.setArrivalMethod(newDisplayValue?: "")
                         focusManager.clearFocus()
                     }
                 )

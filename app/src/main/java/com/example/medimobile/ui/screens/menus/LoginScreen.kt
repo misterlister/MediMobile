@@ -110,8 +110,11 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                         options = selectedEvent?.userGroups?.toDisplayValues(),
                         dropdownLabel = "Service",
                         onSelectionChanged = { newLocation ->
-                            viewModel.setUserGroup(newLocation)
+                            if (newLocation != null) {
+                                viewModel.setUserGroup(newLocation)
+                            }
                         },
+                        notNullable = true
                     )
                 }
 

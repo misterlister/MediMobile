@@ -49,7 +49,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     options = selectedEvent.dropdowns.roles.toDisplayValues(),
                     dropdownLabel = "Role",
                     onSelectionChanged = { newDisplayValue ->
-                        viewModel.setRole(newDisplayValue)
+                        viewModel.setRole(newDisplayValue?: "")
                         focusManager.clearFocus()
                     }
                 )
@@ -60,7 +60,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     options = selectedEvent.dropdowns.chiefComplaints.toDisplayValues(),
                     dropdownLabel = "Chief Complaint",
                     onSelectionChanged = { newDisplayValue ->
-                        viewModel.setChiefComplaint(newDisplayValue)
+                        viewModel.setChiefComplaint(newDisplayValue?: "")
                         focusManager.clearFocus()
                     }
                 )

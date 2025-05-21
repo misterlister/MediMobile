@@ -54,7 +54,7 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                     options = selectedEvent.dropdowns.departureDestinations.toDisplayValues(),
                     dropdownLabel = "Departure Destination",
                     onSelectionChanged = { newDisplayValue ->
-                        viewModel.setDepartureDest(newDisplayValue)
+                        viewModel.setDepartureDest(newDisplayValue?: "")
                         focusManager.clearFocus()
                     }
                 )

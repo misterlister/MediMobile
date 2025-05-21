@@ -14,7 +14,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.data.eventdata.EventList
-import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.data.utils.toEventNames
 import com.example.medimobile.ui.components.dropdowns.BaseDropdown
 import com.example.medimobile.ui.components.templates.DividedFormSections
@@ -49,13 +48,16 @@ fun EventSelectScreen(navController: NavController, viewModel: MediMobileViewMod
                 val formSections = listOf(
                     FormSectionData("Event") {
                         BaseDropdown(
-                            currentSelection = selectedEvent?.eventName ?: "",
+                            currentSelection = selectedEvent?.eventName,
                             options = EventList.EVENTS.toEventNames(),
                             dropdownLabel = "Event",
                             onSelectionChanged = { newEvent ->
-                                viewModel.setSelectedEvent(newEvent)
+                                if (newEvent != null) {
+                                    viewModel.setSelectedEvent(newEvent)
+                                }
                             },
-                            width = 0.8f
+                            width = 0.8f,
+                            notNullable = true
                         )
                     },
 
@@ -72,7 +74,8 @@ fun EventSelectScreen(navController: NavController, viewModel: MediMobileViewMod
                                     viewModel.setSelectedLocation(it)
                                 }
                             },
-                            width = 0.8f
+                            width = 0.8f,
+                            notNullable = true
                         )
                     },
                 )
