@@ -244,6 +244,15 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         } else if (currentEncounter.visitId == "") {
                             showErrorPopup = true
                             errorText = "Visit ID field must be filled"
+                        } else if (
+                            currentEncounter.departureDate != null
+                            && (currentEncounter.departureDate.isBefore(currentEncounter.arrivalDate)
+                                || (currentEncounter.departureDate.isEqual(currentEncounter.arrivalDate)
+                                    && currentEncounter.departureTime != null
+                                    && currentEncounter.departureTime.isBefore(currentEncounter.arrivalTime)))
+                        ) {
+                            showErrorPopup = true
+                            errorText = "Departure time must be after Arrival time"
                         } else {
                             showSavePopup = true
                         }
