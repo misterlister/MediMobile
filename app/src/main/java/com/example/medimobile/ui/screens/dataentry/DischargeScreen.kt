@@ -45,7 +45,8 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                     onTimeChange = {
                         viewModel.setDepartureTime(it)
                         focusManager.clearFocus()
-                    }
+                    },
+                    emptyHighlight = true
                 )
             },
             FormSectionData("Departure Destination") {
@@ -56,7 +57,8 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setDepartureDest(newDisplayValue?: "")
                         focusManager.clearFocus()
-                    }
+                    },
+                    emptyHighlight = true
                 )
             },
             FormSectionData("Discharge Diagnosis") {

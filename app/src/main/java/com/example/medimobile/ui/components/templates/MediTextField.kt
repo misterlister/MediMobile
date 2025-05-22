@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.VisualTransformation
+import com.example.medimobile.ui.util.highlightIf
 
 @Composable
 fun MediTextField(
@@ -25,6 +26,7 @@ fun MediTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     isError: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    emptyHighlight: Boolean = false,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -53,7 +55,7 @@ fun MediTextField(
         keyboardActions = keyboardActions,
         isError = isError,
         colors = colors,
-        modifier = modifier,
+        modifier = modifier.highlightIf(emptyHighlight && value.isEmpty()),
         visualTransformation = visualTransformation,
         interactionSource = interactionSource
     )

@@ -52,7 +52,8 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     onTimeChange = {
                         viewModel.setArrivalTime(it)
                         focusManager.clearFocus()
-                    }
+                    },
+                    emptyHighlight = true
                 )
             },
             FormSectionData("Visit ID") {
@@ -68,7 +69,8 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                         viewModel.setVisitId(scannedValue)
                     },
                         modifier = Modifier.weight(0.5f),
-                        enabled = isEnabled
+                        enabled = isEnabled,
+                        emptyHighlight = encounter.visitId == ""
                     )
 
                     MediTextField(
@@ -90,12 +92,14 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                         ),
                         singleLine = true,
                         modifier = Modifier.weight(1f),
-                        enabled = isEnabled
+                        enabled = isEnabled,
+                        emptyHighlight = encounter.visitId == ""
                     )
 
                     MediButton(onClick = { viewModel.generateVisitID() },
                         modifier = Modifier.weight(0.5f),
-                        enabled = isEnabled
+                        enabled = isEnabled,
+                        emptyHighlight = encounter.visitId == ""
                     ) {
                         Text(
                             text = "Gen. Visit ID",
@@ -106,7 +110,14 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
             FormSectionData("Triage") {
                 TriageRadioButtons(
                     selectedOption = encounter.triageAcuity,
-                    onOptionSelected = { viewModel.setTriageAcuity(it) }
+                    onOptionSelected = {
+                        if (it == null) {
+                            viewModel.setTriageAcuity("")
+                        } else {
+                            viewModel.setTriageAcuity(it)
+                        }
+                    },
+                    emptyHighlight = true
                 )
             },
             FormSectionData("Arrival Method") {
@@ -117,7 +128,8 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setArrivalMethod(newDisplayValue?: "")
                         focusManager.clearFocus()
-                    }
+                    },
+                    emptyHighlight = true
                 )
             }
         )

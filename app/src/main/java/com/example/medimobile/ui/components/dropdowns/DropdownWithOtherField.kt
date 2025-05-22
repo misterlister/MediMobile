@@ -24,13 +24,15 @@ import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.constants.DropdownConstants
 import com.example.medimobile.ui.components.templates.MediTextField
 import com.example.medimobile.ui.theme.placeholderTextStyle
+import com.example.medimobile.ui.util.highlightIf
 
 @Composable
 fun DropdownWithOtherField(
     currentSelection: String?,
     options: List<String>,
     dropdownLabel: String,
-    onSelectionChanged: (String?) -> Unit
+    emptyHighlight: Boolean = false,
+    onSelectionChanged: (String?) -> Unit,
 ) {
     var otherText by remember { mutableStateOf("") }
 
@@ -47,7 +49,7 @@ fun DropdownWithOtherField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Box(modifier = Modifier.weight(1f)) {
@@ -62,6 +64,7 @@ fun DropdownWithOtherField(
                         onSelectionChanged(newValue)
                     }
                 },
+                emptyHighlight = emptyHighlight
             )
         }
         MediTextField(
@@ -77,6 +80,7 @@ fun DropdownWithOtherField(
                 )
             },
             modifier = Modifier
+                .highlightIf(emptyHighlight && isOtherSelected && otherText.isEmpty())
                 .weight(1f)
                 .onFocusChanged { focusState ->
                     if (!focusState.isFocused && isOtherSelected && otherText.isNotEmpty()) {

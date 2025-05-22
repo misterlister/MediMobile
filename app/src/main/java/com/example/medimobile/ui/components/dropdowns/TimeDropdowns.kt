@@ -2,12 +2,12 @@ package com.example.medimobile.ui.components.dropdowns
 
 import androidx.compose.runtime.Composable
 import com.example.medimobile.data.constants.DropdownConstants
-import com.example.medimobile.data.constants.DropdownConstants.NOT_SET
 
 
 @Composable
 fun HourDropdown(
     currentHour: String?,
+    emptyHighlight: Boolean = false,
     onHourChanged: (String?) -> Unit
 ) {
     BaseDropdown(
@@ -16,13 +16,15 @@ fun HourDropdown(
         dropdownLabel = "Select Hour",
         onSelectionChanged = { newSelection ->
             onHourChanged(newSelection)
-        }
+        },
+        emptyHighlight = emptyHighlight
     )
 }
 
 @Composable
 fun MinuteDropdown(
     currentMinute: String?,
+    highlight: Boolean = false,
     onMinuteChanged: (String?) -> Unit
 ) {
     BaseDropdown(
@@ -31,6 +33,7 @@ fun MinuteDropdown(
         dropdownLabel = "Select Minute",
         onSelectionChanged = { newSelection ->
             onMinuteChanged(newSelection)
-        }
+        },
+        emptyHighlight = highlight
     )
 }

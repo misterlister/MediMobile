@@ -14,7 +14,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.example.medimobile.ui.components.templates.MediTextField
 
 @Composable
-fun AgeInputField(age: Int?, onAgeChange: (Int?) -> Unit) {
+fun AgeInputField(
+    age: Int?,
+    emptyHighlight: Boolean = false,
+    onAgeChange: (Int?) -> Unit
+) {
     val interactionSource = remember { MutableInteractionSource() }
 
     // FocusManager to close the keyboard when Done is pressed
@@ -37,6 +41,7 @@ fun AgeInputField(age: Int?, onAgeChange: (Int?) -> Unit) {
             }
         ),
         singleLine = true,
-        interactionSource = interactionSource
+        interactionSource = interactionSource,
+        emptyHighlight = emptyHighlight
     )
 }

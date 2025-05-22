@@ -40,7 +40,8 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     age = encounter.age,
                     onAgeChange = { newAge ->
                         viewModel.setAge(newAge)
-                    }
+                    },
+                    emptyHighlight = true
                 )
             },
             FormSectionData("Role") {
@@ -51,7 +52,8 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setRole(newDisplayValue?: "")
                         focusManager.clearFocus()
-                    }
+                    },
+                    emptyHighlight = true
                 )
             },
             FormSectionData("Chief Complaint") {
@@ -62,7 +64,8 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setChiefComplaint(newDisplayValue?: "")
                         focusManager.clearFocus()
-                    }
+                    },
+                    emptyHighlight = true
                 )
             },
             FormSectionData("Comments") {
