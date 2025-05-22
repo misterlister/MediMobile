@@ -8,6 +8,9 @@ val MediGreen = Color(0xFF1ACE1A) // Green colour to represent confirmation
 val MediYellow = Color(0xFFEFCF50) // Yellow colour to represent incomplete sections
 val MediGrey = Color(0xFFBBBBBB) // Grey colour for inactive buttons/menus
 
+val LightSecondaryBlue = Color(0xFF06539A) // Darker blue to accentuate MediBlue in light mode
+val DarkSecondaryBlue = Color(0xFF329AF8) // Lighter blue to accentuate MediBlue in dark mode
+
 val LightBackground = Color(0xFFF0F9FF) // Almost white
 val LightVariant = Color(0xFFE4EEF7) // Very light blue
 val LightBanner = Color(0xFF9FB8D5) // Light blue/grey for light mode banners

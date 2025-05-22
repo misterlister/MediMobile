@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 
 private val DarkColorScheme = darkColorScheme(
     primary = MediBlue,
+    secondary = DarkSecondaryBlue,
     onPrimary = TextOnBlue,
     background = DarkBackground,
     onBackground = TextOnDark,
@@ -31,6 +32,7 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = MediBlue,
+    secondary = LightSecondaryBlue,
     onPrimary = TextOnBlue,
     background = LightBackground,
     onBackground = TextOnLight,
@@ -118,8 +120,22 @@ fun bannerColor(): Color {
     return if (isSystemInDarkTheme()) DarkBanner else LightBanner
 }
 
-enum class ButtonStatus(val backgroundColor: Color, val contentColor: Color) {
-    DEFAULT(MediBlue, TextOnBlue),
-    CONFIRM(MediGreen, TextOnGreen),
-    WARNING(MediRed, TextOnRed),
+enum class ButtonStatus {
+    DEFAULT, CONFIRM, WARNING, SELECTED;
+
+    @Composable
+    fun backgroundColor(): Color = when (this) {
+        DEFAULT -> MaterialTheme.colorScheme.primary
+        CONFIRM -> MediGreen
+        WARNING -> MediRed
+        SELECTED -> MaterialTheme.colorScheme.primaryContainer
+    }
+
+    @Composable
+    fun contentColor(): Color = when (this) {
+        DEFAULT -> MaterialTheme.colorScheme.onPrimary
+        CONFIRM -> TextOnGreen
+        WARNING -> TextOnRed
+        SELECTED -> MaterialTheme.colorScheme.onPrimaryContainer
+    }
 }
