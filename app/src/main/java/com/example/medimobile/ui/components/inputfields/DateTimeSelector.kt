@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.example.medimobile.ui.components.dropdowns.HourDropdown
 import com.example.medimobile.ui.components.dropdowns.MinuteDropdown
 import com.example.medimobile.ui.components.templates.MediButton
+import com.example.medimobile.ui.theme.ButtonStatus
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -30,6 +31,7 @@ import java.time.LocalTime
 fun DateTimeSelector(
     date: LocalDate?,
     time: LocalTime?,
+    emptyHighlight: Boolean = false,
     onDateChange: (LocalDate?) -> Unit,
     onTimeChange: (LocalTime?) -> Unit
     ) {
@@ -67,14 +69,17 @@ fun DateTimeSelector(
         ) {
             Text(text = "Current Date & Time", fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            MediButton(onClick = {
-                val nowDate = LocalDate.now()
-                val nowTime = LocalTime.now()
-                selectedHour.value = "%02d".format(nowTime.hour)
-                selectedMinute.value = "%02d".format(nowTime.minute)
-                onDateChange(nowDate)
-                onTimeChange(nowTime)
-            }) {
+            MediButton(
+                onClick = {
+                    val nowDate = LocalDate.now()
+                    val nowTime = LocalTime.now()
+                    selectedHour.value = "%02d".format(nowTime.hour)
+                    selectedMinute.value = "%02d".format(nowTime.minute)
+                    onDateChange(nowDate)
+                    onTimeChange(nowTime)
+                },
+                emptyHighlight = emptyHighlight && (date == null || time == null)
+            ) {
                 Text(text = "Now")
             }
         }
@@ -87,7 +92,11 @@ fun DateTimeSelector(
         ) {
             Text(text = "Manual Selection", fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            MediButton(onClick = { dateSelectorState.value = true }) {
+            MediButton(
+                onClick = { dateSelectorState.value = true },
+                emptyHighlight = emptyHighlight && date == null,
+                status = ButtonStatus.SELECTED
+            ) {
                 Text(text = date?.toString() ?: "Select Date")
             }
         }
@@ -98,21 +107,23 @@ fun DateTimeSelector(
                 .weight(0.8f)
                 .wrapContentHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(0.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             HourDropdown(
                 currentHour = selectedHour.value,
                 onHourChanged = { newHour ->
                     selectedHour.value = newHour
                     updateTime(newHour, selectedMinute.value)
-                }
+                },
+                emptyHighlight = emptyHighlight
             )
             MinuteDropdown(
                 currentMinute = selectedMinute.value,
                 onMinuteChanged = { newMinute ->
                     selectedMinute.value = newMinute
                     updateTime(selectedHour.value, newMinute)
-                }
+                },
+                highlight = emptyHighlight
             )
         }
     }
