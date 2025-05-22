@@ -327,6 +327,7 @@ class MediMobileViewModel: ViewModel() {
         .registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer())
         .registerTypeAdapter(LocalTime::class.java, LocalTimeDeserializer())
         .registerTypeAdapter(PatientEncounter::class.java, PatientEncounterDeserializer(getDropdownMappings()))
+        .serializeNulls()
         .create()
 
     private val retrofit = Retrofit.Builder()
