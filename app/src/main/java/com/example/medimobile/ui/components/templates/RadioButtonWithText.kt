@@ -1,17 +1,34 @@
 package com.example.medimobile.ui.components.templates
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 
 @Composable
-fun RadioButtonWithText(option: String, selectedOption: String?, onOptionSelected: (String) -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+fun RadioButtonWithText(
+    option: String,
+    selectedOption: String?,
+    onOptionSelected: (String?) -> Unit
+) {
+    val isSelected = selectedOption?.equals(option, ignoreCase = true) == true
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
         RadioButton(
-            selected = selectedOption?.equals(option, ignoreCase = true) == true,
-            onClick = { onOptionSelected(option) }
+            selected = isSelected,
+            onClick = {
+                if (isSelected) {
+                    onOptionSelected(null) // Deselect if clicked again
+                } else {
+                    onOptionSelected(option)
+                }
+            }
         )
         Text(text = option)
     }
