@@ -42,7 +42,7 @@ fun EventSelectScreen(navController: NavController, viewModel: MediMobileViewMod
 
                 Text(
                     text = "Event Select",
-                    style = screenTitleTextStyle,
+                    style = screenTitleTextStyle(),
                     modifier = Modifier.padding(vertical = 32.dp))
 
                 val formSections = listOf(

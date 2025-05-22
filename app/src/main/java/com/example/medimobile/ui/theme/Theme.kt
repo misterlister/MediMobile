@@ -47,41 +47,54 @@ private val LightColorScheme = lightColorScheme(
     onSecondaryContainer = TextOnLight,
 )
 
+// **Composable styles with dynamic colours**
+
 // Custom TextStyle for app title text
-val appTitleTextStyle = TextStyle(
-    fontWeight = FontWeight.Bold,
-    fontSize = 44.sp,
-    textAlign = TextAlign.Center,
-    shadow = Shadow(
-        color = Color.Black.copy(alpha = 0.5f),
-        offset = Offset(4f, 4f),
-        blurRadius = 7f
+@Composable
+fun appTitleTextStyle(): TextStyle {
+    return TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 44.sp,
+        textAlign = TextAlign.Center,
+        shadow = Shadow(
+            color = dynamicShadowColor(),
+            offset = Offset(4f, 4f),
+            blurRadius = 7f
+        )
     )
-)
+}
 
 // Custom TextStyle for section title text
-val sectionTitleTextStyle = TextStyle(
-    fontWeight = FontWeight.Bold,
-    fontSize = 24.sp,
-    textAlign = TextAlign.Center,
-    shadow = Shadow(
-        color = Color.Black.copy(alpha = 0.3f),
-        offset = Offset(2f, 2f),
-        blurRadius = 5f
+@Composable
+fun sectionTitleTextStyle(): TextStyle {
+    return TextStyle (
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        textAlign = TextAlign.Center,
+        shadow = Shadow(
+            color = dynamicShadowColor(),
+            offset = Offset(2f, 2f),
+            blurRadius = 5f
+        )
     )
-)
+}
 
 // Custom TextStyle for screen title text
-val screenTitleTextStyle = TextStyle(
-    fontWeight = FontWeight.Bold,
-    fontSize = 36.sp,
-    textAlign = TextAlign.Center,
-    shadow = Shadow(
-        color = Color.Black.copy(alpha = 0.4f),
-        offset = Offset(3f, 3f),
-        blurRadius = 6f
+@Composable
+fun screenTitleTextStyle(): TextStyle {
+    return TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 36.sp,
+        textAlign = TextAlign.Center,
+        shadow = Shadow(
+            color = dynamicShadowColor(),
+            offset = Offset(3f, 3f),
+            blurRadius = 6f
+        )
     )
-)
+}
+
+// **Basic styles without dynamic colours**
 
 // Custom TextStyle for username and DocID text
 val userNameTextStyle = TextStyle(
@@ -118,6 +131,16 @@ fun MediMobileTheme(
 @Composable
 fun bannerColor(): Color {
     return if (isSystemInDarkTheme()) DarkBanner else LightBanner
+}
+
+// Get corresponding shadow color for light/dark mode
+@Composable
+fun dynamicShadowColor(): Color {
+    return if (isSystemInDarkTheme()) {
+        Color.White.copy(alpha = 0.3f) // light glow on dark background
+    } else {
+        Color.Black.copy(alpha = 0.3f) // soft shadow on light background
+    }
 }
 
 enum class ButtonStatus {

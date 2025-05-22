@@ -26,7 +26,7 @@ fun FormSection(
     ) {
         if (title != null) {
             Spacer(modifier = Modifier.height(spacing))
-            Text(text = title, style = sectionTitleTextStyle)
+            Text(text = title, style = sectionTitleTextStyle())
         }
         Spacer(modifier = Modifier.height(spacing))
         content(modifier)

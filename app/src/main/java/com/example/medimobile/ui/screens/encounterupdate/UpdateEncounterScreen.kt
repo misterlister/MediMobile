@@ -124,7 +124,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                 // **Title**
                 Text(
                     text = "Update Encounter",
-                    style = screenTitleTextStyle,
+                    style = screenTitleTextStyle(),
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
 

@@ -56,7 +56,7 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
 
                 Text(
                     text = "Settings",
-                    style = screenTitleTextStyle,
+                    style = screenTitleTextStyle(),
                     modifier = Modifier.padding(vertical = 32.dp)
                 )
 

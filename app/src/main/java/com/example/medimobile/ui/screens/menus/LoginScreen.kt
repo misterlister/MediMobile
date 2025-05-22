@@ -92,7 +92,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
 
                 Text(
                     text = "MediMobile",
-                    style = appTitleTextStyle,
+                    style = appTitleTextStyle(),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(top = 48.dp)

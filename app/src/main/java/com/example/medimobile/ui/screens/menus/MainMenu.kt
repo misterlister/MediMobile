@@ -65,7 +65,7 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
 
                 Text(
                     text = "MediMobile",
-                    style = appTitleTextStyle
+                    style = appTitleTextStyle()
                 )
 
                 Spacer(modifier = Modifier.weight(0.5f))
