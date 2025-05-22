@@ -36,11 +36,14 @@ fun DropdownWithOtherField(
 ) {
     var otherText by remember { mutableStateOf("") }
 
-    val isOtherSelected = currentSelection?.startsWith(DropdownConstants.OTHER_PREFIX) == true
+    var currentDropdownSelection by remember { mutableStateOf(currentSelection?.let {
+        if (it.startsWith(DropdownConstants.OTHER_PREFIX)) "Other" else it }) }
+
+    val isOtherSelected = currentDropdownSelection == "Other"
 
     LaunchedEffect(currentSelection) {
-        if (isOtherSelected) {
-            otherText = currentSelection?.removePrefix(DropdownConstants.OTHER_PREFIX) ?: ""
+        if (currentSelection?.startsWith(DropdownConstants.OTHER_PREFIX) == true) {
+            otherText = currentSelection.removePrefix(DropdownConstants.OTHER_PREFIX)
         }
     }
     val focusManager = LocalFocusManager.current
@@ -58,10 +61,13 @@ fun DropdownWithOtherField(
                 options = options,
                 dropdownLabel = dropdownLabel,
                 onSelectionChanged = { newValue ->
-                    if (newValue == "Other") {
+                    currentDropdownSelection = newValue
+                    if (newValue != "Other") {
+                        onSelectionChanged(newValue)
+                    } else if (otherText.isNotBlank()) {
                         onSelectionChanged("${DropdownConstants.OTHER_PREFIX}$otherText")
                     } else {
-                        onSelectionChanged(newValue)
+                        onSelectionChanged(null)
                     }
                 },
                 emptyHighlight = emptyHighlight
@@ -83,7 +89,7 @@ fun DropdownWithOtherField(
                 .highlightIf(emptyHighlight && isOtherSelected && otherText.isEmpty())
                 .weight(1f)
                 .onFocusChanged { focusState ->
-                    if (!focusState.isFocused && isOtherSelected && otherText.isNotEmpty()) {
+                    if (!focusState.isFocused && isOtherSelected && otherText.isNotBlank()) {
                         onSelectionChanged("${DropdownConstants.OTHER_PREFIX}$otherText")
                     }
                 },
