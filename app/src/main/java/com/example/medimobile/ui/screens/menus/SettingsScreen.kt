@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -75,6 +76,15 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                             },
                             width = 0.8f,
                             notNullable = true
+                        )
+                    },
+
+                    FormSectionData("Low Connectivity Mode") {
+                        Switch(
+                            checked = viewModel.lowConnectivityMode.value,
+                            onCheckedChange = { isChecked ->
+                                viewModel.setLowConnectivityMode(isChecked)
+                            }
                         )
                     },
                 )
