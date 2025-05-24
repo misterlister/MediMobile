@@ -1,9 +1,10 @@
 package com.example.medimobile.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.medimobile.data.constants.ApiConstants
 import com.example.medimobile.data.constants.IDConstants
 import com.example.medimobile.data.eventdata.EventList
 import com.example.medimobile.data.model.DropdownItem
@@ -16,23 +17,18 @@ import com.example.medimobile.data.remote.AuthApi
 import com.example.medimobile.data.remote.ErrorResponse
 import com.example.medimobile.data.remote.GetEncountersApi
 import com.example.medimobile.data.remote.GetSequenceApi
-import com.example.medimobile.data.remote.LocalDateDeserializer
-import com.example.medimobile.data.remote.LocalTimeDeserializer
 import com.example.medimobile.data.remote.LoginRequest
-import com.example.medimobile.data.remote.PatientEncounterDeserializer
 import com.example.medimobile.data.remote.SubmitEncountersApi
+import com.example.medimobile.data.remote.createRetrofit
 import com.example.medimobile.data.utils.DateRangeOption
 import com.example.medimobile.data.utils.formatVisitID
 import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalTime
@@ -57,6 +53,15 @@ class MediMobileViewModel: ViewModel() {
 
     fun setSelectedDateRange(dateRange: DateRangeOption) {
         _selectedDateRange.value = dateRange
+    }
+
+    // Boolean to track if low connectivity mode is enabled
+    private val _lowConnectivityMode = mutableStateOf(false)
+    val lowConnectivityMode: State<Boolean> = _lowConnectivityMode
+
+    fun setLowConnectivityMode(enabled: Boolean) {
+        _lowConnectivityMode.value = enabled
+        updateRetrofitAndInterfaces() // Update Retrofit with new low connectivity mode setting
     }
 
     private fun getMinDate(): String? {
@@ -101,6 +106,7 @@ class MediMobileViewModel: ViewModel() {
     // Set the selected event
     fun setSelectedEvent(eventName: String) {
         _selectedEvent.value = EventList.EVENTS.find { it.eventName == eventName }
+        updateRetrofitAndInterfaces() // Update Retrofit with new dropdown mappings
     }
 
 
@@ -322,24 +328,25 @@ class MediMobileViewModel: ViewModel() {
         )
     }
 
-    // custom deserializers to fix date/time parsing
-    private val gson = GsonBuilder()
-        .registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer())
-        .registerTypeAdapter(LocalTime::class.java, LocalTimeDeserializer())
-        .registerTypeAdapter(PatientEncounter::class.java, PatientEncounterDeserializer(getDropdownMappings()))
-        .serializeNulls()
-        .create()
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(ApiConstants.BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .build()
+    // **Retrofit and API interfaces**
 
+    private var retrofit = createRetrofit(_lowConnectivityMode.value, getDropdownMappings())
+    private var authApi = retrofit.create(AuthApi::class.java)
+    private var getApi = retrofit.create(GetEncountersApi::class.java)
+    private var postApi = retrofit.create(SubmitEncountersApi::class.java)
+    private var sequenceApi = retrofit.create(GetSequenceApi::class.java)
+
+    // Update the Retrofit instance when the low connectivity mode changes
+    private fun updateRetrofitAndInterfaces() {
+        retrofit = createRetrofit(_lowConnectivityMode.value, getDropdownMappings())
+        authApi = retrofit.create(AuthApi::class.java)
+        getApi = retrofit.create(GetEncountersApi::class.java)
+        postApi = retrofit.create(SubmitEncountersApi::class.java)
+        sequenceApi = retrofit.create(GetSequenceApi::class.java)
+    }
 
     // **Login functions**
-
-
-    private val authApi = retrofit.create(AuthApi::class.java)
 
     private val _loginResult = MutableStateFlow<Result<String>?>(null)
     val loginResult: StateFlow<Result<String>?> = _loginResult
@@ -401,8 +408,6 @@ class MediMobileViewModel: ViewModel() {
     }
 
     // **Database functions**
-
-    private val getApi = retrofit.create(GetEncountersApi::class.java)
 
     private var _encounterList = MutableStateFlow<List<PatientEncounter>>(emptyList())
     val encounterList: StateFlow<List<PatientEncounter>> get() = _encounterList
@@ -483,8 +488,6 @@ class MediMobileViewModel: ViewModel() {
         }
     }
 
-    private val postApi = retrofit.create(SubmitEncountersApi::class.java)
-
     private suspend fun submitNewEncounter(): Boolean {
         setLoading(true)
         return try {
@@ -523,7 +526,6 @@ class MediMobileViewModel: ViewModel() {
             setLoading(false)
         }
     }
-
 
     private suspend fun updateExistingEncounter(): Boolean {
         setLoading(true)
@@ -568,8 +570,6 @@ class MediMobileViewModel: ViewModel() {
         }
     }
 
-
-    private val sequenceApi = retrofit.create(GetSequenceApi::class.java)
 
     // Save encounter to database
     suspend fun saveEncounterToDatabase(): Boolean {
