@@ -6,6 +6,7 @@ import com.example.medimobile.data.utils.dbValueToDisplayValue
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import com.google.gson.JsonNull
 import java.lang.reflect.Type
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -20,26 +21,52 @@ class PatientEncounterDeserializer(
     override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): PatientEncounter {
         val jsonObject = json.asJsonObject
 
-        fun field(fieldName: String) = jsonObject.get(fieldName)?.asString
+        // Get field content for a non-nullable field
+        fun field(fieldName: String): String =
+            jsonObject.get(fieldName)
+                ?.takeIf { it !is JsonNull }
+                ?.asString
+                ?: ""
+
+        // Get field content for a nullable field
+        fun nullableField(fieldName: String): String? =
+            jsonObject.get(fieldName)
+                ?.takeIf { it !is JsonNull }
+                ?.asString
+
+        // Get field content for a nullable int
+        fun nullableIntField(fieldName: String): Int? =
+            jsonObject.get(fieldName)
+                ?.takeIf { it.isJsonPrimitive && it !is JsonNull }
+                ?.asInt
+
+        // Get field content for a nullable LocalDate
+        fun nullableLocalDateField(fieldName: String): LocalDate? =
+            context?.deserialize(jsonObject.get(fieldName), LocalDate::class.java)
+
+        // Get field content for a nullable LocalTime
+        fun nullableLocalTimeField(fieldName: String): LocalTime? =
+            context?.deserialize(jsonObject.get(fieldName), LocalTime::class.java)
+
 
         return PatientEncounter(
-            age = jsonObject.get("age")?.takeIf { it.isJsonPrimitive }?.asInt,
+            age = nullableIntField("age"),
             arrivalMethod = dbValueToDisplayValue(field("arrival_method"), "arrival_method", dropdownMappings),
-            arrivalDate = context?.deserialize(jsonObject.get("arrival_date"), LocalDate::class.java),
-            arrivalTime = context?.deserialize(jsonObject.get("arrival_time"), LocalTime::class.java),
+            arrivalDate = nullableLocalDateField("arrival_date"),
+            arrivalTime = nullableLocalTimeField("arrival_time"),
             chiefComplaint = dbValueToDisplayValue(field("chief_complaint"), "chief_complaint", dropdownMappings),
-            comment = field("comment") ?: "",
-            departureDate = context?.deserialize(jsonObject.get("departure_date"), LocalDate::class.java),
-            departureTime = context?.deserialize(jsonObject.get("departure_time"), LocalTime::class.java),
+            comment = field("comment"),
+            departureDate = nullableLocalDateField("departure_date"),
+            departureTime = nullableLocalTimeField("departure_time"),
             departureDest = dbValueToDisplayValue(field("departure_dest"), "departure_dest", dropdownMappings),
-            location = field("location") ?: "",
-            event = field("event") ?: "",
+            location = field("location"),
+            event = field("event"),
             role = dbValueToDisplayValue(field("role"), "role", dropdownMappings),
-            visitId = field("visit_id") ?: "",
-            triageAcuity = field("triage_acuity") ?: "",
-            dischargeDiagnosis = field("discharge_diagnosis") ?: "",
-            encounterUuid = field("patient_encounter_uuid") ?: "",
-            userUuid = field("user_uuid") ?: "",
+            visitId = field("visit_id"),
+            triageAcuity = field("triage_acuity"),
+            dischargeDiagnosis = field("discharge_diagnosis"),
+            encounterUuid = nullableField("patient_encounter_uuid"),
+            userUuid = nullableField("user_uuid"),
             complete = jsonObject.get("complete")?.asBoolean ?: false
         )
     }
@@ -49,25 +76,21 @@ class PatientEncounterDeserializer(
 // Deserializer for LocalDate
 class LocalDateDeserializer : JsonDeserializer<LocalDate?> {
     override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): LocalDate? {
-        val dateTimeString = json?.asString
-        return if (dateTimeString != null) {
-            try {
-                // Parse the datetime string
-                val utcDateTime = LocalDateTime.parse(dateTimeString)
+        val dateTimeString = json?.asString ?: return null
+        return try {
+            // Parse the datetime string
+            val utcDateTime = LocalDateTime.parse(dateTimeString)
 
-                // Convert to ZonedDateTime with UTC
-                val utcZonedDateTime = utcDateTime.atZone(ZoneOffset.UTC)
+            // Convert to ZonedDateTime with UTC
+            val utcZonedDateTime = utcDateTime.atZone(ZoneOffset.UTC)
 
-                // Convert UTC to system default
-                val localZonedDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault())
+            // Convert UTC to system default
+            val localZonedDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault())
 
-                // Get LocalDate in the local time zone
-                localZonedDateTime.toLocalDate()
-            } catch (e: Exception) {
-                println("Error parsing date: $e")
-                null
-            }
-        } else {
+            // Get LocalDate in the local time zone
+            localZonedDateTime.toLocalDate()
+        } catch (e: Exception) {
+            println("Error parsing date: $e")
             null
         }
     }
@@ -76,25 +99,21 @@ class LocalDateDeserializer : JsonDeserializer<LocalDate?> {
 // Deserializer for LocalTime
 class LocalTimeDeserializer : JsonDeserializer<LocalTime?> {
     override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): LocalTime? {
-        val dateTimeString = json?.asString
-        return if (dateTimeString != null) {
-            try {
-                // Parse as LocalDateTime
-                val utcDateTime = LocalDateTime.parse(dateTimeString)
+        val dateTimeString = json?.asString ?: return null
+        return try {
+            // Parse as LocalDateTime
+            val utcDateTime = LocalDateTime.parse(dateTimeString)
 
-                // Convert to ZonedDateTime with UTC
-                val utcZonedDateTime = utcDateTime.atZone(ZoneOffset.UTC)
+            // Convert to ZonedDateTime with UTC
+            val utcZonedDateTime = utcDateTime.atZone(ZoneOffset.UTC)
 
-                // Convert to system default time zone
-                val localZonedDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault())
+            // Convert to system default time zone
+            val localZonedDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault())
 
-                // Extract the time part in the local time zone
-                localZonedDateTime.toLocalTime()
-            } catch (e: Exception) {
-                println("Error parsing time: $e")
-                null
-            }
-        } else {
+            // Extract the time part in the local time zone
+            localZonedDateTime.toLocalTime()
+        } catch (e: Exception) {
+            println("Error parsing time: $e")
             null
         }
     }
