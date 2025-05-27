@@ -3,11 +3,13 @@ package com.example.medimobile.data.utils
 import com.example.medimobile.data.model.DropdownItem
 import com.example.medimobile.data.model.PatientEncounter
 import org.junit.Test
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import java.time.LocalDate
 import java.time.LocalTime
 
-class MapToPatientEncounterFormDataTest {
+class PatientEncounterUtilsTest {
+
+    // Mapping tests
     @Test
     fun `map display values to db Values`() {
         val encounter = PatientEncounter(
@@ -119,9 +121,6 @@ class MapToPatientEncounterFormDataTest {
         assertEquals("", result.role)
         assertEquals("", result.departureDest)
     }
-}
-
-class DropdownMappingTest {
 
     // Tests for displayToDbValue
 
@@ -177,5 +176,4 @@ class DropdownMappingTest {
         assertEquals("", dbValueToDisplayValue(null, "arrival_method", emptyMap()))
         assertEquals("", dbValueToDisplayValue("", "arrival_method", emptyMap()))
     }
-
 }
