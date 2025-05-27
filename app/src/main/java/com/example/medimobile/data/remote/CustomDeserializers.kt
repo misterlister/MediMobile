@@ -2,8 +2,7 @@ package com.example.medimobile.data.remote
 
 import com.example.medimobile.data.model.DropdownItem
 import com.example.medimobile.data.model.PatientEncounter
-import com.example.medimobile.data.constants.DropdownConstants
-import com.example.medimobile.data.utils.isDataEmptyOrNull
+import com.example.medimobile.data.utils.dbValueToDisplayValue
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -21,47 +20,26 @@ class PatientEncounterDeserializer(
     override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): PatientEncounter {
         val jsonObject = json.asJsonObject
 
-        // Get equivalent display value from the dbvalue
-        fun getMappedValue(field: String): String {
-
-            val dbValue = jsonObject.get(field)?.asString ?: ""
-
-            if (isDataEmptyOrNull(dbValue)) {
-                return "" // Return empty string if the value is null or empty
-            }
-
-            // Check if the dbValue starts with the OTHER_PREFIX, if so return it as is
-            if (dbValue.startsWith(DropdownConstants.OTHER_PREFIX, ignoreCase = true)) {
-                return dbValue
-            }
-
-            // Get the dropdown items for the given field
-            val dropdownItems = dropdownMappings[field] ?: return "${DropdownConstants.OTHER_PREFIX}$dbValue"
-
-            // Find the matching dropdown item, or else return "Other: $dbValue"
-            return dropdownItems.find { it.dbValue.equals(dbValue, ignoreCase = true) }
-                ?.displayValue
-                ?: "${DropdownConstants.OTHER_PREFIX}$dbValue"
-        }
+        fun field(fieldName: String) = jsonObject.get(fieldName)?.asString
 
         return PatientEncounter(
             age = jsonObject.get("age")?.takeIf { it.isJsonPrimitive }?.asInt,
-            arrivalMethod = getMappedValue("arrival_method"),
+            arrivalMethod = dbValueToDisplayValue(field("arrival_method"), "arrival_method", dropdownMappings),
             arrivalDate = context?.deserialize(jsonObject.get("arrival_date"), LocalDate::class.java),
             arrivalTime = context?.deserialize(jsonObject.get("arrival_time"), LocalTime::class.java),
-            chiefComplaint = getMappedValue("chief_complaint"),
-            comment = jsonObject.get("comment")?.asString ?: "",
+            chiefComplaint = dbValueToDisplayValue(field("chief_complaint"), "chief_complaint", dropdownMappings),
+            comment = field("comment") ?: "",
             departureDate = context?.deserialize(jsonObject.get("departure_date"), LocalDate::class.java),
             departureTime = context?.deserialize(jsonObject.get("departure_time"), LocalTime::class.java),
-            departureDest = getMappedValue("departure_dest"),
-            location = jsonObject.get("location")?.asString ?: "",
-            event = jsonObject.get("event")?.asString ?: "",
-            role = getMappedValue("role"),
-            visitId = jsonObject.get("visit_id")?.asString ?: "",
-            triageAcuity = jsonObject.get("triage_acuity")?.asString ?: "",
-            dischargeDiagnosis = jsonObject.get("discharge_diagnosis")?.asString ?: "",
-            encounterUuid = jsonObject.get("patient_encounter_uuid")?.asString ?: "",
-            userUuid = jsonObject.get("user_uuid")?.asString ?: "",
+            departureDest = dbValueToDisplayValue(field("departure_dest"), "departure_dest", dropdownMappings),
+            location = field("location") ?: "",
+            event = field("event") ?: "",
+            role = dbValueToDisplayValue(field("role"), "role", dropdownMappings),
+            visitId = field("visit_id") ?: "",
+            triageAcuity = field("triage_acuity") ?: "",
+            dischargeDiagnosis = field("discharge_diagnosis") ?: "",
+            encounterUuid = field("patient_encounter_uuid") ?: "",
+            userUuid = field("user_uuid") ?: "",
             complete = jsonObject.get("complete")?.asBoolean ?: false
         )
     }
