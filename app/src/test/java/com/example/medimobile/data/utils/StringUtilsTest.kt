@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 class StringUtilsTest {
 
-    // Date range conversion tests
+    // **Date range conversion tests**
 
     @Test
     fun `toDisplayValue returns correct string for each DateRangeOption`() {
@@ -32,7 +32,7 @@ class StringUtilsTest {
         "invalid".toDateRangeOption()
     }
 
-    // Format Visit ID tests
+    // **Format Visit ID tests**
 
     @Test
     fun `formatVisitID returns correct string for QR_CODE category`() {

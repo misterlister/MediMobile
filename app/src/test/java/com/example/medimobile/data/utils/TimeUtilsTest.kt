@@ -34,7 +34,7 @@ class TimeUtilsTest {
         TimeZone.setDefault(originalTimeZone)
     }
 
-    // Format arrival time tests
+    // **Format arrival time tests**
 
     @Test
     fun `should return NOT_SET when both date and time are null`() {
@@ -71,7 +71,7 @@ class TimeUtilsTest {
         assertEquals("27/05/25 - 09:15", result)
     }
 
-    // Convert to UTC date string tests
+    // **Convert to UTC date string tests**
 
     @Test
     fun `should return null when date is null`() {
@@ -97,6 +97,7 @@ class TimeUtilsTest {
         assertEquals(expectedUTC, utcDateTime)
     }
 
+    // **Convert to UTC date time string tests**
 
     @Test
     fun `should return null when date is null, time is not`() {
@@ -133,7 +134,7 @@ class TimeUtilsTest {
         assertEquals(expectedUTC, actualUTC)
     }
 
-    // Get UTC year suffix tests
+    // **Get UTC year suffix tests**
 
     @Test
     fun `should return null instead of string when date is null`() {

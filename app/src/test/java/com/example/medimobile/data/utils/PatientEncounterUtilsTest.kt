@@ -9,7 +9,7 @@ import java.time.LocalTime
 
 class PatientEncounterUtilsTest {
 
-    // Mapping tests
+    // **Mapping tests**
     @Test
     fun `map display values to db Values`() {
         val encounter = PatientEncounter(
@@ -122,7 +122,7 @@ class PatientEncounterUtilsTest {
         assertEquals("", result.departureDest)
     }
 
-    // Tests for displayToDbValue
+    // **Tests for displayToDbValue**
 
     @Test
     fun `maps display to db correctly`() {
@@ -149,7 +149,7 @@ class PatientEncounterUtilsTest {
         assertEquals("", displayValueToDbValue("", "role", emptyMap()))
     }
 
-    // Tests for dbValueToDisplayValue
+    // **Tests for dbValueToDisplayValue**
 
     @Test
     fun `maps db to display correctly`() {
