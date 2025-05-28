@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotSame
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -135,6 +136,13 @@ class MediMobileViewModelTest {
 
         val selectedEvent = viewModel.selectedEvent.first()
         assertEquals(newEvent, selectedEvent)
+    }
+
+    @Test
+    fun `setSelectedEvent sets selectedEvent to null when name does not match`() = runTest {
+        viewModel.setSelectedEvent("Not a real event")
+
+        assertNull(viewModel.selectedEvent.value)
     }
 
     @Test
@@ -610,7 +618,45 @@ class MediMobileViewModelTest {
         assertFalse(viewModel.dataChanged.value)
     }
 
+    // Dropdown mapping tests
 
+    @Test
+    fun `getDropdownMappings returns empty map when no event is selected`() = runTest {
+        viewModel.setSelectedEvent("Not a real event")
+        assertNull(viewModel.selectedEvent.value)
 
+        val result = viewModel.getDropdownMappings()
+        assertTrue(result.isEmpty())
+    }
 
+    @Test
+    fun `getDropdownMappings returns correct values for Event 2`() = runTest {
+        viewModel.setSelectedEvent("Event 2")
+        val mappings = viewModel.getDropdownMappings()
+
+        assertEquals(
+            listOf(
+                DropdownItem("method3", "Method 3"),
+                DropdownItem("method4", "Method 4")),
+            mappings["arrival_method"]
+        )
+        assertEquals(
+            listOf(
+                DropdownItem("dest3", "Destination 3"),
+                DropdownItem("dest4", "Destination 4")),
+            mappings["departure_dest"]
+        )
+        assertEquals(
+            listOf(
+                DropdownItem("role3", "Role 3"),
+                DropdownItem("role4", "Role 4")),
+            mappings["role"]
+        )
+        assertEquals(
+            listOf(
+                DropdownItem("complaint3", "Complaint 3"),
+                DropdownItem("complaint4", "Complaint 4")),
+            mappings["chief_complaint"]
+        )
+    }
 }
