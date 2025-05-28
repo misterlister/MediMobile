@@ -39,6 +39,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import com.example.medimobile.data.constants.UIConstants.NO_USER
 import com.example.medimobile.data.utils.dateFormatter
+import com.example.medimobile.data.utils.toDisplayValue
 import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.components.inputfields.DateSelector
 import com.example.medimobile.ui.components.inputfields.QRScannerButton
@@ -68,6 +69,11 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
     val lifecycleOwner = LocalLifecycleOwner.current
     var showErrorPopup by remember { mutableStateOf(false) }
     var errorText by remember { mutableStateOf("") }
+
+    val selectedRange by viewModel.selectedDateRange.collectAsState()
+
+    val displayRangeText = "Display Range: " + selectedRange.toDisplayValue()
+
 
     LaunchedEffect(Unit) {
         viewModel.errorFlow
@@ -132,6 +138,12 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                 MediButton(onClick = { viewModel.loadEncountersFromDatabase() }) {
                     Text(text = "Refresh Table")
                 }
+
+                Text(
+                    text = displayRangeText,
+                    style = userNameTextStyle,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
 
                 Box(
                     modifier = Modifier
