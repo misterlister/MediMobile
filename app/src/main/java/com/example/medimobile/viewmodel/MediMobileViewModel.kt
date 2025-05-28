@@ -1,6 +1,8 @@
 package com.example.medimobile.viewmodel
 
 import android.util.Log
+import androidx.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting.Companion.PRIVATE
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,7 +14,6 @@ import com.example.medimobile.data.model.MassGatheringEvent
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.model.ServiceLocation
 import com.example.medimobile.data.model.StageStatus
-import com.example.medimobile.data.model.mapToPatientEncounterFormData
 import com.example.medimobile.data.remote.AuthApi
 import com.example.medimobile.data.remote.ErrorResponse
 import com.example.medimobile.data.remote.GetEncountersApi
@@ -23,6 +24,7 @@ import com.example.medimobile.data.remote.createRetrofit
 import com.example.medimobile.data.utils.DateRangeOption
 import com.example.medimobile.data.utils.formatVisitID
 import com.example.medimobile.data.utils.isDataEmptyOrNull
+import com.example.medimobile.data.utils.mapToPatientEncounterFormData
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -317,8 +319,8 @@ class MediMobileViewModel: ViewModel() {
     }
 
     // **API functions**
-
-    private fun getDropdownMappings(): Map<String, List<DropdownItem>> {
+    @VisibleForTesting(otherwise = PRIVATE)
+    internal fun getDropdownMappings(): Map<String, List<DropdownItem>> {
         val event = _selectedEvent.value ?: return emptyMap()
         return mapOf(
             "arrival_method" to event.dropdowns.arrivalMethods,
