@@ -6,7 +6,7 @@ import com.example.medimobile.data.model.MassGatheringEvent
 import com.example.medimobile.data.model.ServiceLocation
 
 object EventList {
-    val EVENTS: List<MassGatheringEvent> = listOf(
+    var EVENTS: List<MassGatheringEvent> = listOf(
         MassGatheringEvent(
             eventName = "Shambhala",
             eventID = "SHA",
