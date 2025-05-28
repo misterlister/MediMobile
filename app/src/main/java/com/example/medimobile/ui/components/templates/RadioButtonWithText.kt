@@ -18,7 +18,7 @@ fun RadioButtonWithText(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(1.dp)
     ) {
         RadioButton(
             selected = isSelected,
