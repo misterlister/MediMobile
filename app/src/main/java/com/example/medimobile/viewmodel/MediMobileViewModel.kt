@@ -36,13 +36,13 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 
-class MediMobileViewModel: ViewModel() {
+open class MediMobileViewModel: ViewModel() {
 
     // Keeps track of loading state (blocks user interaction when true)
     private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
+    open val isLoading: StateFlow<Boolean> = _isLoading
 
-    private fun setLoading(loading: Boolean) {
+    open fun setLoading(loading: Boolean) {
         _isLoading.value = loading
     }
 
@@ -86,7 +86,7 @@ class MediMobileViewModel: ViewModel() {
     val currentUser: StateFlow<String?> = _currentUser
     private var userUuid: String? = null
     private val _userGroup = MutableStateFlow<String?>(null)
-    val userGroup: StateFlow<String?> = _userGroup
+    open val userGroup: StateFlow<String?> = _userGroup
 
     // Set the current user
     fun setCurrentUser(user: String) {
@@ -94,7 +94,7 @@ class MediMobileViewModel: ViewModel() {
     }
 
     // Set the user group
-    fun setUserGroup(group: String) {
+    open fun setUserGroup(group: String) {
         _userGroup.value = group
     }
 
@@ -103,10 +103,10 @@ class MediMobileViewModel: ViewModel() {
 
     // State to hold the selected event
     private val _selectedEvent = MutableStateFlow<MassGatheringEvent?>(null)
-    val selectedEvent: StateFlow<MassGatheringEvent?> = _selectedEvent
+    open val selectedEvent: StateFlow<MassGatheringEvent?> = _selectedEvent
 
     // Set the selected event
-    fun setSelectedEvent(eventName: String) {
+    open fun setSelectedEvent(eventName: String) {
         _selectedEvent.value = EventList.EVENTS.find { it.eventName == eventName }
         updateRetrofitAndInterfaces() // Update Retrofit with new dropdown mappings
     }
@@ -351,11 +351,11 @@ class MediMobileViewModel: ViewModel() {
     // **Login functions**
 
     private val _loginResult = MutableStateFlow<Result<String>?>(null)
-    val loginResult: StateFlow<Result<String>?> = _loginResult
+    open val loginResult: StateFlow<Result<String>?> = _loginResult
 
     private var authToken: String? = null // holds authentication token
 
-    fun login(email: String, password: String, userGroup: String) {
+    open fun login(email: String, password: String, userGroup: String) {
         setLoading(true)
         viewModelScope.launch {
             try {
@@ -402,9 +402,13 @@ class MediMobileViewModel: ViewModel() {
         return "Bearer $authToken"
     }
 
+    fun clearLoginResult() {
+        _loginResult.value = null
+    }
+
     fun logout() {
         authToken = null  // Clear token when logging out
-        _loginResult.value = null
+        clearLoginResult()
         _userGroup.value = null
         _currentUser.value = null
     }
