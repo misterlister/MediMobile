@@ -1,11 +1,9 @@
 package com.example.medimobile.viewmodel
 
+import com.example.medimobile.testdata.TestData.mockEvents
 import com.example.medimobile.data.eventdata.EventList
 import com.example.medimobile.data.model.DropdownItem
-import com.example.medimobile.data.model.EventDropdowns
-import com.example.medimobile.data.model.MassGatheringEvent
 import com.example.medimobile.data.model.PatientEncounter
-import com.example.medimobile.data.model.ServiceLocation
 import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.utils.DateRangeOption
 import kotlinx.coroutines.flow.first
@@ -16,6 +14,7 @@ import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import java.time.LocalDate
 import java.time.LocalTime
@@ -23,74 +22,17 @@ import java.time.LocalTime
 class MediMobileViewModelTest {
     private lateinit var viewModel: MediMobileViewModel
 
-    private val mockEvents: List<MassGatheringEvent> = listOf(
-        MassGatheringEvent(
-            eventName = "Event 1",
-            locations = listOf(
-                ServiceLocation("Location 1-1", "L1-1"),
-                ServiceLocation("Location 1-2", "L1-2")
-            ),
-            eventID = "EV1",
-            userGroups = listOf(
-                DropdownItem("group1", "Group 1"),
-                DropdownItem("group2", "Group 2")
-            ),
-            dropdowns = EventDropdowns(
-                arrivalMethods = listOf(
-                    DropdownItem("method1", "Method 1"),
-                    DropdownItem("method2", "Method 2")
-                ),
-                departureDestinations = listOf(
-                    DropdownItem("dest1", "Destination 1"),
-                    DropdownItem("dest2", "Destination 2")
-                ),
-                roles = listOf(
-                    DropdownItem("role1", "Role 1"),
-                    DropdownItem("role2", "Role 2")
-                ),
-                chiefComplaints = listOf(
-                    DropdownItem("complaint1", "Complaint 1"),
-                    DropdownItem("complaint2", "Complaint 2")
-                )
-            )
-        ),
-        MassGatheringEvent(
-            eventName = "Event 2",
-            locations = listOf(
-                ServiceLocation("Location 2-1", "L2-1"),
-                ServiceLocation("Location 2-2", "L2-2")
-            ),
-            eventID = "EV2",
-            userGroups = listOf(
-                DropdownItem("group3", "Group 3"),
-                DropdownItem("group4", "Group 4")
-            ),
-            dropdowns = EventDropdowns(
-                arrivalMethods = listOf(
-                    DropdownItem("method3", "Method 3"),
-                    DropdownItem("method4", "Method 4")
-                ),
-                departureDestinations = listOf(
-                    DropdownItem("dest3", "Destination 3"),
-                    DropdownItem("dest4", "Destination 4")
-                ),
-                roles = listOf(
-                    DropdownItem("role3", "Role 3"),
-                    DropdownItem("role4", "Role 4")
-                ),
-                chiefComplaints = listOf(
-                    DropdownItem("complaint3", "Complaint 3"),
-                    DropdownItem("complaint4", "Complaint 4")
-                )
-            )
-        )
-    )
+    companion object {
+        @JvmStatic
+        @BeforeClass
+        fun setupClass() {
+            EventList.EVENTS = mockEvents // override the events list before the testing
+        }
+    }
 
     @Before
     fun setup() {
-        // temporarily override the event list
-        EventList.EVENTS = mockEvents
-
+        // reset the viewmodel before each test
         viewModel = MediMobileViewModel()
     }
 
