@@ -11,15 +11,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.medimobile.ui.navigation.AppNavGraph
 import com.example.medimobile.ui.screens.dataentry.DataEntryScreen
 import com.example.medimobile.ui.screens.encounterupdate.UpdateEncounterScreen
-import com.example.medimobile.ui.screens.menus.LoginScreen
 import com.example.medimobile.ui.screens.menus.MainMenuScreen
-import com.example.medimobile.ui.screens.menus.EventSelectScreen
-import com.example.medimobile.ui.screens.menus.SettingsScreen
 import com.example.medimobile.ui.theme.MediMobileTheme
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
@@ -37,17 +33,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = "login"
-                    ) {
-                        composable("login") { LoginScreen(navController, viewModel) }
-                        composable("mainMenu") { MainMenuScreen(navController, viewModel) }
-                        composable("dataEntry") { DataEntryScreen(navController, viewModel) }
-                        composable("eventSelect") { EventSelectScreen(navController, viewModel) }
-                        composable("updateEncounter") { UpdateEncounterScreen(navController, viewModel) }
-                        composable("settings") { SettingsScreen(navController, viewModel) }
-                    }
+                    AppNavGraph(navController = navController, viewModel = viewModel)
                 }
             }
         }
