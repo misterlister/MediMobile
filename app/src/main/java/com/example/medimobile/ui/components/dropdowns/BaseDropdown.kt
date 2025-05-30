@@ -53,7 +53,7 @@ fun BaseDropdown(
     }
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth(width)
     ) {
         Text(
@@ -68,7 +68,7 @@ fun BaseDropdown(
             tonalElevation = 1.dp,
             color = colorScheme.primaryContainer,
             border = BorderStroke(1.dp, colorScheme.outline),
-            modifier = Modifier
+            modifier = modifier
                 .highlightIf(emptyHighlight && isDataEmptyOrNull(currentSelection))
                 .fillMaxWidth()
                 .clickable { expanded = true }

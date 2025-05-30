@@ -12,10 +12,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 
 @Composable
-fun LoadingIndicator(isLoading: Boolean) {
+fun LoadingIndicator(isLoading: Boolean, modifier: Modifier = Modifier) {
     if (isLoading) {
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 // Set the background color to semi-transparent black
                 .background(Color(0x80000000))

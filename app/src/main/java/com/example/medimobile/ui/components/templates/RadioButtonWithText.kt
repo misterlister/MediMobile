@@ -6,12 +6,14 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun RadioButtonWithText(
     option: String,
     selectedOption: String?,
+    modifier: Modifier = Modifier,
     onOptionSelected: (String?) -> Unit
 ) {
     val isSelected = selectedOption?.equals(option, ignoreCase = true) == true
@@ -28,7 +30,8 @@ fun RadioButtonWithText(
                 } else {
                     onOptionSelected(option)
                 }
-            }
+            },
+            modifier = modifier
         )
         Text(text = option)
     }

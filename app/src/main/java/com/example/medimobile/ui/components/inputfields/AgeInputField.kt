@@ -17,6 +17,7 @@ import com.example.medimobile.ui.components.templates.MediTextField
 fun AgeInputField(
     age: Int?,
     emptyHighlight: Boolean = false,
+    modifier: Modifier = Modifier,
     onAgeChange: (Int?) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -30,7 +31,7 @@ fun AgeInputField(
             onAgeChange(newText.toIntOrNull())
         },
         placeholder = { Text("Enter age") },
-        modifier = Modifier.fillMaxWidth(0.4f),
+        modifier = modifier.fillMaxWidth(0.4f),
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Done),

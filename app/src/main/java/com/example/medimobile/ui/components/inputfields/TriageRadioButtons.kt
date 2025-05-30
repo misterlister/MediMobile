@@ -15,6 +15,7 @@ import com.example.medimobile.ui.util.highlightIf
 fun TriageRadioButtons(
     selectedOption: String?,
     emptyHighlight: Boolean = false,
+    modifier: Modifier = Modifier,
     onOptionSelected: (String?) -> Unit
 ) {
     val options = DropdownConstants.TRIAGE_LEVELS
@@ -29,6 +30,7 @@ fun TriageRadioButtons(
             RadioButtonWithText(
                 option = option,
                 selectedOption = selectedOption,
+                modifier = modifier,
                 onOptionSelected = onOptionSelected
             )
         }

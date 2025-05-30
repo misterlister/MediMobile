@@ -32,6 +32,8 @@ fun DropdownWithOtherField(
     options: List<String>,
     dropdownLabel: String,
     emptyHighlight: Boolean = false,
+    modifier: Modifier = Modifier,
+    otherFieldModifier: Modifier = Modifier,
     onSelectionChanged: (String?) -> Unit,
 ) {
     var otherText by remember { mutableStateOf("") }
@@ -70,7 +72,8 @@ fun DropdownWithOtherField(
                         onSelectionChanged(null)
                     }
                 },
-                emptyHighlight = emptyHighlight
+                emptyHighlight = emptyHighlight,
+                modifier = modifier
             )
         }
         MediTextField(
@@ -85,7 +88,7 @@ fun DropdownWithOtherField(
                     style = placeholderTextStyle
                 )
             },
-            modifier = Modifier
+            modifier = otherFieldModifier
                 .highlightIf(emptyHighlight && isOtherSelected && otherText.isEmpty())
                 .weight(1f)
                 .onFocusChanged { focusState ->

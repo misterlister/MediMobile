@@ -33,6 +33,8 @@ fun DateTimeSelector(
     date: LocalDate?,
     time: LocalTime?,
     emptyHighlight: Boolean = false,
+    hourModifier: Modifier = Modifier,
+    minuteModifier: Modifier = Modifier,
     onDateChange: (LocalDate?) -> Unit,
     onTimeChange: (LocalTime?) -> Unit
     ) {
@@ -120,7 +122,8 @@ fun DateTimeSelector(
                     selectedHour.value = newHour
                     updateTime(newHour, selectedMinute.value)
                 },
-                emptyHighlight = emptyHighlight
+                emptyHighlight = emptyHighlight,
+                modifier = hourModifier
             )
             MinuteDropdown(
                 currentMinute = selectedMinute.value,
@@ -128,7 +131,8 @@ fun DateTimeSelector(
                     selectedMinute.value = newMinute
                     updateTime(selectedHour.value, newMinute)
                 },
-                highlight = emptyHighlight
+                highlight = emptyHighlight,
+                modifier = minuteModifier
             )
         }
     }
