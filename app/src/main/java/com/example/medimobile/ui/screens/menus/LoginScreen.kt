@@ -25,6 +25,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -72,6 +73,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
             result.onSuccess {
                 viewModel.setCurrentUser(username)
                 navController.navigate("mainMenu")
+                viewModel.clearLoginResult()
             }.onFailure { error ->
                 errorText = "${error.message}"
                 showErrorPopup = true
@@ -114,7 +116,8 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                                 viewModel.setUserGroup(newLocation)
                             }
                         },
-                        notNullable = true
+                        notNullable = true,
+                        modifier = Modifier.testTag("serviceDropdown")
                     )
                 }
 
@@ -138,6 +141,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                     modifier = Modifier
                         .focusRequester(usernameFocusRequester)
                         .fillMaxWidth(0.75f)
+                        .testTag("usernameTextField")
                 )
 
                 MediTextField(
@@ -157,10 +161,13 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                     modifier = Modifier
                         .focusRequester(passwordFocusRequester)
                         .fillMaxWidth(0.75f)
+                        .testTag("passwordTextField")
                 )
 
                 // Login Button
-                MediButton(onClick = { viewModel.login(username, password, group ?: "") }) {
+                MediButton(
+                    onClick = { viewModel.login(username, password, group ?: "") },
+                    modifier = Modifier.testTag("loginButton")) {
                     Text("Login")
                 }
 
@@ -175,6 +182,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
             ) {
                 MediButton(
                     onClick = { navController.navigate("eventSelect") },
+                    modifier = Modifier.testTag("eventSelectButton")
                 ) {
                     Text(text = "Event Select")
                 }
@@ -192,7 +200,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
 
 
     // Freeze screen and show loading indicator when loading
-    LoadingIndicator(isLoading)
+    LoadingIndicator(isLoading, Modifier.testTag("loadingIndicator"))
 }
 
 
