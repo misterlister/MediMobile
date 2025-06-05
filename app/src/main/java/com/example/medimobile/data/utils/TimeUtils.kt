@@ -1,8 +1,8 @@
 package com.example.medimobile.data.utils
 
-import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.constants.DropdownConstants.NOT_SET
 import com.example.medimobile.data.constants.IDConstants.YEAR_LEN
+import com.example.medimobile.data.model.PatientEncounter
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -28,13 +28,6 @@ fun formatArrivalDateTime(encounter: PatientEncounter): String {
     return "$datePart - $timePart"
 }
 
-fun convertToUTCDateString(date: LocalDate?): String? {
-    return date?.atStartOfDay(ZoneId.systemDefault())
-        ?.withZoneSameInstant(ZoneOffset.UTC)
-        ?.toLocalDateTime()
-        ?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-}
-
 fun convertToUTCDateTimeString(date: LocalDate?, time: LocalTime?): String? {
     if (date == null || time == null) return null
     return LocalDateTime.of(date, time)
@@ -42,6 +35,18 @@ fun convertToUTCDateTimeString(date: LocalDate?, time: LocalTime?): String? {
         .withZoneSameInstant(ZoneOffset.UTC)
         .toLocalDateTime()
         .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+}
+
+fun convertUTCStringToLocalDateTime(dateTimeString: String): LocalDateTime? {
+    return try {
+        val utcDateTime = LocalDateTime.parse(dateTimeString)
+        val utcZoned = utcDateTime.atZone(ZoneOffset.UTC)
+        val localZoned = utcZoned.withZoneSameInstant(ZoneId.systemDefault())
+        localZoned.toLocalDateTime()
+    } catch (e: Exception) {
+        println("Error parsing datetime string '$dateTimeString': $e")
+        null
+    }
 }
 
 fun getUTCYearSuffix(date: LocalDate?): String? {
