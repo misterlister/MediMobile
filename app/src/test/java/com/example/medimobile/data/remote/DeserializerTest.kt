@@ -2,6 +2,7 @@ package com.example.medimobile.data.remote
 
 import com.example.medimobile.data.model.DropdownItem
 import com.example.medimobile.data.model.PatientEncounter
+import com.example.medimobile.data.utils.convertUTCStringToLocalDateTime
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.junit.After
@@ -12,7 +13,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.util.TimeZone
 
 class DeserializerTest {
@@ -46,12 +47,10 @@ class DeserializerTest {
     val goodJSON = """{
         "age": 30,
         "arrival_method": "med-transport",
-        "arrival_date": "2025-05-01T06:00:00",
-        "arrival_time": "2025-05-01T06:00:00",
+        "arrival_datetime": "2025-05-01T06:00:00",
         "chief_complaint": "allergic-reaction",
         "comment": "Patient feeling very unwell.",
-        "departure_date": "2025-05-01T09:00:00",
-        "departure_time": "2025-05-01T09:00:00",
+        "departure_datetime": "2025-05-01T09:00:00",
         "departure_dest": "hospital-netv",
         "location": "Main Medical",
         "event": "Shambhala",
@@ -81,10 +80,8 @@ class DeserializerTest {
     }""".trimIndent()
 
     val invalidDateJSON = """{
-        "arrival_date": "not-a-date",
-        "arrival_time": "13:00PM", 
-        "departure_date": null,
-        "departure_time": ""
+        "arrival_datetime": "not-a-date",
+        "departure_datetime": null
     }""".trimIndent()
 
     val unusualContentJSON = """{
@@ -116,8 +113,6 @@ class DeserializerTest {
         TimeZone.setDefault(TimeZone.getTimeZone("America/Vancouver"))
 
         gson = GsonBuilder()
-            .registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer())
-            .registerTypeAdapter(LocalTime::class.java, LocalTimeDeserializer())
             .registerTypeAdapter(PatientEncounter::class.java, PatientEncounterDeserializer(dropdownMappings))
             .create()
     }
@@ -129,28 +124,24 @@ class DeserializerTest {
     }
 
     @Test
-    fun `UTC datetime converts to correct LocalDate in PST time zone`() {
-        // UTC time: May 1, 2025, 06:00 → PDT should be Apr 30, 2025, 23:00
-        val json = "\"2025-05-01T06:00:00\""
-        val parsedDate = gson.fromJson(json, LocalDate::class.java)
+    fun `UTC datetime converts to correct LocalDateTime in local time zone`() {
+        val utcString = "2025-05-01T06:00:00"
+        val localDateTime = convertUTCStringToLocalDateTime(utcString)
 
-        val expectedDate = LocalDate.of(2025, 4, 30)
-        assertEquals(expectedDate, parsedDate)
+        val expectedDateTime = LocalDateTime.of(2025, 4, 30, 23, 0)
+        assertEquals(expectedDateTime, localDateTime)
     }
 
     @Test
     fun `invalid format returns null`() {
-        val json = "\"not-a-date\""
-        val parsedDate = gson.fromJson(json, LocalDate::class.java)
-
-        assertEquals(null, parsedDate)
+        val result = convertUTCStringToLocalDateTime("not-a-date")
+        assertNull(result)
     }
 
     @Test
     fun `null input returns null`() {
-        val parsedDate = gson.fromJson("null", LocalDate::class.java)
-
-        assertEquals(null, parsedDate)
+        val result = convertUTCStringToLocalDateTime("null")
+        assertNull(result)
     }
 
     @Test
@@ -159,7 +150,7 @@ class DeserializerTest {
         assertEquals(30, encounter.age)
         assertEquals("Medical Transport", encounter.arrivalMethod)
         assertEquals("Allergic Reaction", encounter.chiefComplaint)
-        assertEquals(LocalDate.of(2025, 4, 30), encounter.arrivalDate) // PDT shift
+        assertEquals(LocalDate.of(2025, 4, 30), encounter.arrivalDate)
         assertTrue(encounter.complete)
     }
 
