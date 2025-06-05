@@ -7,8 +7,6 @@ import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.LocalDate
-import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 
 
@@ -21,8 +19,6 @@ fun createRetrofit(isLowConnectivity: Boolean, dropdownMappings: Map<String, Lis
         .build()
 
     val gson = GsonBuilder()
-        .registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer())
-        .registerTypeAdapter(LocalTime::class.java, LocalTimeDeserializer())
         .registerTypeAdapter(PatientEncounter::class.java, PatientEncounterDeserializer(dropdownMappings))
         .serializeNulls()
         .create()
