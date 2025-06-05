@@ -75,22 +75,22 @@ class TimeUtilsTest {
 
     @Test
     fun `should return null when date is null`() {
-        val result = convertToUTCDateString(null)
+        val result = convertToUTCDateTimeString(null, null)
         assertNull(result)
     }
 
     @Test
     fun `should convert local date to correct UTC ISO date string`() {
         val localDate = LocalDate.of(2025, 5, 27)
-        val result = convertToUTCDateString(localDate)
+        val localTime = LocalTime.of(14, 30)
+
+        val result = convertToUTCDateTimeString(date = localDate, time = localTime)
         assertNotNull(result)
 
-        // Parse result into a LocalDateTime
         val utcDateTime = LocalDateTime.parse(result, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 
-        // Calculate expected UTC datetime
-        val expectedUTC = localDate
-            .atStartOfDay(ZoneId.of("America/Vancouver"))
+        val expectedUTC = LocalDateTime.of(localDate, localTime)
+            .atZone(ZoneId.of("America/Vancouver"))
             .withZoneSameInstant(ZoneOffset.UTC)
             .toLocalDateTime()
 
