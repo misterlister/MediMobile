@@ -10,21 +10,14 @@ fun mapToPatientEncounterFormData(
     dropdownMappings: Map<String, List<DropdownItem>>
 ): PatientEncounterFormData {
 
-
-    val arrivalDateUTC = convertToUTCDateString(encounter.arrivalDate)
-    val arrivalTimeUTC = convertToUTCDateTimeString(encounter.arrivalDate, encounter.arrivalTime)
-
-    val departureDateUTC = convertToUTCDateString(encounter.departureDate)
-    val departureTimeUTC = convertToUTCDateTimeString(encounter.departureDate, encounter.departureTime)
-
+    val arrivalDateTimeUTC = convertToUTCDateTimeString(encounter.arrivalDate, encounter.arrivalTime)
+    val departureDateTimeUTC = convertToUTCDateTimeString(encounter.departureDate, encounter.departureTime)
 
     return PatientEncounterFormData(
         age = encounter.age,
         arrivalMethod = displayValueToDbValue(encounter.arrivalMethod, "arrival_method", dropdownMappings),
-        arrivalDate = arrivalDateUTC,
-        arrivalTime = arrivalTimeUTC,
-        departureDate = departureDateUTC,
-        departureTime = departureTimeUTC,
+        arrivalDateTime = arrivalDateTimeUTC,
+        departureDateTime = departureDateTimeUTC,
         chiefComplaint = displayValueToDbValue(encounter.chiefComplaint, "chief_complaint", dropdownMappings),
         comment = encounter.comment,
         departureDest = displayValueToDbValue(encounter.departureDest, "departure_dest", dropdownMappings),
