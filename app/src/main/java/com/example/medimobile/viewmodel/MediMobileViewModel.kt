@@ -416,7 +416,7 @@ open class MediMobileViewModel: ViewModel() {
     // **Database functions**
 
     private var _encounterList = MutableStateFlow<List<PatientEncounter>>(emptyList())
-    val encounterList: StateFlow<List<PatientEncounter>> get() = _encounterList
+    open val encounterList: StateFlow<List<PatientEncounter>> get() = _encounterList
 
     fun findEncounterByVisitId(visitId: String): PatientEncounter? {
         return _encounterList.value.find { it.visitId == visitId }
@@ -442,7 +442,7 @@ open class MediMobileViewModel: ViewModel() {
     }
 
     // Load encounters from database
-    fun loadEncountersFromDatabase() {
+    open fun loadEncountersFromDatabase() {
         // Clear the list
         _encounterList.value = emptyList()
         setLoading(true)
