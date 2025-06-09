@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -135,7 +136,10 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                 )
 
                 // **Refresh Button**
-                MediButton(onClick = { viewModel.loadEncountersFromDatabase() }) {
+                MediButton(
+                    onClick = { viewModel.loadEncountersFromDatabase() },
+                    modifier = Modifier.testTag("refreshButton")
+                ) {
                     Text(text = "Refresh Table")
                 }
 
@@ -158,7 +162,8 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                             // Ensure that the record is marked as submitted
                             viewModel.markAsSubmitted()
                             navController.navigate("dataEntry")
-                        }
+                        },
+                        modifier = Modifier.testTag("encounterTable")
                     )
                 }
 
@@ -176,14 +181,18 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                             alertValue.value = scannedValue
                             showNotFoundDialog.value = true
                         }
-                    }
+                    },
+                    modifier = Modifier.testTag("qrButton")
                 )
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    MediButton(onClick = { showDateDialog = true } ) {
+                    MediButton(
+                        onClick = { showDateDialog = true },
+                        modifier = Modifier.testTag("dateFilterButton")
+                    ) {
                         Text(text = dateFilter.value?.format(dateFormatter) ?: "Filter by Date")
                     }
 
@@ -192,7 +201,8 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                     MediButton(
                         onClick = { dateFilter.value = null },
                         status = ButtonStatus.WARNING,
-                        enabled = dateFilter.value != null // Disable when no date is selected
+                        enabled = dateFilter.value != null, // Disable when no date is selected
+                        modifier = Modifier.testTag("clearDateFilterButton")
                     ) {
                         Text(text = "X")
                     }
@@ -217,7 +227,9 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                                 focusManager.clearFocus()
                             }
                         ),
-                        modifier = Modifier.fillMaxWidth(0.6f)
+                        modifier = Modifier
+                            .fillMaxWidth(0.6f)
+                            .testTag("visitIdFilter")
                     )
 
                     Spacer(modifier = Modifier.width(16.dp))
@@ -225,7 +237,8 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                     MediButton(
                         onClick = { visitIdFilter.value = "" },
                         status = ButtonStatus.WARNING,
-                        enabled = visitIdFilter.value.isNotEmpty() // Disable when no visit ID is entered
+                        enabled = visitIdFilter.value.isNotEmpty(), // Disable when no visit ID is entered
+                        modifier = Modifier.testTag("clearVisitIdFilterButton")
                     ) {
                         Text(text = "X")
                     }
@@ -241,7 +254,8 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                         style = TextStyle(fontWeight = FontWeight.Bold))
                     Checkbox(
                         checked = showCompleted.value,
-                        onCheckedChange = { showCompleted.value = it }
+                        onCheckedChange = { showCompleted.value = it },
+                        modifier = Modifier.testTag("showCompletedCheckbox")
                     )
                 }
             }
@@ -249,7 +263,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
         bottomBar = {
             MediButton(
                 onClick = { navController.navigate("mainMenu") },
-                modifier = Modifier
+                modifier = Modifier.testTag("updateEncounterBackButton")
             ) {
                 Text(text = "Back")
             }
