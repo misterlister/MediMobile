@@ -32,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.testTag
 
 // Cell Headers for the Encounter Table
 @Composable
@@ -81,6 +82,7 @@ fun TableCell(text: String, modifier: Modifier = Modifier) {
 fun EncounterTable(
     records: List<PatientEncounter>,
     onRowClick: (PatientEncounter) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     if (records.isEmpty()) {
         Box(
@@ -88,7 +90,8 @@ fun EncounterTable(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .border(2.dp, MaterialTheme.colorScheme.outline)
-                .shadow(elevation = 2.dp),
+                .shadow(elevation = 2.dp)
+                .testTag("emptyEncounterTable"),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -118,7 +121,7 @@ fun EncounterTable(
     }
 
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .border(2.dp, MaterialTheme.colorScheme.outline)
