@@ -114,20 +114,42 @@ class UpdateEncounterScreenTest {
     }
 
     @Test
-    fun visitIdFilter_displaysOnlyMatchingEncounter() {
+    fun visitIdFilter_applyAndClear() {
+        val expectedRows = mockEncounters.count { !it.complete }
+        // Refresh to populate table
+        composeTestRule.onNodeWithTag("refreshButton").performClick()
+        testScheduler.advanceUntilIdle()
+
+        // Confirm all rows are displayed initially
+        val allRowsBefore = composeTestRule.onAllNodesWithTag("encounterTableRow").fetchSemanticsNodes()
+        assertEquals(expectedRows, allRowsBefore.size)
+
+        // Apply visit ID filter
         composeTestRule.onNodeWithTag("visitIdFilter").performTextInput("GEV1L1125-00001")
         composeTestRule.onNodeWithTag("refreshButton").performClick()
         testScheduler.advanceUntilIdle()
 
+        // Confirm only one row is displayed
         val rows = composeTestRule.onAllNodesWithTag("encounterTableRow").fetchSemanticsNodes()
         assertEquals(1, rows.size)
 
+        // Get a list of nodes that match the visit ID
         val filteredNodes = composeTestRule.onAllNodesWithTag("encounterTableRow")
             .filter(hasText("GEV1L1125-00001"))
 
+        // Make sure there is at least one row matching the visit ID
         assertTrue("No row found with matching VisitID", filteredNodes.fetchSemanticsNodes().isNotEmpty())
 
+        // Make sure the first row matches the visit ID
         filteredNodes[0].assertIsDisplayed()
+
+        // Clear filter
+        composeTestRule.onNodeWithTag("clearVisitIdFilterButton").performClick()
+        testScheduler.advanceUntilIdle()
+
+        // Confirm all rows are displayed again
+        val allRowsAfter = composeTestRule.onAllNodesWithTag("encounterTableRow").fetchSemanticsNodes()
+        assertEquals(expectedRows, allRowsAfter.size)
     }
 
     @Test
@@ -135,7 +157,7 @@ class UpdateEncounterScreenTest {
         val expectedIncomplete = mockEncounters.count { !it.complete }
         val expectedAll = mockEncounters.size
 
-        // Refresh
+        // Refresh to populate table
         composeTestRule.onNodeWithTag("refreshButton").performClick()
         testScheduler.advanceUntilIdle()
 
@@ -156,7 +178,18 @@ class UpdateEncounterScreenTest {
         assertEquals(expectedIncomplete, rows.size)
     }
 
+    @Test
+    fun clickingRow_loadsEncounterAndNavigates() {
+        // Refresh to populate table
+        composeTestRule.onNodeWithTag("refreshButton").performClick()
+        testScheduler.advanceUntilIdle()
 
+        val firstRow = composeTestRule.onAllNodesWithTag("encounterTableRow")[0]
+        firstRow.performClick()
+        testScheduler.advanceUntilIdle()
 
+        // Verify that navController navigated
+        assertEquals("dataEntry", navController.currentDestination?.route)
+    }
 
 }
