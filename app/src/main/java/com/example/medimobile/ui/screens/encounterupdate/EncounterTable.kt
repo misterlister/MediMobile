@@ -183,6 +183,7 @@ fun EncounterTable(
                     )
                     .border(1.dp, MaterialTheme.colorScheme.outline)
                     .padding(vertical = 8.dp)
+                    .testTag("encounterTableRow")
             ) {
                 TableCell(record.visitId, modifier = Modifier.weight(VISIT_ID_WEIGHT))
                 TableCell(formatArrivalDateTime(record), modifier = Modifier.weight(DATE_WEIGHT))
