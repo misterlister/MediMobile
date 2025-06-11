@@ -29,10 +29,10 @@ MediMobile is a mobile Android application designed to allow for real-time data 
 
 ## Screenshots
 
-![Main Menu Light Mode](exampleImages/main_menu.png)
-![Main Menu Dark Mode](exampleImages/main_menu_dark_mode.png)
-![Triage Data Entry](exampleImages/triage.png)
-![Update Encounter](exampleImages/update_encounter.png)
+<img src="exampleImages/main_menu.png" alt="Main Menu Light Mode" width="400"/>
+<img src="exampleImages/main_menu_dark_mode.png" alt="Main Menu Dark Mode" width="400"/>
+<img src="exampleImages/triage.png" alt="Triage Data Entry" width="400"/>
+<img src="exampleImages/update_encounter.png" alt="Update Encounter" width="400"/>
 
 ---
 
