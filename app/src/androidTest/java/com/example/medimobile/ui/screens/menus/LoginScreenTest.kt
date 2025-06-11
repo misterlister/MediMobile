@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
@@ -87,9 +88,6 @@ class LoginScreenTest {
     fun serviceDropdownAcceptsSelection() {
         composeTestRule.onNodeWithTag("serviceDropdown")
             .performClick()
-
-        composeTestRule.waitForIdle()
-
         composeTestRule.onNodeWithText(GROUP_1_EVENT_1)
             .performClick()
 
@@ -100,6 +98,8 @@ class LoginScreenTest {
 
     @Test
     fun usernameFieldAcceptsInput() {
+        composeTestRule.onNodeWithTag("usernameTextField")
+            .performTextClearance()
         composeTestRule.onNodeWithTag("usernameTextField")
             .performTextInput(USERNAME_1)
 
@@ -114,24 +114,22 @@ class LoginScreenTest {
 
     @Test
     fun loggingInWorksWithValidInput() {
-        composeTestRule
-            .onNodeWithTag("serviceDropdown")
+        composeTestRule.onNodeWithTag("serviceDropdown")
+            .performClick()
+        composeTestRule.onNodeWithText(GROUP_1_EVENT_1)
             .performClick()
 
-        composeTestRule
-            .onNodeWithText(GROUP_1_EVENT_1)
-            .performClick()
-
-        composeTestRule
-            .onNodeWithTag("usernameTextField")
+        composeTestRule.onNodeWithTag("usernameTextField")
+            .performTextClearance()
+        composeTestRule.onNodeWithTag("usernameTextField")
             .performTextInput(USERNAME_1)
 
-        composeTestRule
-            .onNodeWithTag("passwordTextField")
+        composeTestRule.onNodeWithTag("passwordTextField")
+            .performTextClearance()
+        composeTestRule.onNodeWithTag("passwordTextField")
             .performTextInput(VALID_PASSWORD)
 
-        composeTestRule
-            .onNodeWithTag("loginButton")
+        composeTestRule.onNodeWithTag("loginButton")
             .performClick()
 
         testScheduler.advanceUntilIdle()
@@ -159,17 +157,18 @@ class LoginScreenTest {
 
         composeTestRule.waitForIdle()
 
-        composeTestRule
-            .onNodeWithTag("serviceDropdown")
+        composeTestRule.onNodeWithTag("serviceDropdown")
             .performClick()
-
-        composeTestRule
-            .onNodeWithText(GROUP_2_EVENT_2)
+        composeTestRule.onNodeWithText(GROUP_2_EVENT_2)
             .performClick()
 
         composeTestRule.onNodeWithTag("usernameTextField")
+            .performTextClearance()
+        composeTestRule.onNodeWithTag("usernameTextField")
             .performTextInput(USERNAME_2)
 
+        composeTestRule.onNodeWithTag("passwordTextField")
+            .performTextClearance()
         composeTestRule.onNodeWithTag("passwordTextField")
             .performTextInput(VALID_PASSWORD)
 
@@ -190,8 +189,15 @@ class LoginScreenTest {
         composeTestRule.onNodeWithTag("serviceDropdown").performClick()
         composeTestRule.onNodeWithText(GROUP_1_EVENT_1).performClick()
 
-        composeTestRule.onNodeWithTag("usernameTextField").performTextInput(INVALID_USERNAME)
-        composeTestRule.onNodeWithTag("passwordTextField").performTextInput(VALID_PASSWORD)
+        composeTestRule.onNodeWithTag("usernameTextField")
+            .performTextClearance()
+        composeTestRule.onNodeWithTag("usernameTextField")
+            .performTextInput(INVALID_USERNAME)
+
+        composeTestRule.onNodeWithTag("passwordTextField")
+            .performTextClearance()
+        composeTestRule.onNodeWithTag("passwordTextField")
+            .performTextInput(VALID_PASSWORD)
 
         composeTestRule.onNodeWithTag("loginButton").performClick()
 
