@@ -94,4 +94,14 @@ class FakeMediMobileViewModel(
     override fun loadEncountersFromDatabase() {
         _encounterListFlow.value = mockEncounters
     }
+
+    var saveSuccess: Boolean = false
+
+    override suspend fun saveEncounterToDatabase(): Boolean {
+        // Simulate saving to database
+        saveSuccess = true
+        return true
+    }
+
+
 }
