@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.utils.toDisplayValues
@@ -41,7 +42,8 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     onAgeChange = { newAge ->
                         viewModel.setAge(newAge)
                     },
-                    emptyHighlight = true
+                    emptyHighlight = true,
+                    modifier = Modifier.testTag("ageInputField")
                 )
             },
             FormSectionData("Role") {
@@ -53,7 +55,8 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                         viewModel.setRole(newDisplayValue?: "")
                         focusManager.clearFocus()
                     },
-                    emptyHighlight = true
+                    emptyHighlight = true,
+                    modifier = Modifier.testTag("roleDropdown")
                 )
             },
             FormSectionData("Chief Complaint") {
@@ -65,7 +68,8 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                         viewModel.setChiefComplaint(newDisplayValue?: "")
                         focusManager.clearFocus()
                     },
-                    emptyHighlight = true
+                    emptyHighlight = true,
+                    modifier = Modifier.testTag("chiefComplaintDropdown")
                 )
             },
             FormSectionData("Comments") {
@@ -91,6 +95,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
                         .height(150.dp)
+                        .testTag("commentsTextField"),
                 )
             },
         )
