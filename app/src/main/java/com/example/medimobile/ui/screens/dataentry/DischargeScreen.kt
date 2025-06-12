@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.utils.toDisplayValues
@@ -58,7 +59,8 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                         viewModel.setDepartureDest(newDisplayValue?: "")
                         focusManager.clearFocus()
                     },
-                    emptyHighlight = true
+                    emptyHighlight = true,
+                    modifier = Modifier.testTag("departureDestinationDropdown")
                 )
             },
             FormSectionData("Discharge Diagnosis") {
@@ -84,6 +86,7 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
                         .height(150.dp)
+                        .testTag("dischargeDiagnosisTextField"),
                 )
             },
         )
