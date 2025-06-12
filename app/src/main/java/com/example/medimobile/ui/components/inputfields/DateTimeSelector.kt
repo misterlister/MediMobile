@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -85,7 +86,8 @@ fun DateTimeSelector(
                     onDateChange(nowDate)
                     onTimeChange(nowTime)
                 },
-                emptyHighlight = emptyHighlight && (date == null || time == null)
+                emptyHighlight = emptyHighlight && (date == null || time == null),
+                modifier = Modifier.testTag("nowDateTimeButton"),
             ) {
                 Text(text = "Now")
             }
@@ -102,7 +104,8 @@ fun DateTimeSelector(
             MediButton(
                 onClick = { dateSelectorState.value = true },
                 emptyHighlight = emptyHighlight && date == null,
-                status = ButtonStatus.SELECTED
+                status = ButtonStatus.SELECTED,
+                modifier = Modifier.testTag("dateButton")
             ) {
                 Text(text = date?.toString() ?: "Select Date")
             }
