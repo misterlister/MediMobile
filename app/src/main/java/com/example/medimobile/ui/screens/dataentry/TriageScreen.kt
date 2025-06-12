@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -68,7 +69,8 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     QRScannerButton(onResult = { scannedValue: String ->
                         viewModel.setVisitId(scannedValue)
                     },
-                        modifier = Modifier.weight(0.5f),
+                        modifier = Modifier.weight(0.5f)
+                            .testTag("visitIdScannerButton"),
                         enabled = isEnabled,
                         emptyHighlight = encounter.visitId == ""
                     )
@@ -91,13 +93,15 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                             }
                         ),
                         singleLine = true,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
+                            .testTag("visitIdTextField"),
                         enabled = isEnabled,
                         emptyHighlight = encounter.visitId == ""
                     )
 
                     MediButton(onClick = { viewModel.generateVisitID() },
-                        modifier = Modifier.weight(0.5f),
+                        modifier = Modifier.weight(0.5f)
+                            .testTag("generateVisitIdButton"),
                         enabled = isEnabled,
                         emptyHighlight = encounter.visitId == ""
                     ) {
@@ -129,7 +133,8 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                         viewModel.setArrivalMethod(newDisplayValue?: "")
                         focusManager.clearFocus()
                     },
-                    emptyHighlight = true
+                    emptyHighlight = true,
+                    modifier = Modifier.testTag("arrivalMethodDropdown")
                 )
             }
         )
