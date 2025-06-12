@@ -578,7 +578,7 @@ open class MediMobileViewModel: ViewModel() {
 
 
     // Save encounter to database
-    suspend fun saveEncounterToDatabase(): Boolean {
+    open suspend fun saveEncounterToDatabase(): Boolean {
         val encounter = _currentEncounter.value ?: return false
 
         _currentEncounter.value = encounter.copy(
