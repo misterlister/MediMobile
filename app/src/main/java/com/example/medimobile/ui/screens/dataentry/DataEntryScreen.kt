@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -109,7 +110,8 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                     text = username ?: NO_USER,
                     style = userNameTextStyle,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.testTag("usernameText")
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
@@ -120,7 +122,9 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                     },
                     style = userNameTextStyle,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.testTag("visitIdText")
+
                 )
             }
         },
@@ -148,7 +152,8 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         Tab(
                             selected = selectedTabIndex.intValue == index,
                             onClick = { selectedTabIndex.intValue = index },
-                            modifier = Modifier.background(tabColour),
+                            modifier = Modifier.background(tabColour)
+                                    .testTag("${title}Tab"),
                             text = {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
@@ -173,7 +178,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                                         text = title,
                                         color = Color.Black,
                                         fontWeight = if (selectedTabIndex.intValue == index) FontWeight.ExtraBold else FontWeight.Bold,
-                                        textDecoration = if (selectedTabIndex.intValue == index) TextDecoration.Underline else TextDecoration.None
+                                        textDecoration = if (selectedTabIndex.intValue == index) TextDecoration.Underline else TextDecoration.None,
                                     )
                                 }
                             }
@@ -208,6 +213,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                     },
                     enabled = selectedTabIndex.intValue > 0,  // Disable when on first tab
                     modifier = Modifier.padding(start = 16.dp)  // Ensure it is 16.dp from the edge
+                        .testTag("backButton")
                 ) {
                     Text(text = "Prev")
                 }
@@ -223,7 +229,8 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                             showCancelPopup = true
                         }
                     },
-                    status = ButtonStatus.WARNING
+                    status = ButtonStatus.WARNING,
+                    modifier = Modifier.testTag("cancelButton")
                 ) {
                     Text(text = "Cancel")
                 }
@@ -258,6 +265,8 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         }
                     },
                     status = ButtonStatus.CONFIRM,
+                    modifier = Modifier.testTag("saveButton")
+
                 ) {
                     Text(text = "Save")
                 }
@@ -271,6 +280,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                     },
                     enabled = selectedTabIndex.intValue < tabs.size - 1, // Disable when on last tab
                     modifier = Modifier.padding(end = 16.dp)  // Ensure it is 16.dp from the edge
+                        .testTag("forwardButton")
                 ) {
                     Text(text = "Next")
                 }
@@ -305,14 +315,16 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 ) {
                     Text("Don't Cancel")
                 }
-            }
+            },
+            modifier = Modifier.testTag("cancelPopup")
         )
     }
 
     if (showErrorPopup) {
         ErrorPopup(
             errorMessage = errorText,
-            onDismiss = { showErrorPopup = false }
+            onDismiss = { showErrorPopup = false },
+            modifier = Modifier.testTag("errorPopup")
         )
     }
 
@@ -338,7 +350,8 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                             }
                         }
                     },
-                    status = ButtonStatus.CONFIRM
+                    status = ButtonStatus.CONFIRM,
+                    modifier = Modifier.testTag("confirmSaveAndContinueButton")
                 ) {
                     Text("Save & Continue")
                 }
@@ -357,8 +370,8 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                             }
                         }
                     },
-                    status = ButtonStatus.CONFIRM
-
+                    status = ButtonStatus.CONFIRM,
+                    modifier = Modifier.testTag("confirmSaveAndExitButton")
                 ) {
                     Text("Save & Exit")
                 }
@@ -369,12 +382,13 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         // Dismiss the dialog if "No" is clicked
                         showSavePopup = false
                     },
-                    status = ButtonStatus.WARNING
-
+                    status = ButtonStatus.WARNING,
+                    modifier = Modifier.testTag("cancelSaveButton")
                 ) {
                     Text("No")
                 }
-            }
+            },
+            modifier = Modifier.testTag("savePopup")
         )
     }
 
