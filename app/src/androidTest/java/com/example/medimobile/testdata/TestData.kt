@@ -207,4 +207,6 @@ object TestData {
 
     const val SUCCESS_TOKEN = "SuccessToken"
     const val INVALID_CREDENTIALS_TOKEN = "Invalid credentials"
+
+    const val FAKE_VISIT_ID = "GFAKVIS25-11111"
 }
