@@ -209,4 +209,8 @@ object TestData {
     const val INVALID_CREDENTIALS_TOKEN = "Invalid credentials"
 
     const val FAKE_VISIT_ID = "GFAKVIS25-11111"
+    const val FAKE_AGE = "25"
+
+    const val FAKE_COMMENT = "This is a fake comment."
+    const val FAKE_DIAGNOSIS = "This is a fake diagnosis."
 }
