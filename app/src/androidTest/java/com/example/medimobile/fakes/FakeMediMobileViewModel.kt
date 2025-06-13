@@ -47,6 +47,7 @@ class FakeMediMobileViewModel(
     init {
         // Set the selected event to the first mock event from the test data
         setSelectedEvent(mockEvents.first().eventName)
+        setCurrentEncounter(PatientEncounter())
     }
 
     private val scope = CoroutineScope(dispatcher)
