@@ -81,10 +81,12 @@ fun TableCell(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun EncounterTable(
     records: List<PatientEncounter>,
+    isLoading: Boolean = false,
     onRowClick: (PatientEncounter) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (records.isEmpty()) {
+        val message = if (isLoading) "Loading..." else "No encounters found in the selected range."
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -95,7 +97,7 @@ fun EncounterTable(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "No encounters found in the selected range.",
+                text = message,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

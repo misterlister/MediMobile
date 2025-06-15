@@ -163,6 +163,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                             viewModel.markAsSubmitted()
                             navController.navigate("dataEntry")
                         },
+                        isLoading = isLoading,
                         modifier = Modifier.testTag("encounterTable")
                     )
                 }
