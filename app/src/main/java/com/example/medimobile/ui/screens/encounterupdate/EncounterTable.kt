@@ -1,10 +1,10 @@
 package com.example.medimobile.ui.screens.encounterupdate
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,13 +33,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
+import com.example.medimobile.data.constants.UIConstants.COMPLETE_ABBREVIATION
+import com.example.medimobile.data.constants.UIConstants.INCOMPLETE_ABBREVIATION
+import com.example.medimobile.data.constants.UIConstants.LOADING_MESSAGE
+import com.example.medimobile.data.constants.UIConstants.NO_ENCOUNTERS_MESSAGE
 
 // Cell Headers for the Encounter Table
 @Composable
 fun TableHeaderCell(text: String, modifier: Modifier = Modifier, onClick: () -> Unit, isSorted: Boolean, isDescending: Boolean) {
     Row(
         modifier = modifier
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 2.dp)
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -75,35 +79,14 @@ fun TableCell(text: String, modifier: Modifier = Modifier) {
     )
 }
 
-// Suppress warnings about experimental use of stickyHeader
-// If it is deprecated or supported in the future, this can be adjusted
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EncounterTable(
     records: List<PatientEncounter>,
+    modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     onRowClick: (PatientEncounter) -> Unit,
-    modifier: Modifier = Modifier
+
 ) {
-    if (records.isEmpty()) {
-        val message = if (isLoading) "Loading..." else "No encounters found in the selected range."
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .border(2.dp, MaterialTheme.colorScheme.outline)
-                .shadow(elevation = 2.dp)
-                .testTag("emptyEncounterTable"),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        return
-    }
 
     var sortColumn by remember { mutableStateOf(SortColumn.Date) }
     var isDescending by remember { mutableStateOf(true) }
@@ -122,75 +105,97 @@ fun EncounterTable(
         }
     }
 
-    LazyColumn(
-        modifier = modifier
+    Column(
+        modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .border(2.dp, MaterialTheme.colorScheme.outline)
-            .shadow(elevation = 2.dp)
+            .shadow(2.dp)
     ) {
         // Table Header
-        stickyHeader {
-            Row(
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .border(1.dp, MaterialTheme.colorScheme.outline)
+                .padding(vertical = 8.dp)
+        ) {
+            TableHeaderCell(
+                "VisitID",
+                modifier = Modifier.weight(VISIT_ID_WEIGHT),
+                onClick = {
+                    sortColumn = SortColumn.VisitId
+                    isDescending = !isDescending
+                },
+                isSorted = sortColumn == SortColumn.VisitId,
+                isDescending = isDescending
+            )
+            TableHeaderCell(
+                "Date (D/M/Y H:M)",
+                modifier = Modifier.weight(DATE_WEIGHT),
+                onClick = {
+                    sortColumn = SortColumn.Date
+                    isDescending = !isDescending
+                },
+                isSorted = sortColumn == SortColumn.Date,
+                isDescending = isDescending
+            )
+            TableHeaderCell(
+                "Status",
+                modifier = Modifier.weight(STATUS_WEIGHT),
+                onClick = {
+                    sortColumn = SortColumn.Status
+                    isDescending = !isDescending
+                },
+                isSorted = sortColumn == SortColumn.Status,
+                isDescending = isDescending
+            )
+        }
+        // If there are no encounters, show a message
+        if (records.isEmpty()) {
+            val message = if (isLoading) LOADING_MESSAGE else NO_ENCOUNTERS_MESSAGE
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .border(1.dp, MaterialTheme.colorScheme.outline)
-                    .padding(vertical = 8.dp)
+                    .weight(1f)
+                    .testTag("emptyEncounterTable"),
+                contentAlignment = Alignment.Center
             ) {
-                TableHeaderCell(
-                    "VisitID",
-                    modifier = Modifier.weight(VISIT_ID_WEIGHT),
-                    onClick = {
-                        sortColumn = SortColumn.VisitId
-                        isDescending = !isDescending
-                    },
-                    isSorted = sortColumn == SortColumn.VisitId,
-                    isDescending = isDescending
-                )
-                TableHeaderCell(
-                    "Date (D/M/Y - H:M)",
-                    modifier = Modifier.weight(DATE_WEIGHT),
-                    onClick = {
-                        sortColumn = SortColumn.Date
-                        isDescending = !isDescending
-                    },
-                    isSorted = sortColumn == SortColumn.Date,
-                    isDescending = isDescending
-                )
-                TableHeaderCell(
-                    "Status",
-                    modifier = Modifier.weight(STATUS_WEIGHT),
-                    onClick = {
-                        sortColumn = SortColumn.Status
-                        isDescending = !isDescending
-                    },
-                    isSorted = sortColumn == SortColumn.Status,
-                    isDescending = isDescending
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-        }
-
-        // Table Data Rows
-        itemsIndexed(sortedRecords) { index, record ->
-            Row(
-                modifier = Modifier
+        } else {
+            // Otherwise, show the content for the Encounter Table
+            LazyColumn(
+                modifier = modifier
                     .fillMaxWidth()
-                    .clickable { onRowClick(record) }
-                    .background(
-                        if (index % 2 == 0)
-                            MaterialTheme.colorScheme.surfaceVariant
-                        else
-                            MaterialTheme.colorScheme.surface
-                    )
-                    .border(1.dp, MaterialTheme.colorScheme.outline)
-                    .padding(vertical = 8.dp)
-                    .testTag("encounterTableRow")
+                    .weight(1f)
             ) {
-                TableCell(record.visitId, modifier = Modifier.weight(VISIT_ID_WEIGHT))
-                TableCell(formatArrivalDateTime(record), modifier = Modifier.weight(DATE_WEIGHT))
-                TableCell(if (record.complete) "Comp." else "Incomp.", modifier = Modifier.weight(
-                    STATUS_WEIGHT))
+                itemsIndexed(sortedRecords) { index, record ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onRowClick(record) }
+                            .background(
+                                if (index % 2 == 0)
+                                    MaterialTheme.colorScheme.surfaceVariant
+                                else
+                                    MaterialTheme.colorScheme.surface
+                            )
+                            .border(1.dp, MaterialTheme.colorScheme.outline)
+                            .padding(vertical = 8.dp)
+                            .testTag("encounterTableRow")
+                    ) {
+                        TableCell(record.visitId, modifier = Modifier.weight(VISIT_ID_WEIGHT))
+                        TableCell(formatArrivalDateTime(record), modifier = Modifier.weight(DATE_WEIGHT))
+                        TableCell(
+                            text = if (record.complete) COMPLETE_ABBREVIATION else INCOMPLETE_ABBREVIATION,
+                            modifier = Modifier.weight(STATUS_WEIGHT))
+                    }
+                }
             }
         }
     }
