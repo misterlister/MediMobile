@@ -14,8 +14,8 @@ import com.example.medimobile.ui.util.highlightIf
 @Composable
 fun TriageRadioButtons(
     selectedOption: String?,
-    emptyHighlight: Boolean = false,
     modifier: Modifier = Modifier,
+    emptyHighlight: Boolean = false,
     onOptionSelected: (String?) -> Unit
 ) {
     val options = DropdownConstants.TRIAGE_LEVELS
