@@ -1,9 +1,8 @@
 package com.example.medimobile.data.model
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.example.medimobile.ui.theme.MediGreen
-import com.example.medimobile.ui.theme.MediGrey
-import com.example.medimobile.ui.theme.MediYellow
+import com.example.medimobile.ui.theme.LocalExtendedColors
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 import java.time.LocalTime
@@ -39,12 +38,14 @@ enum class StageStatus {
     COMPLETE
 }
 
+@Composable
 fun getStatusColour(stageStatus: StageStatus?): Color {
+    val extendedColors = LocalExtendedColors.current
     return when (stageStatus) {
-        StageStatus.COMPLETE -> MediGreen
-        StageStatus.IN_PROGRESS -> MediYellow
-        StageStatus.NOT_STARTED -> MediGrey
-        else -> MediGrey  // Default to inactive colour if status is unknown
+        StageStatus.COMPLETE -> extendedColors.medigreen.colorContainer
+        StageStatus.IN_PROGRESS -> extendedColors.mediyellow.colorContainer
+        StageStatus.NOT_STARTED -> extendedColors.medigrey.colorContainer
+        else -> extendedColors.medigrey.colorContainer  // Default to inactive colour if status is unknown
     }
 }
 

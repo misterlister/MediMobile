@@ -49,7 +49,7 @@ import com.example.medimobile.ui.components.templates.ErrorPopup
 import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.components.templates.ScreenLayout
 import com.example.medimobile.ui.theme.ButtonStatus
-import com.example.medimobile.ui.theme.MediGrey
+import com.example.medimobile.ui.theme.LocalExtendedColors
 import com.example.medimobile.viewmodel.MediMobileViewModel
 import kotlinx.coroutines.launch
 
@@ -132,7 +132,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                             0 -> triageStatusColour
                             1 -> informationCollectionStatusColour
                             2 -> dischargeStatusColour
-                            else -> MediGrey
+                            else -> LocalExtendedColors.current.medigrey.colorContainer
                         }
 
                         val stageStatus = when (index) {
