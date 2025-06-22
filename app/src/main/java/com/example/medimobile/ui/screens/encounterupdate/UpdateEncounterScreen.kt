@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +43,8 @@ import com.example.medimobile.data.constants.UIConstants.NO_USER
 import com.example.medimobile.data.utils.dateFormatter
 import com.example.medimobile.data.utils.toDisplayValue
 import com.example.medimobile.ui.components.LoadingIndicator
+import com.example.medimobile.ui.components.ScreenTitle
+import com.example.medimobile.ui.components.UsernameText
 import com.example.medimobile.ui.components.inputfields.DateSelector
 import com.example.medimobile.ui.components.inputfields.QRScannerButton
 import com.example.medimobile.ui.components.templates.ErrorPopup
@@ -113,12 +116,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
 
     ScreenLayout(
         topBar = {
-            Text(
-                text = username ?: NO_USER,
-                style = userNameTextStyle,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            UsernameText(text = username)
         },
         content = {
             // **Table Section**
@@ -129,10 +127,9 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 // **Title**
-                Text(
+                ScreenTitle(
                     text = "Update Encounter",
-                    style = screenTitleTextStyle(),
-                    modifier = Modifier.padding(vertical = 16.dp)
+                    modifier = Modifier.padding(vertical = 12.dp)
                 )
 
                 // **Refresh Button**
@@ -145,7 +142,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
 
                 Text(
                     text = displayRangeText,
-                    style = userNameTextStyle,
+                    style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
 

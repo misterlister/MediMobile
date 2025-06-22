@@ -12,21 +12,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.medimobile.data.constants.UIConstants.NO_USER
 import com.example.medimobile.data.utils.DateRangeOption
 import com.example.medimobile.data.utils.toDateRangeOption
 import com.example.medimobile.data.utils.toDisplayValue
+import com.example.medimobile.ui.components.ScreenTitle
+import com.example.medimobile.ui.components.UsernameText
 import com.example.medimobile.ui.components.dropdowns.BaseDropdown
 import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
 import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.components.templates.ScreenLayout
-import com.example.medimobile.ui.theme.screenTitleTextStyle
-import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 
@@ -39,12 +37,7 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
 
     ScreenLayout(
         topBar = {
-            Text(
-                text = username ?: NO_USER,
-                style = userNameTextStyle,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            UsernameText(text = username)
         },
         content = {
             Column(
@@ -55,9 +48,8 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                 verticalArrangement = Arrangement.Center
             ) {
 
-                Text(
+                ScreenTitle(
                     text = "Settings",
-                    style = screenTitleTextStyle(),
                     modifier = Modifier.padding(vertical = 32.dp)
                 )
 

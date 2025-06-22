@@ -28,18 +28,17 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.data.utils.toDisplayValues
+import com.example.medimobile.ui.components.AppTitle
 import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.components.dropdowns.BaseDropdown
 import com.example.medimobile.ui.components.templates.ErrorPopup
 import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.components.templates.MediTextField
 import com.example.medimobile.ui.components.templates.ScreenLayout
-import com.example.medimobile.ui.theme.appTitleTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
@@ -92,13 +91,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                 verticalArrangement = Arrangement.spacedBy(32.dp)
             ) {
 
-                Text(
-                    text = "MediMobile",
-                    style = appTitleTextStyle(),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(top = 48.dp)
-                )
+                AppTitle(modifier = Modifier.padding(top = 48.dp))
 
                 Spacer(modifier = Modifier.weight(0.25f))
 

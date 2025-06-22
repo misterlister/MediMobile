@@ -33,24 +33,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
-import com.example.medimobile.data.constants.UIConstants.NO_USER
 import com.example.medimobile.data.constants.UIConstants.NO_VISIT_ID
 import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.getStatusColour
 import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.example.medimobile.ui.components.LoadingIndicator
+import com.example.medimobile.ui.components.TopBarText
+import com.example.medimobile.ui.components.UsernameText
 import com.example.medimobile.ui.components.templates.ErrorPopup
 import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.components.templates.ScreenLayout
 import com.example.medimobile.ui.theme.ButtonStatus
 import com.example.medimobile.ui.theme.MediGrey
-import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 import kotlinx.coroutines.launch
 
@@ -106,23 +105,17 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = username ?: NO_USER,
-                    style = userNameTextStyle,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                UsernameText(
+                    text = username,
                     modifier = Modifier.testTag("usernameText")
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
+                TopBarText(
                     text = if (isDataEmptyOrNull(encounter?.visitId)) {
                         NO_VISIT_ID
                     } else {
                         encounter!!.visitId
                     },
-                    style = userNameTextStyle,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.testTag("visitIdText")
 
                 )
@@ -157,7 +150,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                             text = {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
                                     CircularProgressIndicator(
                                         modifier = Modifier.size(14.dp),
@@ -177,7 +170,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                                     Text(
                                         text = title,
                                         color = Color.Black,
-                                        fontWeight = if (selectedTabIndex.intValue == index) FontWeight.ExtraBold else FontWeight.Bold,
+                                        fontWeight = if (selectedTabIndex.intValue == index) FontWeight.Bold else FontWeight.SemiBold,
                                         textDecoration = if (selectedTabIndex.intValue == index) TextDecoration.Underline else TextDecoration.None,
                                     )
                                 }

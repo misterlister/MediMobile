@@ -13,15 +13,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.medimobile.data.constants.UIConstants.NO_USER
+import com.example.medimobile.ui.components.AppTitle
+import com.example.medimobile.ui.components.UsernameText
 import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.components.templates.ScreenLayout
-import com.example.medimobile.ui.theme.appTitleTextStyle
-import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
@@ -37,12 +35,7 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = username ?: NO_USER,
-                    style = userNameTextStyle,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                UsernameText(text = username)
                 MediButton(onClick = {
                     viewModel.logout()
                     navController.navigate("login") {
@@ -63,10 +56,7 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
             ) {
                 Spacer(modifier = Modifier.weight(0.5f))
 
-                Text(
-                    text = "MediMobile",
-                    style = appTitleTextStyle()
-                )
+                AppTitle()
 
                 Spacer(modifier = Modifier.weight(0.5f))
 
