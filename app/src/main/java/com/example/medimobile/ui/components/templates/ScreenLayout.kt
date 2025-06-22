@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +20,6 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import com.example.medimobile.ui.theme.bannerColor
 
 
 @Composable
@@ -53,7 +53,7 @@ fun ScreenLayout(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(bannerColor())
+                        .background(MaterialTheme.colorScheme.tertiaryContainer)
                         .padding(horizontal = 8.dp, vertical = 16.dp)
                         .wrapContentHeight(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -78,7 +78,7 @@ fun ScreenLayout(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(bannerColor())
+                        .background(MaterialTheme.colorScheme.tertiaryContainer)
                         .padding(horizontal = 8.dp, vertical = 12.dp)
                         .wrapContentHeight(),
                     horizontalArrangement = Arrangement.SpaceBetween,
