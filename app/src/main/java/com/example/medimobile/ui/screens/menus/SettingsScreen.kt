@@ -3,6 +3,7 @@ package com.example.medimobile.ui.screens.menus
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Switch
@@ -18,13 +19,18 @@ import androidx.navigation.NavController
 import com.example.medimobile.data.utils.DateRangeOption
 import com.example.medimobile.data.utils.toDateRangeOption
 import com.example.medimobile.data.utils.toDisplayValue
+import com.example.medimobile.data.utils.toText
 import com.example.medimobile.ui.components.ScreenTitle
 import com.example.medimobile.ui.components.UsernameText
 import com.example.medimobile.ui.components.dropdowns.BaseDropdown
 import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
 import com.example.medimobile.ui.components.templates.MediButton
+import com.example.medimobile.ui.components.templates.RadioButtonWithText
 import com.example.medimobile.ui.components.templates.ScreenLayout
+import com.example.medimobile.ui.theme.BrightnessMode
+import com.example.medimobile.ui.theme.ContrastLevel
+import com.example.medimobile.ui.util.highlightIf
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 
@@ -79,6 +85,38 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                             }
                         )
                     },
+                    FormSectionData("BrightnessMode") {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier
+                                .padding(top = 4.dp, bottom = 4.dp, start = 4.dp, end = 16.dp)
+                        ) {
+                            BrightnessMode.entries.forEach { mode ->
+                                RadioButtonWithText(
+                                    option = mode.toText(),
+                                    selectedOption = viewModel.brightnessMode.value.toText(),
+                                    onOptionSelected = { viewModel.setBrightnessMode(mode) }
+                                )
+                            }
+                        }
+                    },
+                    FormSectionData("ContrastLevel") {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier
+                                .padding(top = 4.dp, bottom = 4.dp, start = 4.dp, end = 16.dp)
+                        ) {
+                            ContrastLevel.entries.forEach { level ->
+                                RadioButtonWithText(
+                                    option = level.toText(),
+                                    selectedOption = viewModel.contrastLevel.value.toText(),
+                                    onOptionSelected = { viewModel.setContrastLevel(level) }
+                                )
+                            }
+                        }
+                    }
                 )
                 DividedFormSections(formSections = formSections)
             }

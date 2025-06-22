@@ -25,6 +25,8 @@ import com.example.medimobile.data.utils.DateRangeOption
 import com.example.medimobile.data.utils.formatVisitID
 import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.example.medimobile.data.utils.mapToPatientEncounterFormData
+import com.example.medimobile.ui.theme.BrightnessMode
+import com.example.medimobile.ui.theme.ContrastLevel
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +39,24 @@ import java.time.LocalTime
 
 
 open class MediMobileViewModel: ViewModel() {
+
+    // **UI state variables**
+
+    // Brightness Mode (Light mode, Dark mode, or System setting)
+    private val _brightnessMode = mutableStateOf(BrightnessMode.SYSTEM)
+    val brightnessMode: State<BrightnessMode> = _brightnessMode
+
+    fun setBrightnessMode(setting: BrightnessMode) {
+        _brightnessMode.value = setting
+    }
+
+    // Contrast level (low, medium, or high)
+    private val _contrastLevel = mutableStateOf(ContrastLevel.MEDIUM)
+    val contrastLevel: State<ContrastLevel> = _contrastLevel
+
+    fun setContrastLevel(level: ContrastLevel) {
+        _contrastLevel.value = level
+    }
 
     // Keeps track of loading state (blocks user interaction when true)
     private val _isLoading = MutableStateFlow(false)
