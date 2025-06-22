@@ -27,7 +27,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MediMobileTheme {
+            MediMobileTheme(
+                brightnessMode = viewModel.brightnessMode.value,
+                contrastLevel = viewModel.contrastLevel.value
+            ) {
                 val navController = rememberNavController()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
