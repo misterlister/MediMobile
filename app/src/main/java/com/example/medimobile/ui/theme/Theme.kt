@@ -133,16 +133,6 @@ fun bannerColor(): Color {
     return if (isSystemInDarkTheme()) DarkBanner else LightBanner
 }
 
-// Get corresponding shadow color for light/dark mode
-@Composable
-fun dynamicShadowColor(): Color {
-    return if (isSystemInDarkTheme()) {
-        Color.White.copy(alpha = 0.3f) // light glow on dark background
-    } else {
-        Color.Black.copy(alpha = 0.3f) // soft shadow on light background
-    }
-}
-
 enum class ButtonStatus {
     DEFAULT, CONFIRM, WARNING, SELECTED;
 
