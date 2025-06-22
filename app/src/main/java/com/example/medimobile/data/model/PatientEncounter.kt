@@ -45,7 +45,18 @@ fun getStatusColour(stageStatus: StageStatus?): Color {
         StageStatus.COMPLETE -> extendedColors.medigreen.colorContainer
         StageStatus.IN_PROGRESS -> extendedColors.mediyellow.colorContainer
         StageStatus.NOT_STARTED -> extendedColors.medigrey.colorContainer
-        else -> extendedColors.medigrey.colorContainer  // Default to inactive colour if status is unknown
+        else -> extendedColors.medigrey.colorContainer
+    }
+}
+
+@Composable
+fun getStatusTextColour(stageStatus: StageStatus?): Color {
+    val extendedColors = LocalExtendedColors.current
+    return when (stageStatus) {
+        StageStatus.COMPLETE -> extendedColors.medigreen.onColorContainer
+        StageStatus.IN_PROGRESS -> extendedColors.mediyellow.onColorContainer
+        StageStatus.NOT_STARTED -> extendedColors.medigrey.onColorContainer
+        else -> extendedColors.medigrey.onColorContainer
     }
 }
 

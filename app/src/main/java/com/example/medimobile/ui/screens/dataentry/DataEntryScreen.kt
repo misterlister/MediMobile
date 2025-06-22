@@ -41,6 +41,7 @@ import androidx.navigation.NavController
 import com.example.medimobile.data.constants.UIConstants.NO_VISIT_ID
 import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.getStatusColour
+import com.example.medimobile.data.model.getStatusTextColour
 import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.components.TopBarText
@@ -91,10 +92,15 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
     val tabs = listOf("Triage", "Information Collection", "Discharge")
     val selectedTabIndex = remember { mutableIntStateOf(0) }
 
-    // Tab Colours based on stage status
+    // Tab colours based on stage status
     val triageStatusColour = getStatusColour(currentEncounter?.triageStatus)
     val informationCollectionStatusColour = getStatusColour(currentEncounter?.informationCollectionStatus)
     val dischargeStatusColour = getStatusColour(currentEncounter?.dischargeStatus)
+
+    // Tab text colours based on stage status
+    val triageStatusTextColour = getStatusTextColour(currentEncounter?.triageStatus)
+    val informationCollectionStatusTextColour = getStatusTextColour(currentEncounter?.informationCollectionStatus)
+    val dischargeStatusTextColour = getStatusTextColour(currentEncounter?.dischargeStatus)
 
     ScreenLayout(
         topBar = {
@@ -135,6 +141,13 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                             else -> LocalExtendedColors.current.medigrey.colorContainer
                         }
 
+                        val tabTextColor = when (index) {
+                            0 -> triageStatusTextColour
+                            1 -> informationCollectionStatusTextColour
+                            2 -> dischargeStatusTextColour
+                            else -> LocalExtendedColors.current.medigrey.onColorContainer
+                        }
+
                         val stageStatus = when (index) {
                             0 -> currentEncounter?.triageStatus
                             1 -> currentEncounter?.informationCollectionStatus
@@ -154,7 +167,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                                 ) {
                                     CircularProgressIndicator(
                                         modifier = Modifier.size(14.dp),
-                                        color = Color.Black,
+                                        color = tabTextColor,
                                         trackColor = tabColour,
                                         strokeWidth = 3.dp,
                                         progress = {
@@ -169,7 +182,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
 
                                     Text(
                                         text = title,
-                                        color = Color.Black,
+                                        color = tabTextColor,
                                         fontWeight = if (selectedTabIndex.intValue == index) FontWeight.Bold else FontWeight.SemiBold,
                                         textDecoration = if (selectedTabIndex.intValue == index) TextDecoration.Underline else TextDecoration.None,
                                     )
