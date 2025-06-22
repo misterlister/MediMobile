@@ -20,7 +20,6 @@ import com.example.medimobile.ui.components.inputfields.AgeInputField
 import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
 import com.example.medimobile.ui.components.templates.MediTextField
-import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
@@ -80,8 +79,7 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                     },
                     placeholder = {
                         Text(
-                            text = "Enter comments (optional)",
-                            style = placeholderTextStyle
+                            text = "Enter comments (optional)"
                         )
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(

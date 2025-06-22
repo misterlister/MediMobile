@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.constants.DropdownConstants
 import com.example.medimobile.ui.components.templates.MediTextField
-import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.ui.util.highlightIf
 
 @Composable
@@ -84,8 +83,7 @@ fun DropdownWithOtherField(
             enabled = isOtherSelected,
             placeholder = {
                 Text(
-                    text = "Specify Other",
-                    style = placeholderTextStyle
+                    text = "Specify Other"
                 )
             },
             modifier = otherFieldModifier

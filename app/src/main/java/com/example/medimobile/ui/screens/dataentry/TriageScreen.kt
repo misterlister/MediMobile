@@ -27,7 +27,6 @@ import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
 import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.components.templates.MediTextField
-import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
@@ -80,8 +79,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                         onValueChange = { viewModel.setVisitId(it) },
                         placeholder = {
                             Text(
-                                "Scan/generate visit ID (Required)",
-                                style = placeholderTextStyle
+                                "Scan/generate visit ID (Required)"
                             )
                         },
                         keyboardOptions = KeyboardOptions.Default.copy(

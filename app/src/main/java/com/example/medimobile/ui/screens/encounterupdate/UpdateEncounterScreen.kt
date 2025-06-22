@@ -33,13 +33,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
-import com.example.medimobile.data.constants.UIConstants.NO_USER
 import com.example.medimobile.data.utils.dateFormatter
 import com.example.medimobile.data.utils.toDisplayValue
 import com.example.medimobile.ui.components.LoadingIndicator
@@ -52,9 +50,6 @@ import com.example.medimobile.ui.components.templates.MediButton
 import com.example.medimobile.ui.components.templates.MediTextField
 import com.example.medimobile.ui.components.templates.ScreenLayout
 import com.example.medimobile.ui.theme.ButtonStatus
-import com.example.medimobile.ui.theme.placeholderTextStyle
-import com.example.medimobile.ui.theme.screenTitleTextStyle
-import com.example.medimobile.ui.theme.userNameTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 import java.time.LocalDate
 
@@ -216,7 +211,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                     MediTextField(
                         value = visitIdFilter.value,
                         onValueChange = { visitIdFilter.value = it },
-                        placeholder = { Text("Filter by Visit ID", style = placeholderTextStyle) },
+                        placeholder = { Text("Filter by Visit ID") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Done
                         ),

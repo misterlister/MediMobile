@@ -20,7 +20,6 @@ import com.example.medimobile.ui.components.inputfields.DateTimeSelector
 import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
 import com.example.medimobile.ui.components.templates.MediTextField
-import com.example.medimobile.ui.theme.placeholderTextStyle
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
@@ -71,8 +70,7 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                     },
                     placeholder = {
                         Text(
-                            text = "Enter Discharge Diagnosis (optional)",
-                            style = placeholderTextStyle
+                            text = "Enter Discharge Diagnosis (optional)"
                         )
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
