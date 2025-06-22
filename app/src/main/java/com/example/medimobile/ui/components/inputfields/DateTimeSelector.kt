@@ -104,7 +104,6 @@ fun DateTimeSelector(
             MediButton(
                 onClick = { dateSelectorState.value = true },
                 emptyHighlight = emptyHighlight && date == null,
-                status = ButtonStatus.SELECTED,
                 modifier = Modifier.testTag("dateButton")
             ) {
                 Text(text = date?.toString() ?: "Select Date")

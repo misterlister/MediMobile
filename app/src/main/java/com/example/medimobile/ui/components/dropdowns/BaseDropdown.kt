@@ -59,14 +59,12 @@ fun BaseDropdown(
         Text(
             text = dropdownLabel,
             style = MaterialTheme.typography.bodyMedium,
-            color = colorScheme.onSurface,
             modifier = Modifier.padding(bottom = 4.dp)
         )
 
         Surface(
             shape = RoundedCornerShape(6.dp),
             tonalElevation = 1.dp,
-            color = colorScheme.primaryContainer,
             border = BorderStroke(1.dp, colorScheme.outline),
             modifier = modifier
                 .highlightIf(emptyHighlight && isDataEmptyOrNull(currentSelection))
@@ -81,7 +79,6 @@ fun BaseDropdown(
             ) {
                 Text(
                     text = displayValue,
-                    color = colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.weight(1f)
                 )
@@ -93,7 +90,6 @@ fun BaseDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .background(colorScheme.secondaryContainer)
                 .widthIn(min = 200.dp)
         ) {
             if (options.isNullOrEmpty()) {

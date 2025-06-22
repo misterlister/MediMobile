@@ -64,6 +64,7 @@ fun UsernameText(
         text = text?: NO_USER,
         modifier = modifier,
         style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onSurface,
         textAlign = textAlign,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
@@ -80,6 +81,7 @@ fun TopBarText(
         text = text,
         modifier = modifier,
         style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onSurface,
         textAlign = textAlign
     )
 }

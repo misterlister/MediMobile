@@ -29,21 +29,6 @@ fun MediTextField(
     emptyHighlight: Boolean = false,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
-    val colorScheme = MaterialTheme.colorScheme
-    val colors = TextFieldDefaults.colors(
-        focusedTextColor = colorScheme.onSurface,
-        unfocusedTextColor = colorScheme.onSurface,
-        disabledTextColor = colorScheme.onSurface.copy(alpha = 0.4f),
-
-        focusedContainerColor = colorScheme.secondaryContainer,
-        unfocusedContainerColor = colorScheme.primaryContainer,
-        disabledContainerColor = colorScheme.primaryContainer.copy(alpha = 0.3f),
-
-        focusedPlaceholderColor = colorScheme.onSurface.copy(alpha = 0.55f),
-        unfocusedPlaceholderColor = colorScheme.onSurface.copy(alpha = 0.7f),
-        disabledPlaceholderColor = colorScheme.onSurface.copy(alpha = 0.15f),
-    )
-
     TextField(
         value = value,
         onValueChange = onValueChange,
@@ -54,7 +39,6 @@ fun MediTextField(
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         isError = isError,
-        colors = colors,
         modifier = modifier.highlightIf(emptyHighlight && value.isEmpty()),
         visualTransformation = visualTransformation,
         interactionSource = interactionSource

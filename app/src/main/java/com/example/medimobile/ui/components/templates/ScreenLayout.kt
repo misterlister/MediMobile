@@ -53,7 +53,7 @@ fun ScreenLayout(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.tertiaryContainer)
+                        .background(MaterialTheme.colorScheme.inversePrimary)
                         .padding(horizontal = 8.dp, vertical = 16.dp)
                         .wrapContentHeight(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -78,7 +78,7 @@ fun ScreenLayout(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.tertiaryContainer)
+                        .background(MaterialTheme.colorScheme.inversePrimary)
                         .padding(horizontal = 8.dp, vertical = 12.dp)
                         .wrapContentHeight(),
                     horizontalArrangement = Arrangement.SpaceBetween,
