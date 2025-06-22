@@ -34,14 +34,14 @@ import com.example.medimobile.ui.util.highlightIf
 
 @Composable
 fun BaseDropdown(
+    modifier: Modifier = Modifier,
     currentSelection: String? = null,
     options: List<String>?,
     dropdownLabel: String,
     onSelectionChanged: (String?) -> Unit,
     width: Float = 1f,
     notNullable: Boolean = false,
-    emptyHighlight: Boolean = false,
-    modifier: Modifier = Modifier
+    emptyHighlight: Boolean = false
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -58,7 +58,7 @@ fun BaseDropdown(
     ) {
         Text(
             text = dropdownLabel,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = colorScheme.onSurface,
             modifier = Modifier.padding(bottom = 4.dp)
         )
@@ -82,7 +82,7 @@ fun BaseDropdown(
                 Text(
                     text = displayValue,
                     color = colorScheme.onSurface,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.weight(1f)
                 )
                 Icon(Icons.Default.ArrowDropDown, contentDescription = "Open dropdown")
@@ -105,7 +105,12 @@ fun BaseDropdown(
             } else {
                 dropdownOptions.forEach { optionChoice ->
                     DropdownMenuItem(
-                        text = { Text(optionChoice) },
+                        text = {
+                            Text(
+                                text = optionChoice,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        },
                         onClick = {
                             onSelectionChanged(if (optionChoice == NOT_SET) null else optionChoice)
                             expanded = false
@@ -121,5 +126,5 @@ fun BaseDropdown(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun BaseDropdownPreview() {
-    BaseDropdown("test", listOf("test"), "test", {})
+    BaseDropdown(currentSelection = "test", options = listOf("test"), dropdownLabel = "test", onSelectionChanged = {})
 }
