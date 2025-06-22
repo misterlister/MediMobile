@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.example.medimobile.ui.components.dropdowns.HourDropdown
 import com.example.medimobile.ui.components.dropdowns.MinuteDropdown
 import com.example.medimobile.ui.components.templates.MediButton
-import com.example.medimobile.ui.theme.ButtonStatus
 import java.time.LocalDate
 import java.time.LocalTime
 
