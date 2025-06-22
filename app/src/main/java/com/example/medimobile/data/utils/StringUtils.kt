@@ -40,3 +40,9 @@ fun formatVisitID(category: VisitIDCategory, eventID: String, locationID: String
 
     return "$visitCategory$eventID$locationID$year-$paddedVisitSuffix"
 }
+
+fun Enum<*>.toText(): String {
+    return name.lowercase()
+        .split('_')
+        .joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
+}
