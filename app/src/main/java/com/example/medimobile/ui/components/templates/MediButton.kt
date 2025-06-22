@@ -14,10 +14,10 @@ import com.example.medimobile.ui.theme.ButtonStatus
 @Composable
 fun MediButton(
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     status: ButtonStatus = ButtonStatus.DEFAULT,
     emptyHighlight: Boolean = false,
-    modifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit,
 ) {
     val shape = RoundedCornerShape(4.dp)

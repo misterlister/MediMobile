@@ -8,9 +8,9 @@ import androidx.compose.ui.platform.testTag
 
 @Composable
 fun ErrorPopup(
+    modifier: Modifier = Modifier,
     errorTitle: String = "Error",
     errorMessage: String,
-    modifier: Modifier = Modifier,
     onDismiss: () -> Unit
 ) {
     AlertDialog(

@@ -31,8 +31,8 @@ fun DropdownWithOtherField(
     currentSelection: String?,
     options: List<String>,
     dropdownLabel: String,
-    emptyHighlight: Boolean = false,
     modifier: Modifier = Modifier,
+    emptyHighlight: Boolean = false,
     otherFieldModifier: Modifier = Modifier,
     onSelectionChanged: (String?) -> Unit,
 ) {

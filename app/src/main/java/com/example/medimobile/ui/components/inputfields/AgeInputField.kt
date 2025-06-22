@@ -16,8 +16,8 @@ import com.example.medimobile.ui.components.templates.MediTextField
 @Composable
 fun AgeInputField(
     age: Int?,
-    emptyHighlight: Boolean = false,
     modifier: Modifier = Modifier,
+    emptyHighlight: Boolean = false,
     onAgeChange: (Int?) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }

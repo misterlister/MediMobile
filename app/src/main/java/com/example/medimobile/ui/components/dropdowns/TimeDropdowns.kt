@@ -9,8 +9,8 @@ import com.example.medimobile.data.constants.DropdownConstants
 @Composable
 fun HourDropdown(
     currentHour: String?,
-    emptyHighlight: Boolean = false,
     modifier: Modifier = Modifier,
+    emptyHighlight: Boolean = false,
     onHourChanged: (String?) -> Unit
 ) {
     BaseDropdown(
@@ -28,8 +28,8 @@ fun HourDropdown(
 @Composable
 fun MinuteDropdown(
     currentMinute: String?,
-    highlight: Boolean = false,
     modifier: Modifier = Modifier,
+    highlight: Boolean = false,
     onMinuteChanged: (String?) -> Unit
 ) {
     BaseDropdown(
