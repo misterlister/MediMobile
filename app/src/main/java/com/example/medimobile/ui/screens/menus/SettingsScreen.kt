@@ -32,7 +32,6 @@ import com.example.medimobile.ui.components.templates.RadioButtonWithText
 import com.example.medimobile.ui.components.templates.ScreenLayout
 import com.example.medimobile.ui.theme.BrightnessMode
 import com.example.medimobile.ui.theme.ContrastLevel
-import com.example.medimobile.ui.util.highlightIf
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 
