@@ -513,6 +513,7 @@ open class MediMobileViewModel: ViewModel() {
                 null
             }
         } catch (e: Exception) {
+            Log.e("parseErrorDetail", "Failed to parse error JSON: $jsonString", e)
             null
         }
     }
