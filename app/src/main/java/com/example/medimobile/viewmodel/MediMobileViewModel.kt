@@ -608,6 +608,11 @@ open class MediMobileViewModel: ViewModel() {
         )
 
         if (_currentEncounter.value!!.encounterUuid == null) {
+            // Check if this VisitID is a duplicate of an existing one
+            if (encounterList.value.any { it.visitId == encounter.visitId }) {
+                _errorFlow.emit("This Visit ID is already assigned to an existing Encounter. Please use another.")
+                return false
+            }
             // Create new encounter
             return submitNewEncounter()
         } else {
