@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,23 +24,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.medimobile.R
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.utils.formatArrivalDateTime
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.testTag
-import com.example.medimobile.data.constants.UIConstants.COMPLETE_ABBREVIATION
-import com.example.medimobile.data.constants.UIConstants.INCOMPLETE_ABBREVIATION
-import com.example.medimobile.data.constants.UIConstants.LOADING_MESSAGE
-import com.example.medimobile.data.constants.UIConstants.NO_ENCOUNTERS_MESSAGE
 
 // Cell Headers for the Encounter Table
 @Composable
@@ -153,7 +151,11 @@ fun EncounterTable(
         }
         // If there are no encounters, show a message
         if (records.isEmpty()) {
-            val message = if (isLoading) LOADING_MESSAGE else NO_ENCOUNTERS_MESSAGE
+            val message = if (isLoading) {
+                stringResource(R.string.loading_message)
+            } else {
+                stringResource(R.string.no_encounters_message)
+            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -192,7 +194,11 @@ fun EncounterTable(
                         TableCell(record.visitId, modifier = Modifier.weight(VISIT_ID_WEIGHT))
                         TableCell(formatArrivalDateTime(record), modifier = Modifier.weight(DATE_WEIGHT))
                         TableCell(
-                            text = if (record.complete) COMPLETE_ABBREVIATION else INCOMPLETE_ABBREVIATION,
+                            text = if (record.complete) {
+                                stringResource(R.string.complete_abbreviation)
+                            } else {
+                                stringResource(R.string.incomplete_abbreviation)
+                            },
                             modifier = Modifier.weight(STATUS_WEIGHT))
                     }
                 }

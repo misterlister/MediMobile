@@ -8,7 +8,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.medimobile.R
-import com.example.medimobile.data.constants.UIConstants.NO_USER
 import com.example.medimobile.ui.theme.heavyShadow
 import com.example.medimobile.ui.theme.lightShadow
 import com.example.medimobile.ui.theme.mediumShadow
@@ -61,7 +60,7 @@ fun UsernameText(
     textAlign: TextAlign? = null
 ) {
     Text(
-        text = text?: NO_USER,
+        text = text?: stringResource(R.string.no_user),
         modifier = modifier,
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onSurface,

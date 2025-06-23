@@ -13,9 +13,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.medimobile.R
 import com.example.medimobile.ui.components.AppTitle
 import com.example.medimobile.ui.components.UsernameText
 import com.example.medimobile.ui.components.templates.MediButton
@@ -89,7 +91,7 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
                 MediButton(
                     onClick = { navController.navigate("settings") },
                 ) {
-                    Text(text = "Settings")
+                    Text(text = stringResource(R.string.settings_title))
                 }
             }
         }

@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">MediMobile</string>
+    <string name="no_user">Unknown User</string>
+    <string name="no_visit_id">Visit ID not set</string>
+    <string name="loading_message">Loading…</string>
+    <string name="no_encounters_message">No encounters found in the selected range.</string>
+    <string name="complete_abbreviation">Comp.</string>
+    <string name="incomplete_abbreviation">Incomp.</string>
+    <string name="event_select_title">Event Select</string>
+    <string name="main_menu_title">Main Menu</string>"
+    <string name="settings_title">Settings</string>"
 </resources>

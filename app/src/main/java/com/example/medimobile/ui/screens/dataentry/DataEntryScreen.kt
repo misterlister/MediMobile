@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
-import com.example.medimobile.data.constants.UIConstants.NO_VISIT_ID
+import com.example.medimobile.R
 import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.getStatusColour
 import com.example.medimobile.data.model.getStatusTextColour
@@ -117,7 +118,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 Spacer(modifier = Modifier.width(8.dp))
                 TopBarText(
                     text = if (isDataEmptyOrNull(encounter?.visitId)) {
-                        NO_VISIT_ID
+                        stringResource(R.string.no_visit_id)
                     } else {
                         encounter!!.visitId
                     },

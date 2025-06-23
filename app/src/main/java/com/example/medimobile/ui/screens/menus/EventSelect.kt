@@ -11,9 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.medimobile.R
 import com.example.medimobile.data.eventdata.EventList
 import com.example.medimobile.data.utils.toEventNames
 import com.example.medimobile.ui.components.ScreenTitle
@@ -42,7 +44,7 @@ fun EventSelectScreen(navController: NavController, viewModel: MediMobileViewMod
             ) {
 
                 ScreenTitle(
-                    text = "Event Select",
+                    text = stringResource(id = R.string.event_select_title),
                     modifier = Modifier.padding(vertical = 32.dp))
 
                 val formSections = listOf(
