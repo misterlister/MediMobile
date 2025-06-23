@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 
@@ -87,7 +88,7 @@ open class MediMobileViewModel: ViewModel() {
     }
 
     private fun getMinDate(): String? {
-        val currentDate = LocalDate.now()
+        val currentDate = LocalDateTime.now()
         val minDate: String? = when (_selectedDateRange.value) {
             DateRangeOption.DAY -> currentDate.minusDays(1).toString()
             DateRangeOption.WEEK -> currentDate.minusWeeks(1).toString()
@@ -470,9 +471,10 @@ open class MediMobileViewModel: ViewModel() {
             try {
                 val response = getApi.getPatientEncounters(
                     userUuid = null,
-                    arrivalDateMin = getMinDate(),
-                    arrivalDateMax = null,
-                    getAuthToken())
+                    arrivalDateTimeMin = getMinDate(),
+                    arrivalDateTimeMax = null,
+                    getAuthToken()
+                )
 
                 if (response.isSuccessful) {
                     response.body()?.let { encounters ->

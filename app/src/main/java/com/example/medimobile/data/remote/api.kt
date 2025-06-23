@@ -21,8 +21,8 @@ interface GetEncountersApi {
     @GET("api/medical/forms")
     suspend fun getPatientEncounters(
         @Query("user_uuid") userUuid: String? = null,
-        @Query("arrival_date_min") arrivalDateMin: String? = null,
-        @Query("arrival_date_max") arrivalDateMax: String? = null,
+        @Query("arrival_datetime_min") arrivalDateTimeMin: String? = null,
+        @Query("arrival_datetime_max") arrivalDateTimeMax: String? = null,
         @Header("Authorization") token: String
     ): Response<List<PatientEncounter>>
 }
