@@ -66,6 +66,16 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
     val usernameFocusRequester = remember { FocusRequester() }
     val passwordFocusRequester = remember { FocusRequester() }
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow
+            .flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect { error ->
+                errorText = error
+                showErrorPopup = true
+            }
+    }
 
     LaunchedEffect(loginResult) {
         loginResult?.let { result ->
@@ -73,10 +83,6 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                 viewModel.setCurrentUser(username)
                 navController.navigate("mainMenu")
                 viewModel.clearLoginResult()
-            }.onFailure { error ->
-                errorText = "${error.message}"
-                showErrorPopup = true
-                Log.e("LoginScreen", "Login failed", error)
             }
         }
     }

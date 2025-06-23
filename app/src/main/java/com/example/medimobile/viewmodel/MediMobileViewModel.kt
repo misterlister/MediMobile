@@ -387,7 +387,7 @@ open class MediMobileViewModel: ViewModel() {
                         _loginResult.value = Result.success(loginResponse.accessToken)
                         Log.d("Login successful", loginResponse.toString())
                     } ?: run {
-                        _loginResult.value = Result.failure(Exception("Server returned no data. Please try again later."))
+                        _errorFlow.emit("Server returned no data. Please try again later.")
                         Log.d("Login failed", "Server returned no data.")
                     }
                 } else {
@@ -403,13 +403,14 @@ open class MediMobileViewModel: ViewModel() {
                         else -> detailedMessage ?: "Login failed (code ${response.code()})."
                     }
                     Log.e("Login failed", errorBody.toString())
-
-                    _loginResult.value = Result.failure(Exception(errorMessage))
+                    _errorFlow.emit(errorMessage)
                 }
             } catch (e: IOException) {
-                _loginResult.value = Result.failure(Exception("Unable to connect. Please check your internet connection and try again."))
+                _errorFlow.emit("Unable to connect. Please check your internet connection and try again.")
+                Log.d("Login failed", "Network error: ${e.localizedMessage}")
             } catch (e: Exception) {
-                _loginResult.value = Result.failure(Exception("Unexpected error occurred. Please try again later."))
+                _errorFlow.emit("Unexpected error occurred. Please try again later.")
+                Log.d("Login failed", "Unexpected error: ${e.localizedMessage}")
             } finally {
                 setLoading(false)
             }
