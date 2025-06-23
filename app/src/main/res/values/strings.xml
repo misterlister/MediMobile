@@ -9,4 +9,5 @@
     <string name="event_select_title">Event Select</string>
     <string name="main_menu_title">Main Menu</string>"
     <string name="settings_title">Settings</string>"
+    <string name="no_personal_info_warning">Please enter no personally identifiable information</string>
 </resources>

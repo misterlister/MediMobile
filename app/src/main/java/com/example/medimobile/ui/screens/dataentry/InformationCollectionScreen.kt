@@ -1,17 +1,22 @@
 package com.example.medimobile.ui.screens.dataentry
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.example.medimobile.R
 import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.dropdowns.DropdownWithOtherField
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
@@ -78,9 +83,15 @@ fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
                         viewModel.setComment(it)
                     },
                     placeholder = {
-                        Text(
-                            text = "Enter comments (optional)"
-                        )
+                        Column(){
+                            Text(
+                                text = "Enter comments (optional)"
+                            )
+                            Text(
+                                text = stringResource(R.string.no_personal_info_warning),
+                                style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
+                            )
+                        }
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
