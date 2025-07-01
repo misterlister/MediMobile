@@ -12,7 +12,10 @@ data class LoginRequest(
 data class LoginResponse(
     @SerializedName("access_token") val accessToken: String,
     @SerializedName("token_type") val tokenType: String,
-    @SerializedName("user_role") val userRole: String
+    @SerializedName("user_role") val userRole: String,
+    @SerializedName("uuid") val uuid: String,
+    @SerializedName("first_name") val firstName: String?,
+    @SerializedName("last_name") val lastName: String?
 )
 
 data class ErrorResponse(
