@@ -2,6 +2,7 @@ package com.example.medimobile.testdata
 
 import com.example.medimobile.data.model.DropdownItem
 import com.example.medimobile.data.model.EventDropdowns
+import com.example.medimobile.data.model.LoggedInUser
 import com.example.medimobile.data.model.MassGatheringEvent
 import com.example.medimobile.data.model.PatientEncounter
 import com.example.medimobile.data.model.ServiceLocation
@@ -195,6 +196,17 @@ object TestData {
             userUuid = "userComplete2",
             complete = true
         )
+    )
+
+    val fakeUser: LoggedInUser = LoggedInUser(
+        email = "test@test.com",
+        group = GROUP_1_EVENT_1,
+        role = "testrole",
+        accessToken = SUCCESS_TOKEN,
+        tokenType = "Bearer",
+        uuid = "testuuid",
+        firstName = "Test",
+        lastName = "User",
     )
 
     const val USERNAME_1 = "testuser"
