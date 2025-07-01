@@ -21,10 +21,12 @@ import com.example.medimobile.data.remote.GetSequenceApi
 import com.example.medimobile.data.remote.LoginRequest
 import com.example.medimobile.data.remote.SubmitEncountersApi
 import com.example.medimobile.data.remote.createRetrofit
+import com.example.medimobile.data.session.UserSessionManager
 import com.example.medimobile.data.utils.DateRangeOption
 import com.example.medimobile.data.utils.formatVisitID
 import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.example.medimobile.data.utils.mapToPatientEncounterFormData
+import com.example.medimobile.data.utils.toLoggedInUser
 import com.example.medimobile.ui.theme.BrightnessMode
 import com.example.medimobile.ui.theme.ContrastLevel
 import com.google.gson.Gson
@@ -68,7 +70,7 @@ open class MediMobileViewModel: ViewModel() {
     }
 
     private val _errorFlow = MutableSharedFlow<String>()
-    val errorFlow = _errorFlow.asSharedFlow()
+    open val errorFlow = _errorFlow.asSharedFlow()
 
     // Currently selected date range for display in the encounter table
     private val _selectedDateRange = MutableStateFlow(DateRangeOption.WEEK)
@@ -98,27 +100,6 @@ open class MediMobileViewModel: ViewModel() {
         }
         return minDate
     }
-
-    // **User variables and methods**
-
-
-    // States to hold the current user and user group
-    private val _currentUser = MutableStateFlow<String?>(null)
-    val currentUser: StateFlow<String?> = _currentUser
-    private var userUuid: String? = null
-    private val _userGroup = MutableStateFlow<String?>(null)
-    open val userGroup: StateFlow<String?> = _userGroup
-
-    // Set the current user
-    fun setCurrentUser(user: String) {
-        _currentUser.value = user
-    }
-
-    // Set the user group
-    open fun setUserGroup(group: String) {
-        _userGroup.value = group
-    }
-
 
     // **Event variables and methods**
 
@@ -184,8 +165,7 @@ open class MediMobileViewModel: ViewModel() {
         }
         val newEncounter = PatientEncounter(
             event = _selectedEvent.value!!.eventName,
-            location = _selectedLocation.value!!.locationName,
-            userUuid = userUuid,
+            location = _selectedLocation.value!!.locationName
         )
         setCurrentEncounter(newEncounter)
     }
@@ -374,8 +354,6 @@ open class MediMobileViewModel: ViewModel() {
     private val _loginResult = MutableStateFlow<Result<String>?>(null)
     open val loginResult: StateFlow<Result<String>?> = _loginResult
 
-    private var authToken: String? = null // holds authentication token
-
     open fun login(email: String, password: String, userGroup: String) {
         setLoading(true)
         viewModelScope.launch {
@@ -383,7 +361,8 @@ open class MediMobileViewModel: ViewModel() {
                 val response = authApi.login(LoginRequest(email, password, userGroup))
                 if (response.isSuccessful) {
                     response.body()?.let { loginResponse ->
-                        authToken = loginResponse.accessToken
+                        val user = loginResponse.toLoggedInUser(email = email, group = userGroup)
+                        UserSessionManager.login(user)
                         _loginResult.value = Result.success(loginResponse.accessToken)
                         Log.d("Login successful", loginResponse.toString())
                     } ?: run {
@@ -417,22 +396,13 @@ open class MediMobileViewModel: ViewModel() {
         }
     }
 
-    private fun getAuthToken(): String {
-        if (authToken == null) {
-            return ""
-        }
-        return "Bearer $authToken"
-    }
-
     fun clearLoginResult() {
         _loginResult.value = null
     }
 
     fun logout() {
-        authToken = null  // Clear token when logging out
+        UserSessionManager.logout()
         clearLoginResult()
-        _userGroup.value = null
-        _currentUser.value = null
     }
 
     // **Database functions**
@@ -474,7 +444,7 @@ open class MediMobileViewModel: ViewModel() {
                     userUuid = null,
                     arrivalDateTimeMin = getMinDate(),
                     arrivalDateTimeMax = null,
-                    getAuthToken()
+                    UserSessionManager.getAuthToken()
                 )
 
                 if (response.isSuccessful) {
@@ -506,7 +476,7 @@ open class MediMobileViewModel: ViewModel() {
 
     private fun parseErrorDetail(jsonString: String?): String? {
         return try {
-            if (!jsonString.isNullOrBlank()) {
+            if (!jsonString.isNullOrBlank() && jsonString.trimStart().startsWith("{")) {
                 val errorResponse = Gson().fromJson(jsonString, ErrorResponse::class.java)
                 errorResponse.detail
             } else {
@@ -525,7 +495,7 @@ open class MediMobileViewModel: ViewModel() {
                 _currentEncounter.value!!,
                 getDropdownMappings()
             )
-            val response = postApi.postPatientEncounter(formData, getAuthToken())
+            val response = postApi.postPatientEncounter(formData, UserSessionManager.getAuthToken())
 
             if (response.isSuccessful) {
                 response.body()?.let { createdEncounter ->
@@ -564,7 +534,7 @@ open class MediMobileViewModel: ViewModel() {
                 _currentEncounter.value!!,
                 getDropdownMappings()
             )
-            val response = postApi.updatePatientEncounter(formData, getAuthToken())
+            val response = postApi.updatePatientEncounter(formData, UserSessionManager.getAuthToken())
 
             if (response.isSuccessful) {
                 response.body()?.let { updatedEncounter ->

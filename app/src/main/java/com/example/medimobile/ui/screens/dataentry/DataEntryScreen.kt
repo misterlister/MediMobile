@@ -42,6 +42,7 @@ import com.example.medimobile.R
 import com.example.medimobile.data.model.StageStatus
 import com.example.medimobile.data.model.getStatusColour
 import com.example.medimobile.data.model.getStatusTextColour
+import com.example.medimobile.data.session.UserSessionManager
 import com.example.medimobile.data.utils.isDataEmptyOrNull
 import com.example.medimobile.ui.components.LoadingIndicator
 import com.example.medimobile.ui.components.TopBarText
@@ -57,7 +58,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel) {
     val currentEncounter = viewModel.currentEncounter.collectAsState().value
-    val username = viewModel.currentUser.collectAsState().value
+    val username = UserSessionManager.userDisplayName
     val encounter = viewModel.currentEncounter.collectAsState().value
     val isLoading = viewModel.isLoading.collectAsState().value
 

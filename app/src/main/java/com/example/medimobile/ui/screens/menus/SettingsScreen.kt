@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.medimobile.R
+import com.example.medimobile.data.session.UserSessionManager
 import com.example.medimobile.data.utils.DateRangeOption
 import com.example.medimobile.data.utils.toDateRangeOption
 import com.example.medimobile.data.utils.toDisplayValue
@@ -40,7 +41,7 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
 
     val encounterDateRange = viewModel.selectedDateRange.collectAsState()
     val dateRangeOptions = DateRangeOption.entries.map { it.toDisplayValue() }
-    val username = viewModel.currentUser.collectAsState().value
+    val username = UserSessionManager.userDisplayName
 
     ScreenLayout(
         topBar = {

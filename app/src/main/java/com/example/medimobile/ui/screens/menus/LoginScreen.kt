@@ -81,7 +81,6 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
     LaunchedEffect(loginResult) {
         loginResult?.let { result ->
             result.onSuccess {
-                viewModel.setCurrentUser(username)
                 navController.navigate("mainMenu")
                 viewModel.clearLoginResult()
             }
@@ -113,7 +112,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                         dropdownLabel = "Service",
                         onSelectionChanged = { newLocation ->
                             if (newLocation != null) {
-                                viewModel.setUserGroup(newLocation)
+                                group = newLocation
                             }
                         },
                         notNullable = true,

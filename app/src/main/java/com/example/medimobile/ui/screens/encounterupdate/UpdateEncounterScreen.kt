@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
+import com.example.medimobile.data.session.UserSessionManager
 import com.example.medimobile.data.utils.dateFormatter
 import com.example.medimobile.data.utils.toDisplayValue
 import com.example.medimobile.ui.components.LoadingIndicator
@@ -59,7 +60,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
     val encounterList by viewModel.encounterList.collectAsState()
     val isLoading = viewModel.isLoading.collectAsState().value
 
-    val username = viewModel.currentUser.collectAsState().value
+    val username = UserSessionManager.userDisplayName
 
     // State used to trigger the alert pop-up
     val showNotFoundDialog = remember { mutableStateOf(false) }
