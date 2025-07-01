@@ -10,9 +10,12 @@ import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
+import com.example.medimobile.data.session.UserSessionManager
 import com.example.medimobile.fakes.FakeMediMobileViewModel
+import com.example.medimobile.testdata.TestData
 import com.example.medimobile.testdata.TestData.FAKE_VISIT_ID
 import com.example.medimobile.ui.navigation.AppNavGraph
+import com.example.medimobile.ui.theme.MediMobileTheme
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import org.junit.Assert.assertTrue
@@ -36,11 +39,18 @@ class DataEntryScreenTest {
         navController = TestNavHostController(composeTestRule.activity)
         navController.navigatorProvider.addNavigator(ComposeNavigator())
 
+        UserSessionManager.login(TestData.fakeUser)
+
         // Create a fake ViewModel
         fakeViewModel = FakeMediMobileViewModel(dispatcher = testDispatcher)
 
         composeTestRule.setContent {
-            AppNavGraph(navController = navController, viewModel = fakeViewModel)
+            MediMobileTheme(
+                brightnessMode = fakeViewModel.brightnessMode.value,
+                contrastLevel = fakeViewModel.contrastLevel.value
+            ) {
+                AppNavGraph(navController = navController, viewModel = fakeViewModel)
+            }
         }
 
         // Set the current destination to the Data Entry screen before each test

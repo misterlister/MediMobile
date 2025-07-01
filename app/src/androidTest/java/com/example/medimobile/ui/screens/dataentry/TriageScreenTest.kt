@@ -12,6 +12,7 @@ import androidx.compose.ui.test.performTextInput
 import com.example.medimobile.fakes.FakeMediMobileViewModel
 import com.example.medimobile.testdata.TestData.FAKE_VISIT_ID
 import com.example.medimobile.testdata.TestData.mockEncounters
+import com.example.medimobile.ui.theme.MediMobileTheme
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import org.junit.Assert.assertEquals
@@ -31,7 +32,12 @@ class TriageScreenTest {
     fun setup() {
         fakeViewModel = FakeMediMobileViewModel(dispatcher = testDispatcher)
         composeTestRule.setContent {
-            TriageScreen(viewModel = fakeViewModel)
+            MediMobileTheme(
+                brightnessMode = fakeViewModel.brightnessMode.value,
+                contrastLevel = fakeViewModel.contrastLevel.value
+            ) {
+                TriageScreen(viewModel = fakeViewModel)
+            }
         }
     }
 

@@ -10,6 +10,7 @@ import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import com.example.medimobile.fakes.FakeMediMobileViewModel
 import com.example.medimobile.testdata.TestData.FAKE_DIAGNOSIS
+import com.example.medimobile.ui.theme.MediMobileTheme
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import org.junit.Assert.assertEquals
@@ -29,7 +30,12 @@ class DischargeScreenTest {
     fun setup() {
         fakeViewModel = FakeMediMobileViewModel(dispatcher = testDispatcher)
         composeTestRule.setContent {
-            DischargeScreen(viewModel = fakeViewModel)
+            MediMobileTheme(
+                brightnessMode = fakeViewModel.brightnessMode.value,
+                contrastLevel = fakeViewModel.contrastLevel.value
+            ) {
+                DischargeScreen(viewModel = fakeViewModel)
+            }
         }
     }
 

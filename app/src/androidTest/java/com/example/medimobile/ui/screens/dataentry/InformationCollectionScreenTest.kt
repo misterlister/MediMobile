@@ -11,6 +11,7 @@ import androidx.compose.ui.test.performTextInput
 import com.example.medimobile.fakes.FakeMediMobileViewModel
 import com.example.medimobile.testdata.TestData.FAKE_AGE
 import com.example.medimobile.testdata.TestData.FAKE_COMMENT
+import com.example.medimobile.ui.theme.MediMobileTheme
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import org.junit.Assert.assertEquals
@@ -30,7 +31,12 @@ class InformationCollectionScreenTest {
     fun setup() {
         fakeViewModel = FakeMediMobileViewModel(dispatcher = testDispatcher)
         composeTestRule.setContent {
-            InformationCollectionScreen(viewModel = fakeViewModel)
+            MediMobileTheme(
+                brightnessMode = fakeViewModel.brightnessMode.value,
+                contrastLevel = fakeViewModel.contrastLevel.value
+            ) {
+                InformationCollectionScreen(viewModel = fakeViewModel)
+            }
         }
     }
 
