@@ -28,7 +28,6 @@ fun mapToPatientEncounterFormData(
         triageAcuity = encounter.triageAcuity,
         dischargeDiagnosis = encounter.dischargeDiagnosis,
         encounterUuid = encounter.encounterUuid,
-        userUuid = encounter.userUuid,
         complete = encounter.complete
     )
 }
