@@ -20,6 +20,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            resValue("string", "app_name", "MediMobile (Dev)")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
