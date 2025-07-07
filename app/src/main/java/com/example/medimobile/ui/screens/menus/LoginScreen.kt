@@ -53,7 +53,7 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
     val isLoading = viewModel.isLoading.collectAsState().value
 
     // currently selected group event
-    val group = viewModel.userGroup.collectAsState().value
+    var group by remember { mutableStateOf<String?>(null) }
     val selectedEvent = viewModel.selectedEvent.collectAsState().value
 
     var errorText by remember { mutableStateOf<String>("") }
