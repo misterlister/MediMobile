@@ -30,7 +30,7 @@ import com.example.medimobile.ui.components.templates.MediTextField
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
-fun TriageScreen(viewModel: MediMobileViewModel) {
+fun ArrivalScreen(viewModel: MediMobileViewModel) {
     val encounter = viewModel.currentEncounter.collectAsState().value
     val selectedEvent = viewModel.selectedEvent.collectAsState().value
     val focusManager = LocalFocusManager.current

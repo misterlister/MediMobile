@@ -128,9 +128,9 @@ class MediMobileViewModelTest {
         val encounter = PatientEncounter()
         viewModel.setCurrentEncounter(encounter)
 
-        viewModel.updateTriageStatus()
+        viewModel.updateArrivalStatus()
 
-        assertEquals(StageStatus.NOT_STARTED, viewModel.currentEncounter.value?.triageStatus)
+        assertEquals(StageStatus.NOT_STARTED, viewModel.currentEncounter.value?.arrivalStatus)
     }
 
     @Test
@@ -141,9 +141,9 @@ class MediMobileViewModelTest {
         )
         viewModel.setCurrentEncounter(encounter)
 
-        viewModel.updateTriageStatus()
+        viewModel.updateArrivalStatus()
 
-        assertEquals(StageStatus.IN_PROGRESS, viewModel.currentEncounter.value?.triageStatus)
+        assertEquals(StageStatus.IN_PROGRESS, viewModel.currentEncounter.value?.arrivalStatus)
     }
 
     @Test
@@ -157,9 +157,9 @@ class MediMobileViewModelTest {
         )
         viewModel.setCurrentEncounter(encounter)
 
-        viewModel.updateTriageStatus()
+        viewModel.updateArrivalStatus()
 
-        assertEquals(StageStatus.COMPLETE, viewModel.currentEncounter.value?.triageStatus)
+        assertEquals(StageStatus.COMPLETE, viewModel.currentEncounter.value?.arrivalStatus)
     }
 
     // Information collection stage tests

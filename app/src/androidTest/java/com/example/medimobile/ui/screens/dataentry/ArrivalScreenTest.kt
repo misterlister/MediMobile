@@ -20,7 +20,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class TriageScreenTest {
+class ArrivalScreenTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
@@ -36,13 +36,13 @@ class TriageScreenTest {
                 brightnessMode = fakeViewModel.brightnessMode.value,
                 contrastLevel = fakeViewModel.contrastLevel.value
             ) {
-                TriageScreen(viewModel = fakeViewModel)
+                ArrivalScreen(viewModel = fakeViewModel)
             }
         }
     }
 
     @Test
-    fun triageScreen_showsFields() {
+    fun arrivalScreen_showsFields() {
         composeTestRule.onNodeWithTag("nowDateTimeButton").assertIsDisplayed()
         composeTestRule.onNodeWithTag("dateButton").assertIsDisplayed()
         composeTestRule.onNodeWithTag("hourDropdown").assertIsDisplayed()
@@ -54,7 +54,7 @@ class TriageScreenTest {
     }
 
     @Test
-    fun triageScreen_disablesVisitIdControls_whenSubmitted() {
+    fun arrivalScreen_disablesVisitIdControls_whenSubmitted() {
         fakeViewModel.setCurrentEncounter(mockEncounters[1])
         fakeViewModel.markAsSubmitted()
 
@@ -64,7 +64,7 @@ class TriageScreenTest {
     }
 
     @Test
-    fun triageScreen_visitIdTextField_updatesViewModel() {
+    fun arrivalScreen_visitIdTextField_updatesViewModel() {
         composeTestRule.onNodeWithTag("visitIdTextField")
             .performTextClearance()
         composeTestRule.onNodeWithTag("visitIdTextField")
@@ -74,7 +74,7 @@ class TriageScreenTest {
     }
 
     @Test
-    fun triageScreen_arrivalMethodDropdown_updatesViewModel() {
+    fun arrivalScreen_arrivalMethodDropdown_updatesViewModel() {
         composeTestRule.onNodeWithTag("arrivalMethodDropdown").performClick()
         composeTestRule.onNodeWithText("Method 1").performClick()
 

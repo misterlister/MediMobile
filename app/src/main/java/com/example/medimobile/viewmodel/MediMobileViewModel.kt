@@ -226,8 +226,8 @@ open class MediMobileViewModel: ViewModel() {
         _currentEncounter.value = _currentEncounter.value?.copy(submitted = true)
     }
 
-    // Update the entry status of the Triage stage
-    fun updateTriageStatus() {
+    // Update the entry status of the Arrival stage
+    fun updateArrivalStatus() {
         val encounter = currentEncounter.value
         if (encounter != null) {
             // List of fields to check
@@ -244,15 +244,15 @@ open class MediMobileViewModel: ViewModel() {
             // Check if at least one field is filled
             val atLeastOneFieldFilled = fieldsToCheck.any { !isDataEmptyOrNull(it) }
 
-            // Update triage status based on field checks
-            val triageStatus = when {
+            // Update Arrival status based on field checks
+            val arrivalStatus = when {
                 allFieldsFilled -> StageStatus.COMPLETE
                 atLeastOneFieldFilled -> StageStatus.IN_PROGRESS
                 else -> StageStatus.NOT_STARTED
             }
 
-            // Apply the new triage status
-            _currentEncounter.value = encounter.copy(triageStatus = triageStatus)
+            // Apply the new Arrival status
+            _currentEncounter.value = encounter.copy(arrivalStatus = arrivalStatus)
         }
     }
 
@@ -314,7 +314,7 @@ open class MediMobileViewModel: ViewModel() {
 
     // Update all stage statuses
     private fun updateAllStageStatuses() {
-        updateTriageStatus()
+        updateArrivalStatus()
         updateInformationCollectionStatus()
         updateDischargeStatus()
     }
@@ -576,7 +576,7 @@ open class MediMobileViewModel: ViewModel() {
         val encounter = _currentEncounter.value ?: return false
 
         _currentEncounter.value = encounter.copy(
-            complete = encounter.triageStatus == StageStatus.COMPLETE &&
+            complete = encounter.arrivalStatus == StageStatus.COMPLETE &&
                     encounter.dischargeStatus == StageStatus.COMPLETE &&
                     encounter.informationCollectionStatus == StageStatus.COMPLETE
         )

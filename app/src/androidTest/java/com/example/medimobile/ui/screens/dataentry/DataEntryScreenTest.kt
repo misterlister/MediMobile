@@ -63,7 +63,7 @@ class DataEntryScreenTest {
     fun dataEntryScreen_showsBarsAndTabs() {
         composeTestRule.onNodeWithTag("usernameText").assertIsDisplayed()
         composeTestRule.onNodeWithTag("visitIdText").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("TriageTab").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("ArrivalTab").assertIsDisplayed()
         composeTestRule.onNodeWithTag("Information CollectionTab").assertIsDisplayed()
         composeTestRule.onNodeWithTag("DischargeTab").assertIsDisplayed()
         composeTestRule.onNodeWithTag("backButton").assertIsDisplayed()
@@ -81,7 +81,7 @@ class DataEntryScreenTest {
 
     @Test
     fun dataEntryScreen_tabSwitchingDisplaysCorrectScreens() {
-        // Confirm that the Triage screen is displayed by default
+        // Confirm that the Arrival screen is displayed by default
         composeTestRule.onNodeWithTag("visitIdTextField").assertIsDisplayed()
 
         // Switch to the Information Collection screen, and confirm that it's displayed
@@ -92,8 +92,8 @@ class DataEntryScreenTest {
         composeTestRule.onNodeWithTag("DischargeTab").performClick()
         composeTestRule.onNodeWithTag("departureDestinationDropdown").assertIsDisplayed()
 
-        // Switch back to the Triage screen, and confirm that it's displayed again
-        composeTestRule.onNodeWithTag("TriageTab").performClick()
+        // Switch back to the Arrival screen, and confirm that it's displayed again
+        composeTestRule.onNodeWithTag("ArrivalTab").performClick()
         composeTestRule.onNodeWithTag("visitIdTextField").assertIsDisplayed()
     }
 
