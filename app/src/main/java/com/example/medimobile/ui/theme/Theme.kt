@@ -10,109 +10,6 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-/*
-private val DarkColorScheme = darkColorScheme(
-    primary = MediBlue,
-    secondary = DarkSecondaryBlue,
-    onPrimary = TextOnBlue,
-    background = DarkBackground,
-    onBackground = TextOnDark,
-    surface = DarkBackground,
-    onSurface = TextOnDark,
-    outline = DarkVariant,
-    surfaceVariant = DarkVariant,
-    onSurfaceVariant = TextOnDark,
-    primaryContainer = DarkContainer,
-    onPrimaryContainer = TextOnDark,
-    secondaryContainer = SecondaryDarkContainer,
-    onSecondaryContainer = TextOnDark,
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = MediBlue,
-    secondary = LightSecondaryBlue,
-    onPrimary = TextOnBlue,
-    background = LightBackground,
-    onBackground = TextOnLight,
-    surface = LightBackground,
-    onSurface = TextOnLight,
-    outline = LightVariant,
-    surfaceVariant = LightVariant,
-    onSurfaceVariant = TextOnLight,
-    primaryContainer = LightContainer,
-    onPrimaryContainer = TextOnLight,
-    secondaryContainer = SecondaryLightContainer,
-    onSecondaryContainer = TextOnLight,
-)
-
-// **Composable styles with dynamic colours**
-
-// Custom TextStyle for app title text
-@Composable
-fun appTitleTextStyle(): TextStyle {
-    return TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 44.sp,
-        textAlign = TextAlign.Center,
-        shadow = Shadow(
-            color = dynamicShadowColor(),
-            offset = Offset(4f, 4f),
-            blurRadius = 7f
-        )
-    )
-}
-
-// Custom TextStyle for section title text
-@Composable
-fun sectionTitleTextStyle(): TextStyle {
-    return TextStyle (
-        fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
-        textAlign = TextAlign.Center,
-        shadow = Shadow(
-            color = dynamicShadowColor(),
-            offset = Offset(2f, 2f),
-            blurRadius = 5f
-        )
-    )
-}
-
-// Custom TextStyle for screen title text
-@Composable
-fun screenTitleTextStyle(): TextStyle {
-    return TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 36.sp,
-        textAlign = TextAlign.Center,
-        shadow = Shadow(
-            color = dynamicShadowColor(),
-            offset = Offset(3f, 3f),
-            blurRadius = 6f
-        )
-    )
-}
-
-// **Basic styles without dynamic colours**
-
-// Custom TextStyle for username and DocID text
-val userNameTextStyle = TextStyle(
-    fontWeight = FontWeight.Bold,
-    fontSize = 16.sp,
-)
-
-val errorMessageTextStyle = TextStyle(
-    fontWeight = FontWeight.Bold,
-    fontSize = 18.sp,
-    color = Color.Red // Set text color to red for error messages
-)
-
-val placeholderTextStyle = TextStyle(
-    fontWeight = FontWeight.Normal,
-    color = Color.Gray // Set text color to gray for placeholders
-)
-
-*/
-
 @Immutable
 data class ExtendedColorScheme(
     val medigreen: ColorFamily,
@@ -526,13 +423,7 @@ fun MediMobileTheme(
         )
     }
 }
-/*
-// Get corresponding banner colour for light/dark mode
-@Composable
-fun bannerColor(): Color {
-    return if (isSystemInDarkTheme()) DarkBanner else LightBanner
-}
-*/
+
 enum class ButtonStatus {
     DEFAULT, CONFIRM, WARNING, SELECTED;
 
