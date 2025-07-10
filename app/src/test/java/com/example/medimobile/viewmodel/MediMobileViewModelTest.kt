@@ -121,10 +121,10 @@ class MediMobileViewModelTest {
 
     // **Stage status tests**
 
-    // Triage stage tests
+    // Arrival stage tests
 
     @Test
-    fun `updateTriageStatus sets NOT_STARTED when no fields filled`() = runTest {
+    fun `updateArrivalStatus sets NOT_STARTED when no fields filled`() = runTest {
         val encounter = PatientEncounter()
         viewModel.setCurrentEncounter(encounter)
 
@@ -134,7 +134,7 @@ class MediMobileViewModelTest {
     }
 
     @Test
-    fun `updateTriageStatus sets IN_PROGRESS when some fields filled`() = runTest {
+    fun `updateArrivalStatus sets IN_PROGRESS when some fields filled`() = runTest {
         val encounter = PatientEncounter(
             arrivalDate = LocalDate.now(),
             arrivalTime = LocalTime.now()
@@ -147,7 +147,7 @@ class MediMobileViewModelTest {
     }
 
     @Test
-    fun `updateTriageStatus sets COMPLETE when all fields filled`() = runTest {
+    fun `updateArrivalStatus sets COMPLETE when all fields filled`() = runTest {
         val encounter = PatientEncounter(
             arrivalDate = LocalDate.now(),
             arrivalTime = LocalTime.now(),
