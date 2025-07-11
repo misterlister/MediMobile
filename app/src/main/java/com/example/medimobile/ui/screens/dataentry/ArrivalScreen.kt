@@ -20,9 +20,9 @@ import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.dropdowns.DropdownWithOtherField
 import com.example.medimobile.ui.components.errorscreens.NoEncounterError
 import com.example.medimobile.ui.components.errorscreens.NoEventError
+import com.example.medimobile.ui.components.inputfields.AgeInputField
 import com.example.medimobile.ui.components.inputfields.DateTimeSelector
 import com.example.medimobile.ui.components.inputfields.QRScannerButton
-import com.example.medimobile.ui.components.inputfields.TriageRadioButtons
 import com.example.medimobile.ui.components.templates.DividedFormSections
 import com.example.medimobile.ui.components.templates.FormSectionData
 import com.example.medimobile.ui.components.templates.MediButton
@@ -109,19 +109,6 @@ fun ArrivalScreen(viewModel: MediMobileViewModel) {
                     }
                 }
             },
-            FormSectionData("Triage") {
-                TriageRadioButtons(
-                    selectedOption = encounter.triageAcuity,
-                    onOptionSelected = {
-                        if (it == null) {
-                            viewModel.setTriageAcuity("")
-                        } else {
-                            viewModel.setTriageAcuity(it)
-                        }
-                    },
-                    emptyHighlight = true
-                )
-            },
             FormSectionData("Arrival Method") {
                 DropdownWithOtherField (
                     currentSelection = encounter.arrivalMethod,
@@ -134,7 +121,30 @@ fun ArrivalScreen(viewModel: MediMobileViewModel) {
                     emptyHighlight = true,
                     modifier = Modifier.testTag("arrivalMethodDropdown")
                 )
-            }
+            },
+            FormSectionData("Age") {
+                AgeInputField(
+                    age = encounter.age,
+                    onAgeChange = { newAge ->
+                        viewModel.setAge(newAge)
+                    },
+                    emptyHighlight = true,
+                    modifier = Modifier.testTag("ageInputField")
+                )
+            },
+            FormSectionData("Role") {
+                DropdownWithOtherField (
+                    currentSelection = encounter.role,
+                    options = selectedEvent.dropdowns.roles.toDisplayValues(),
+                    dropdownLabel = "Role",
+                    onSelectionChanged = { newDisplayValue ->
+                        viewModel.setRole(newDisplayValue?: "")
+                        focusManager.clearFocus()
+                    },
+                    emptyHighlight = true,
+                    modifier = Modifier.testTag("roleDropdown")
+                )
+            },
         )
         DividedFormSections(formSections = formSections)
     }
