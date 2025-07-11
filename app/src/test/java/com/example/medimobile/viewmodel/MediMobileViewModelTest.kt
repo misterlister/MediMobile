@@ -162,32 +162,32 @@ class MediMobileViewModelTest {
         assertEquals(StageStatus.COMPLETE, viewModel.currentEncounter.value?.arrivalStatus)
     }
 
-    // Information collection stage tests
+    // Triage stage tests
 
     @Test
-    fun `updateInformationCollectionStatus sets NOT_STARTED when no fields filled`() = runTest {
+    fun `updateTriageStatus sets NOT_STARTED when no fields filled`() = runTest {
         val encounter = PatientEncounter()
         viewModel.setCurrentEncounter(encounter)
 
-        viewModel.updateInformationCollectionStatus()
+        viewModel.updateTriageStatus()
 
-        assertEquals(StageStatus.NOT_STARTED, viewModel.currentEncounter.value?.informationCollectionStatus)
+        assertEquals(StageStatus.NOT_STARTED, viewModel.currentEncounter.value?.triageStatus)
     }
 
     @Test
-    fun `updateInformationCollectionStatus sets IN_PROGRESS when some fields filled`() = runTest {
+    fun `updateTriageStatus sets IN_PROGRESS when some fields filled`() = runTest {
         val encounter = PatientEncounter(
             age = 40
         )
         viewModel.setCurrentEncounter(encounter)
 
-        viewModel.updateInformationCollectionStatus()
+        viewModel.updateTriageStatus()
 
-        assertEquals(StageStatus.IN_PROGRESS, viewModel.currentEncounter.value?.informationCollectionStatus)
+        assertEquals(StageStatus.IN_PROGRESS, viewModel.currentEncounter.value?.triageStatus)
     }
 
     @Test
-    fun `updateInformationCollectionStatus sets COMPLETE when all fields filled`() = runTest {
+    fun `updateTriageStatus sets COMPLETE when all fields filled`() = runTest {
         val encounter = PatientEncounter(
             age = 30,
             role = "Artist",
@@ -195,9 +195,9 @@ class MediMobileViewModelTest {
         )
         viewModel.setCurrentEncounter(encounter)
 
-        viewModel.updateInformationCollectionStatus()
+        viewModel.updateTriageStatus()
 
-        assertEquals(StageStatus.COMPLETE, viewModel.currentEncounter.value?.informationCollectionStatus)
+        assertEquals(StageStatus.COMPLETE, viewModel.currentEncounter.value?.triageStatus)
     }
 
     // Discharge stage tests

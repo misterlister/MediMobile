@@ -28,7 +28,7 @@ fun getDummyEncounters(): List<PatientEncounter> {
             dischargeDiagnosis = "Migraine",
             encounterUuid = "E001",
             arrivalStatus = StageStatus.IN_PROGRESS,
-            informationCollectionStatus = StageStatus.NOT_STARTED,
+            triageStatus = StageStatus.NOT_STARTED,
             dischargeStatus = StageStatus.COMPLETE,
             complete = false
         ),
@@ -49,7 +49,7 @@ fun getDummyEncounters(): List<PatientEncounter> {
             dischargeDiagnosis = "Angina",
             encounterUuid = "E002",
             arrivalStatus = StageStatus.COMPLETE,
-            informationCollectionStatus = StageStatus.IN_PROGRESS,
+            triageStatus = StageStatus.IN_PROGRESS,
             dischargeStatus = StageStatus.NOT_STARTED,
             complete = true
         ),
@@ -70,7 +70,7 @@ fun getDummyEncounters(): List<PatientEncounter> {
             dischargeDiagnosis = "Stroke",
             encounterUuid = "E003",
             arrivalStatus = StageStatus.NOT_STARTED,
-            informationCollectionStatus = StageStatus.COMPLETE,
+            triageStatus = StageStatus.COMPLETE,
             dischargeStatus = StageStatus.IN_PROGRESS,
             complete = false
         )

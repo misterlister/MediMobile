@@ -256,11 +256,11 @@ open class MediMobileViewModel: ViewModel() {
         }
     }
 
-    // Update the entry status of the Information Collection stage
-    fun updateInformationCollectionStatus() {
+    // Update the entry status of the Triage stage
+    fun updateTriageStatus() {
         val encounter = currentEncounter.value
         if (encounter != null) {
-            // List of fields to check for information collection
+            // List of fields to check for Triage
             val fieldsToCheck = listOf(
                 encounter.age,
                 encounter.role,
@@ -272,15 +272,15 @@ open class MediMobileViewModel: ViewModel() {
             // Check if at least one field is filled
             val atLeastOneFieldFilled = fieldsToCheck.any { !isDataEmptyOrNull(it) }
 
-            // Update information collection status based on field checks
-            val informationCollectionStatus = when {
+            // Update Triage status based on field checks
+            val triageStatus = when {
                 allFieldsFilled -> StageStatus.COMPLETE
                 atLeastOneFieldFilled -> StageStatus.IN_PROGRESS
                 else -> StageStatus.NOT_STARTED
             }
 
-            // Apply the new information collection status
-            _currentEncounter.value = encounter.copy(informationCollectionStatus = informationCollectionStatus)
+            // Apply the new Triage status
+            _currentEncounter.value = encounter.copy(triageStatus = triageStatus)
         }
     }
 
@@ -315,7 +315,7 @@ open class MediMobileViewModel: ViewModel() {
     // Update all stage statuses
     private fun updateAllStageStatuses() {
         updateArrivalStatus()
-        updateInformationCollectionStatus()
+        updateTriageStatus()
         updateDischargeStatus()
     }
 
@@ -578,7 +578,7 @@ open class MediMobileViewModel: ViewModel() {
         _currentEncounter.value = encounter.copy(
             complete = encounter.arrivalStatus == StageStatus.COMPLETE &&
                     encounter.dischargeStatus == StageStatus.COMPLETE &&
-                    encounter.informationCollectionStatus == StageStatus.COMPLETE
+                    encounter.triageStatus == StageStatus.COMPLETE
         )
 
         if (_currentEncounter.value!!.encounterUuid == null) {

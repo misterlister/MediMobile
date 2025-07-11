@@ -26,7 +26,7 @@ data class PatientEncounter (
     @SerializedName("patient_encounter_uuid") val encounterUuid: String? = null,
     @SerializedName("user_uuid") val userUuid: String? = null,
     val arrivalStatus: StageStatus = StageStatus.NOT_STARTED,
-    val informationCollectionStatus: StageStatus = StageStatus.NOT_STARTED,
+    val triageStatus: StageStatus = StageStatus.NOT_STARTED,
     val dischargeStatus: StageStatus = StageStatus.NOT_STARTED,
     val complete: Boolean = false,
     val submitted: Boolean = false

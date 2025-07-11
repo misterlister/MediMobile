@@ -28,7 +28,7 @@ import com.example.medimobile.ui.components.templates.MediTextField
 import com.example.medimobile.viewmodel.MediMobileViewModel
 
 @Composable
-fun InformationCollectionScreen(viewModel: MediMobileViewModel) {
+fun TriageScreen(viewModel: MediMobileViewModel) {
     val encounter = viewModel.currentEncounter.collectAsState().value
     val selectedEvent = viewModel.selectedEvent.collectAsState().value
     val focusManager = LocalFocusManager.current

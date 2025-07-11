@@ -19,7 +19,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class InformationCollectionScreenTest {
+class TriageScreenTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
@@ -35,13 +35,13 @@ class InformationCollectionScreenTest {
                 brightnessMode = fakeViewModel.brightnessMode.value,
                 contrastLevel = fakeViewModel.contrastLevel.value
             ) {
-                InformationCollectionScreen(viewModel = fakeViewModel)
+                TriageScreen(viewModel = fakeViewModel)
             }
         }
     }
 
     @Test
-    fun informationCollectionScreen_showsFields() {
+    fun triageScreen_showsFields() {
         composeTestRule.onNodeWithTag("ageInputField").assertIsDisplayed()
         composeTestRule.onNodeWithTag("roleDropdown").assertIsDisplayed()
         composeTestRule.onNodeWithTag("chiefComplaintDropdown").assertIsDisplayed()
@@ -49,7 +49,7 @@ class InformationCollectionScreenTest {
     }
 
     @Test
-    fun informationCollectionScreen_ageInputField_updatesViewModel() {
+    fun triageScreen_ageInputField_updatesViewModel() {
         composeTestRule.onNodeWithTag("ageInputField")
             .performTextClearance()
         composeTestRule.onNodeWithTag("ageInputField")
@@ -59,7 +59,7 @@ class InformationCollectionScreenTest {
     }
 
     @Test
-    fun informationCollectionScreen_roleDropdown_updatesViewModel() {
+    fun triageScreen_roleDropdown_updatesViewModel() {
         composeTestRule.onNodeWithTag("roleDropdown").performClick()
 
         composeTestRule.onNodeWithText("Role 1").performClick()
@@ -70,7 +70,7 @@ class InformationCollectionScreenTest {
     }
 
     @Test
-    fun informationCollectionScreen_chiefComplaintDropdown_updatesViewModel() {
+    fun triageScreen_chiefComplaintDropdown_updatesViewModel() {
         composeTestRule.onNodeWithTag("chiefComplaintDropdown").performClick()
 
         composeTestRule.onNodeWithText("Complaint 1").performClick()
@@ -81,7 +81,7 @@ class InformationCollectionScreenTest {
     }
 
     @Test
-    fun informationCollectionScreen_commentsTextField_updatesViewModel() {
+    fun triageScreen_commentsTextField_updatesViewModel() {
         composeTestRule.onNodeWithTag("commentsTextField")
             .performTextClearance()
         composeTestRule.onNodeWithTag("commentsTextField")

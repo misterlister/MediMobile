@@ -64,7 +64,7 @@ class DataEntryScreenTest {
         composeTestRule.onNodeWithTag("usernameText").assertIsDisplayed()
         composeTestRule.onNodeWithTag("visitIdText").assertIsDisplayed()
         composeTestRule.onNodeWithTag("ArrivalTab").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("Information CollectionTab").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("TriageTab").assertIsDisplayed()
         composeTestRule.onNodeWithTag("DischargeTab").assertIsDisplayed()
         composeTestRule.onNodeWithTag("backButton").assertIsDisplayed()
         composeTestRule.onNodeWithTag("cancelButton").assertIsDisplayed()
@@ -84,8 +84,8 @@ class DataEntryScreenTest {
         // Confirm that the Arrival screen is displayed by default
         composeTestRule.onNodeWithTag("visitIdTextField").assertIsDisplayed()
 
-        // Switch to the Information Collection screen, and confirm that it's displayed
-        composeTestRule.onNodeWithTag("Information CollectionTab").performClick()
+        // Switch to the Triage screen, and confirm that it's displayed
+        composeTestRule.onNodeWithTag("TriageTab").performClick()
         composeTestRule.onNodeWithTag("ageInputField").assertIsDisplayed()
 
         // Switch to the Discharge screen, and confirm that it's displayed
