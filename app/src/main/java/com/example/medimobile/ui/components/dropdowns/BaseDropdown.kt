@@ -3,7 +3,6 @@ package com.example.medimobile.ui.components.dropdowns
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -51,67 +50,58 @@ fun BaseDropdown(
         listOf(NOT_SET) + (options ?: emptyList())
     }
 
-    Column(
-        modifier = Modifier
+    Surface(
+        shape = RoundedCornerShape(6.dp),
+        tonalElevation = 1.dp,
+        border = BorderStroke(1.dp, colorScheme.outline),
+        modifier = modifier
+            .highlightIf(emptyHighlight && isDataEmptyOrNull(currentSelection))
             .fillMaxWidth(width)
+            .clickable { expanded = true }
     ) {
-        Text(
-            text = dropdownLabel,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
-
-        Surface(
-            shape = RoundedCornerShape(6.dp),
-            tonalElevation = 1.dp,
-            border = BorderStroke(1.dp, colorScheme.outline),
-            modifier = modifier
-                .highlightIf(emptyHighlight && isDataEmptyOrNull(currentSelection))
-                .fillMaxWidth()
-                .clickable { expanded = true }
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 14.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = displayValue,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.weight(1f)
-                )
-                Icon(Icons.Default.ArrowDropDown, contentDescription = "Open dropdown")
-            }
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
+        Row(
             modifier = Modifier
-                .widthIn(min = 200.dp)
+                .padding(horizontal = 12.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            if (options.isNullOrEmpty()) {
+            Text(
+                text = if (!isDataEmptyOrNull(displayValue)) displayValue else dropdownLabel,
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (!isDataEmptyOrNull(displayValue)) colorScheme.onSurface
+                        else colorScheme.onSurface.copy(alpha = 0.74f),
+                modifier = Modifier.weight(1f)
+            )
+            Icon(Icons.Default.ArrowDropDown, contentDescription = "Open dropdown")
+        }
+    }
+
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { expanded = false },
+        modifier = Modifier
+            .widthIn(min = 200.dp)
+    ) {
+        if (options.isNullOrEmpty()) {
+            DropdownMenuItem(
+                text = { Text("No options available") },
+                onClick = {},
+                enabled = false
+            )
+        } else {
+            dropdownOptions.forEach { optionChoice ->
                 DropdownMenuItem(
-                    text = { Text("No options available") },
-                    onClick = {},
-                    enabled = false
+                    text = {
+                        Text(
+                            text = optionChoice,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    },
+                    onClick = {
+                        onSelectionChanged(if (optionChoice == NOT_SET) null else optionChoice)
+                        expanded = false
+                    }
                 )
-            } else {
-                dropdownOptions.forEach { optionChoice ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = optionChoice,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        },
-                        onClick = {
-                            onSelectionChanged(if (optionChoice == NOT_SET) null else optionChoice)
-                            expanded = false
-                        }
-                    )
-                }
             }
         }
     }
