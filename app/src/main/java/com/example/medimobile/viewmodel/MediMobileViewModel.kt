@@ -234,9 +234,10 @@ open class MediMobileViewModel: ViewModel() {
             val fieldsToCheck = listOf(
                 encounter.arrivalDate,
                 encounter.arrivalTime,
-                encounter.triageAcuity,
                 encounter.visitId,
-                encounter.arrivalMethod
+                encounter.arrivalMethod,
+                encounter.age,
+                encounter.role,
             )
 
             // Check if all fields are filled
@@ -262,8 +263,7 @@ open class MediMobileViewModel: ViewModel() {
         if (encounter != null) {
             // List of fields to check for Triage
             val fieldsToCheck = listOf(
-                encounter.age,
-                encounter.role,
+                encounter.triageAcuity,
                 encounter.chiefComplaint
             )
 
