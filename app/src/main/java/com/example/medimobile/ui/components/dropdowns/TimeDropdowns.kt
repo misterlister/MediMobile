@@ -16,7 +16,7 @@ fun HourDropdown(
     BaseDropdown(
         currentSelection = currentHour,
         options = DropdownConstants.HOURS,
-        dropdownLabel = "Select Hour",
+        dropdownLabel = "Hour",
         onSelectionChanged = { newSelection ->
             onHourChanged(newSelection)
         },
@@ -35,7 +35,7 @@ fun MinuteDropdown(
     BaseDropdown(
         currentSelection = currentMinute,
         options = DropdownConstants.MINUTES,
-        dropdownLabel = "Select Minute",
+        dropdownLabel = "Minute",
         onSelectionChanged = { newSelection ->
             onMinuteChanged(newSelection)
         },
