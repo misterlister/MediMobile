@@ -20,6 +20,7 @@ fun DividedFormSections(formSections: List<FormSectionData>) {
             FormSection(
                 title = section.title, // Title for the section
                 content = section.content, // Content to be displayed in the section
+                required = section.required
             )
 
             // Add a horizontal divider between sections, but not after the last one

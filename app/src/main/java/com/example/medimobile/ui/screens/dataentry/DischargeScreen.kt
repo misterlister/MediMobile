@@ -39,7 +39,10 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
         NoEventError()
     } else {
         val formSections = listOf(
-            FormSectionData("Departure Time") {
+            FormSectionData(
+                title = "Departure Time",
+                required = false
+            ) {
                 DateTimeSelector(
                     encounter.departureDate,
                     encounter.departureTime,
@@ -54,7 +57,10 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                     emptyHighlight = true
                 )
             },
-            FormSectionData("Departure Destination") {
+            FormSectionData(
+                title = "Departure Destination",
+                required = false
+            ) {
                 DropdownWithOtherField (
                     currentSelection = encounter.departureDest,
                     options = selectedEvent.dropdowns.departureDestinations.toDisplayValues(),
@@ -67,7 +73,10 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                     modifier = Modifier.testTag("departureDestinationDropdown")
                 )
             },
-            FormSectionData("Discharge Diagnosis") {
+            FormSectionData(
+                title = "Discharge Diagnosis",
+                required = false
+            ) {
                 MediTextField(
                     value = encounter.dischargeDiagnosis, // Bind to ViewModel
                     onValueChange = {

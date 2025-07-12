@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.medimobile.data.utils.toDisplayValues
 import com.example.medimobile.ui.components.dropdowns.DropdownWithOtherField
@@ -41,7 +42,10 @@ fun ArrivalScreen(viewModel: MediMobileViewModel) {
         NoEventError()
     } else {
         val formSections = listOf(
-            FormSectionData("Arrival Time") {
+            FormSectionData(
+                title = "Arrival Time",
+                required = true
+                ) {
                 DateTimeSelector(
                     encounter.arrivalDate,
                     encounter.arrivalTime,
@@ -56,7 +60,10 @@ fun ArrivalScreen(viewModel: MediMobileViewModel) {
                     emptyHighlight = true
                 )
             },
-            FormSectionData("Visit ID") {
+            FormSectionData(
+                title = "Visit ID",
+                required = true
+            ) {
                 val isEnabled = !encounter.submitted
                 Row(
                     modifier = Modifier
@@ -79,7 +86,7 @@ fun ArrivalScreen(viewModel: MediMobileViewModel) {
                         onValueChange = { viewModel.setVisitId(it) },
                         placeholder = {
                             Text(
-                                "Scan/generate visit ID (Required)"
+                                "Scan/Gen. visit ID"
                             )
                         },
                         keyboardOptions = KeyboardOptions.Default.copy(
@@ -109,7 +116,10 @@ fun ArrivalScreen(viewModel: MediMobileViewModel) {
                     }
                 }
             },
-            FormSectionData("Arrival Method") {
+            FormSectionData(
+                title = "Arrival Method",
+                required = false
+            ) {
                 DropdownWithOtherField (
                     currentSelection = encounter.arrivalMethod,
                     options = selectedEvent.dropdowns.arrivalMethods.toDisplayValues(),
@@ -122,7 +132,10 @@ fun ArrivalScreen(viewModel: MediMobileViewModel) {
                     modifier = Modifier.testTag("arrivalMethodDropdown")
                 )
             },
-            FormSectionData("Age") {
+            FormSectionData(
+                title = "Age",
+                required = false
+            ) {
                 AgeInputField(
                     age = encounter.age,
                     onAgeChange = { newAge ->
@@ -132,7 +145,10 @@ fun ArrivalScreen(viewModel: MediMobileViewModel) {
                     modifier = Modifier.testTag("ageInputField")
                 )
             },
-            FormSectionData("Role") {
+            FormSectionData(
+                title = "Role",
+                required = false
+            ) {
                 DropdownWithOtherField (
                     currentSelection = encounter.role,
                     options = selectedEvent.dropdowns.roles.toDisplayValues(),
@@ -148,4 +164,12 @@ fun ArrivalScreen(viewModel: MediMobileViewModel) {
         )
         DividedFormSections(formSections = formSections)
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun ArrivalScreenPreview() {
+    var viewModel = MediMobileViewModel()
+    viewModel.initNewEncounter()
+    ArrivalScreen(viewModel = viewModel)
 }

@@ -40,7 +40,10 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
         NoEventError()
     } else {
         val formSections = listOf(
-            FormSectionData("Triage") {
+            FormSectionData(
+                title = "Triage",
+                required = false
+            ) {
                 TriageRadioButtons(
                     selectedOption = encounter.triageAcuity,
                     onOptionSelected = {
@@ -53,7 +56,10 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     emptyHighlight = true
                 )
             },
-            FormSectionData("Chief Complaint") {
+            FormSectionData(
+                title = "Chief Complaint",
+                required = false
+            ) {
                 DropdownWithOtherField (
                     currentSelection = encounter.chiefComplaint,
                     options = selectedEvent.dropdowns.chiefComplaints.toDisplayValues(),
@@ -66,7 +72,10 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                     modifier = Modifier.testTag("chiefComplaintDropdown")
                 )
             },
-            FormSectionData("Comments") {
+            FormSectionData(
+                title = "Comments",
+                required = false
+            ) {
                 MediTextField(
                     value = encounter.comment, // Bind to ViewModel
                     onValueChange = {
