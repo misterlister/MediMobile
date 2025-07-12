@@ -29,7 +29,7 @@ fun QRScannerButton(
     MediButton(onClick = {
         val options = ScanOptions().apply {
             setDesiredBarcodeFormats(ScanOptions.QR_CODE)
-            setPrompt("Scan a QR Code")
+            setPrompt("Scan QR")
             setBeepEnabled(false)
             setBarcodeImageEnabled(true)
         }
@@ -40,7 +40,7 @@ fun QRScannerButton(
         emptyHighlight = emptyHighlight
     ) {
         Text(
-            text = "Scan QR Code",
+            text = "Scan QR",
             textAlign = TextAlign.Center
         )
     }
