@@ -41,11 +41,11 @@ MediMobile is a mobile Android application designed to allow for real-time data 
 ### Data Entry and Update Encounter Screens
 
 <p>
-  <img src="exampleImages/triage.png" alt="Triage Screen" width="45%" />
+  <img src="exampleImages/arrival.png" alt="Arrival Screen" width="45%" />
   <img src="exampleImages/update_encounter.png" alt="Update Encounter" width="45%" />
 </p>
 
-*Left: Data Entry Screen (Triage Stage) | Right: Update Encounter Screen*
+*Left: Data Entry Screen (Arrival Stage) | Right: Update Encounter Screen*
 
 ---
 
