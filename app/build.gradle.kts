@@ -26,16 +26,16 @@ android {
     val keystoreProperties = Properties()
     if (keystorePropertiesFile.exists()) {
         keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-    }
-
-    signingConfigs {
-        create("release") {
-            storeFile = file(keystoreProperties["RELEASE_STORE_FILE"] as String? ?: "")
-            storePassword = keystoreProperties["RELEASE_STORE_PASSWORD"] as String? ?: ""
-            keyAlias = keystoreProperties["RELEASE_KEY_ALIAS"] as String? ?: ""
-            keyPassword = keystoreProperties["RELEASE_KEY_PASSWORD"] as String? ?: ""
+        signingConfigs {
+            create("release") {
+                storeFile = file(keystoreProperties["RELEASE_STORE_FILE"] as String? ?: "")
+                storePassword = keystoreProperties["RELEASE_STORE_PASSWORD"] as String? ?: ""
+                keyAlias = keystoreProperties["RELEASE_KEY_ALIAS"] as String? ?: ""
+                keyPassword = keystoreProperties["RELEASE_KEY_PASSWORD"] as String? ?: ""
+            }
         }
     }
+
 
     buildTypes {
         getByName("debug") {
@@ -49,7 +49,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            signingConfigs.findByName("release")?.let {
+                signingConfig = it
+            }
         }
     }
 
