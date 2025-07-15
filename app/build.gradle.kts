@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.medimobile"
+    namespace = "com.mgm.medimobile"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.medimobile"
+        applicationId = "com.mgm.medimobile"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
@@ -19,20 +22,37 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    val keystoreProperties = Properties()
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(keystoreProperties["RELEASE_STORE_FILE"] as String? ?: "")
+            storePassword = keystoreProperties["RELEASE_STORE_PASSWORD"] as String? ?: ""
+            keyAlias = keystoreProperties["RELEASE_KEY_ALIAS"] as String? ?: ""
+            keyPassword = keystoreProperties["RELEASE_KEY_PASSWORD"] as String? ?: ""
+        }
+    }
+
     buildTypes {
-        debug {
+        getByName("debug") {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
             resValue("string", "app_name", "MediMobile (Dev)")
         }
-        release {
+        getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
