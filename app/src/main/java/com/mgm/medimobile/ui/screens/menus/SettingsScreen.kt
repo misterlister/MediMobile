@@ -87,7 +87,7 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                             }
                         )
                     },
-                    FormSectionData("BrightnessMode") {
+                    FormSectionData("Brightness Mode") {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -103,7 +103,7 @@ fun SettingsScreen(navController: NavController, viewModel: MediMobileViewModel)
                             }
                         }
                     },
-                    FormSectionData("ContrastLevel") {
+                    FormSectionData("Contrast Level") {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
