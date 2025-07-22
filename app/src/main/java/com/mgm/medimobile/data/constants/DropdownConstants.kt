@@ -11,8 +11,13 @@ object DropdownConstants {
         "Green",
         "Yellow",
         "Red",
-        "White"
+        // "White" // Removed as per request from team
     )
 
     const val OTHER_PREFIX = "other: "
+
+    const val NO_OPTIONS = "No options available"
+
+    const val DROPDOWN_WIDTH = 200
+    const val DROPDOWN_HEIGHT = 425
 }
