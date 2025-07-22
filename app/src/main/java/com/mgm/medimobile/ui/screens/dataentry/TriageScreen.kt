@@ -92,6 +92,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
                             )
                         }
                     },
+                    singleLine = false,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
                     ),
