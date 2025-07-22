@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -42,6 +43,7 @@ import com.mgm.medimobile.ui.components.templates.MediButton
 import com.mgm.medimobile.ui.components.templates.MediTextField
 import com.mgm.medimobile.ui.components.templates.ScreenLayout
 import com.mgm.medimobile.viewmodel.MediMobileViewModel
+import androidx.compose.material3.Checkbox
 
 @Composable
 fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
@@ -50,6 +52,8 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    var showPassword by remember { mutableStateOf(false) }
 
     val isLoading = viewModel.isLoading.collectAsState().value
 
@@ -95,12 +99,12 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                     .wrapContentHeight()
                     .padding(horizontal = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(32.dp)
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
 
                 AppTitle(modifier = Modifier.padding(top = 48.dp))
 
-                Spacer(modifier = Modifier.weight(0.25f))
+                Spacer(modifier = Modifier.weight(0.15f))
 
                 Box(
                     modifier = Modifier
@@ -149,7 +153,11 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                     value = password,
                     onValueChange = { password = it },
                     placeholder = { Text("password") },
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation = if (showPassword) {
+                        VisualTransformation.None
+                    } else {
+                        PasswordVisualTransformation()
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Go
                     ),
@@ -164,6 +172,21 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                         .fillMaxWidth(0.75f)
                         .testTag("passwordTextField")
                 )
+
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(0.75f)
+                ) {
+                    Checkbox(
+                        checked = showPassword,
+                        onCheckedChange = { showPassword = it },
+                        modifier = Modifier.testTag("showPasswordCheckbox")
+                    )
+                    Text(
+                        text = "Show Password",
+                        modifier = Modifier.testTag("showPasswordText")
+                    )
+                }
 
                 // Login Button
                 MediButton(
