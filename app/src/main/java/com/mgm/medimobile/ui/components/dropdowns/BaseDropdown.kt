@@ -1,35 +1,33 @@
 package com.mgm.medimobile.ui.components.dropdowns
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mgm.medimobile.data.constants.DropdownConstants.DROPDOWN_HEIGHT
+import com.mgm.medimobile.data.constants.DropdownConstants.DROPDOWN_WIDTH
 import com.mgm.medimobile.data.constants.DropdownConstants.NOT_SET
+import com.mgm.medimobile.data.constants.DropdownConstants.NO_OPTIONS
 import com.mgm.medimobile.data.utils.isDataEmptyOrNull
 import com.mgm.medimobile.ui.util.highlightIf
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BaseDropdown(
     modifier: Modifier = Modifier,
@@ -50,63 +48,59 @@ fun BaseDropdown(
         listOf(NOT_SET) + (options ?: emptyList())
     }
 
-    Surface(
-        shape = RoundedCornerShape(6.dp),
-        tonalElevation = 1.dp,
-        border = BorderStroke(1.dp, colorScheme.outline),
-        modifier = modifier
-            .highlightIf(emptyHighlight && isDataEmptyOrNull(currentSelection))
-            .fillMaxWidth(width)
-            .clickable { expanded = true }
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 12.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = if (!isDataEmptyOrNull(displayValue)) displayValue else dropdownLabel,
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (!isDataEmptyOrNull(displayValue)) colorScheme.onSurface
-                        else colorScheme.onSurface.copy(alpha = 0.74f),
-                modifier = Modifier.weight(1f)
-            )
-            Icon(Icons.Default.ArrowDropDown, contentDescription = "Open dropdown")
-        }
-    }
 
-    DropdownMenu(
+    ExposedDropdownMenuBox(
         expanded = expanded,
-        onDismissRequest = { expanded = false },
-        modifier = Modifier
-            .widthIn(min = 200.dp)
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
+            .fillMaxWidth(width)
+            .highlightIf(emptyHighlight && isDataEmptyOrNull(currentSelection))
+            .widthIn(min = DROPDOWN_WIDTH.dp)
     ) {
-        if (options.isNullOrEmpty()) {
-            DropdownMenuItem(
-                text = { Text("No options available") },
-                onClick = {},
-                enabled = false
-            )
-        } else {
-            dropdownOptions.forEach { optionChoice ->
+        TextField(
+            value = if (!isDataEmptyOrNull(displayValue)) displayValue else "",
+            onValueChange = { /* Read-only, ignore input */ },
+            readOnly = true,
+            label = { Text(dropdownLabel) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            modifier = Modifier
+                .menuAnchor(type = MenuAnchorType.PrimaryEditable, enabled = true)
+                .fillMaxWidth()
+                .widthIn(min = DROPDOWN_WIDTH.dp)
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .widthIn(min = DROPDOWN_WIDTH.dp)
+                .heightIn(max = DROPDOWN_HEIGHT.dp)
+        ) {
+            if (options.isNullOrEmpty()) {
                 DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = optionChoice,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    },
-                    onClick = {
-                        onSelectionChanged(if (optionChoice == NOT_SET) null else optionChoice)
-                        expanded = false
-                    }
+                    text = { Text(NO_OPTIONS) },
+                    onClick = {},
+                    enabled = false
                 )
+            } else {
+                dropdownOptions.forEach { optionChoice ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = optionChoice,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        },
+                        onClick = {
+                            onSelectionChanged(if (optionChoice == NOT_SET) null else optionChoice)
+                            expanded = false
+                        }
+                    )
+                }
             }
         }
     }
 }
-
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
