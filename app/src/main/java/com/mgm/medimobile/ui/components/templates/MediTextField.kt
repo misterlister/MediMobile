@@ -29,7 +29,9 @@ fun MediTextField(
 ) {
     TextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = { input ->
+            onValueChange(input.trim().ifEmpty { "" })
+        },
         enabled = enabled,
         placeholder = placeholder,
         label = label?.let { { Text(it) } },
