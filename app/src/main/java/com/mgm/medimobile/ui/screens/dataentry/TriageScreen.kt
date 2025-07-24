@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mgm.medimobile.R
 import com.mgm.medimobile.data.utils.toDisplayValues
@@ -41,7 +42,7 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
     } else {
         val formSections = listOf(
             FormSectionData(
-                title = "Triage",
+                title = "Triage Acuity",
                 required = false
             ) {
                 TriageRadioButtons(
@@ -110,4 +111,12 @@ fun TriageScreen(viewModel: MediMobileViewModel) {
         )
         DividedFormSections(formSections = formSections)
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun TriageScreenPreview() {
+    val viewModel = MediMobileViewModel()
+    viewModel.initNewEncounter()
+    TriageScreen(viewModel = viewModel)
 }
