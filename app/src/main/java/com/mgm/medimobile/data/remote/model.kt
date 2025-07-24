@@ -25,3 +25,9 @@ data class ErrorResponse(
 data class SequenceResponse(
     @SerializedName("next_number") val nextNumber: Int
 )
+
+enum class ApiResponseType {
+    SUCCESS,
+    FAILURE,
+    LOGOUT
+}
