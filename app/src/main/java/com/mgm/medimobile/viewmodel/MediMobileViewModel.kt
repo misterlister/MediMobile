@@ -30,8 +30,12 @@ import com.mgm.medimobile.data.utils.toLoggedInUser
 import com.mgm.medimobile.ui.theme.BrightnessMode
 import com.mgm.medimobile.ui.theme.ContrastLevel
 import com.google.gson.Gson
+import com.mgm.medimobile.data.constants.ApiConstants.TIMEOUT_MESSAGE
+import com.mgm.medimobile.data.remote.ApiResponseType
+import com.mgm.medimobile.data.remote.GetEncounterByVisitIdApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -68,6 +72,10 @@ open class MediMobileViewModel: ViewModel() {
     open fun setLoading(loading: Boolean) {
         _isLoading.value = loading
     }
+
+    private val _logoutEvent = MutableSharedFlow<Unit>()
+    val logoutEvent: SharedFlow<Unit> = _logoutEvent.asSharedFlow()
+
 
     private val _errorFlow = MutableSharedFlow<String>()
     open val errorFlow = _errorFlow.asSharedFlow()
@@ -145,10 +153,13 @@ open class MediMobileViewModel: ViewModel() {
     val currentEncounter: StateFlow<PatientEncounter?> get() = _currentEncounter
 
     // Copy and open an existing encounter
-    fun setCurrentEncounter(patientEncounter: PatientEncounter) {
+    fun setCurrentEncounter(patientEncounter: PatientEncounter, lockVisitId: Boolean = false) {
         _currentEncounter.value = patientEncounter.copy()
         updateAllStageStatuses() // Make sure all stage statuses are up to date
         resetDataChanged() // Reset data changed flag
+        if (lockVisitId) {
+            markAsSubmitted()
+        }
     }
 
     // Clear the current encounter
@@ -339,6 +350,7 @@ open class MediMobileViewModel: ViewModel() {
     private var getApi = retrofit.create(GetEncountersApi::class.java)
     private var postApi = retrofit.create(SubmitEncountersApi::class.java)
     private var sequenceApi = retrofit.create(GetSequenceApi::class.java)
+    private var getByVisitIdApi = retrofit.create(GetEncounterByVisitIdApi::class.java)
 
     // Update the Retrofit instance when the low connectivity mode changes
     private fun updateRetrofitAndInterfaces() {
@@ -347,6 +359,7 @@ open class MediMobileViewModel: ViewModel() {
         getApi = retrofit.create(GetEncountersApi::class.java)
         postApi = retrofit.create(SubmitEncountersApi::class.java)
         sequenceApi = retrofit.create(GetSequenceApi::class.java)
+        getByVisitIdApi = retrofit.create(GetEncounterByVisitIdApi::class.java)
     }
 
     // **Login functions**
@@ -403,6 +416,9 @@ open class MediMobileViewModel: ViewModel() {
     fun logout() {
         UserSessionManager.logout()
         clearLoginResult()
+        viewModelScope.launch {
+            _logoutEvent.emit(Unit)
+        }
     }
 
     // **Database functions**
@@ -444,7 +460,7 @@ open class MediMobileViewModel: ViewModel() {
                     userUuid = null,
                     arrivalDateTimeMin = getMinDate(),
                     arrivalDateTimeMax = null,
-                    UserSessionManager.getAuthToken()
+                    token = UserSessionManager.getAuthToken()
                 )
 
                 if (response.isSuccessful) {
@@ -459,8 +475,18 @@ open class MediMobileViewModel: ViewModel() {
                 } else {
                     // Handle error response
                     val errorBody = response.errorBody()?.string()
-                    _errorFlow.emit("Failed to fetch encounters. Server responded with an error.")
+
+                    val errorMessage = when (response.code()) {
+                        422 -> TIMEOUT_MESSAGE
+                        else -> "Failed to fetch encounters. Server responded with an error."
+                    }
+
+                    _errorFlow.emit(errorMessage)
                     Log.e("DatabaseDebug", "Error: $errorBody")
+
+                    if (response.code() == 422) {
+                        logout()
+                    }
                 }
             } catch (e: IOException) {
                 _errorFlow.emit("Network issue detected. Please check your internet connection and try again.")
@@ -474,21 +500,75 @@ open class MediMobileViewModel: ViewModel() {
         }
     }
 
+
+    // Return an encounter with a specific visit ID if it exists in the database
+    open suspend fun getEncounterByVisitId(visitID: String): PatientEncounter? {
+        var foundEncounter: PatientEncounter? = null
+        setLoading(true)
+        try {
+            val response = getByVisitIdApi.getEncounterByVisitId(
+                visitId = visitID,
+                token = UserSessionManager.getAuthToken()
+            )
+
+            if (response.isSuccessful) {
+                response.body()?.let { encounter ->
+
+                    Log.d("DatabaseDebug", "Encounter fetched: $encounter")
+
+                    foundEncounter = encounter
+                } ?: run {
+                    Log.d("DatabaseDebug", "No matching encounter found.")
+                }
+            } else {
+                // Handle error response
+                val errorBody = response.errorBody()?.string()
+
+                if (response.code() == 404) {
+                    Log.d("DatabaseDebug", "No matching encounter found.")
+                    return null
+                }
+
+                val errorMessage = when (response.code()) {
+                    422 -> TIMEOUT_MESSAGE
+                    else -> "Failed to fetch encounter. Server responded with an error."
+                }
+
+                _errorFlow.emit(errorMessage)
+                Log.e("DatabaseDebug", "Error: $errorBody")
+
+                if (response.code() == 422) {
+                    logout()
+                }
+            }
+        } catch (e: IOException) {
+            _errorFlow.emit("Network issue detected. Please check your internet connection and try again.")
+            Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
+        } catch (e: Exception) {
+            _errorFlow.emit("Unexpected error occurred. Please try again later.")
+            Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
+        } finally {
+            setLoading(false)
+        }
+        return foundEncounter
+    }
+
+
     private fun parseErrorDetail(jsonString: String?): String? {
         return try {
             if (!jsonString.isNullOrBlank() && jsonString.trimStart().startsWith("{")) {
                 val errorResponse = Gson().fromJson(jsonString, ErrorResponse::class.java)
                 errorResponse.detail
             } else {
-                null
+                return null
             }
         } catch (e: Exception) {
             Log.e("parseErrorDetail", "Failed to parse error JSON: $jsonString", e)
-            null
+            return null
         }
     }
 
-    private suspend fun submitNewEncounter(): Boolean {
+    private suspend fun submitNewEncounter(): ApiResponseType {
         setLoading(true)
         return try {
             val formData = mapToPatientEncounterFormData(
@@ -507,27 +587,43 @@ open class MediMobileViewModel: ViewModel() {
                     Log.d("DatabaseDebug", "Encounter creation succeeded but response body is null.")
                 }
                 markAsSubmitted()
-                return true
+                ApiResponseType.SUCCESS
             } else {
                 val errorBody = response.errorBody()?.string()
-                _errorFlow.emit("Error creating encounter. Please try again later.")
+                val detailedMessage = parseErrorDetail(errorBody)
+                val errorMessage: String
+                val responseCode: ApiResponseType
+
+                when (response.code()) {
+                    422 -> {
+                        errorMessage = TIMEOUT_MESSAGE
+                        responseCode = ApiResponseType.LOGOUT
+                    }
+                    else -> {
+                        errorMessage = detailedMessage ?: "Error creating encounter: (code ${response.code()})."
+                        responseCode = ApiResponseType.FAILURE
+                    }
+                }
+
+                _errorFlow.emit(errorMessage)
                 Log.e("DatabaseDebug", "Error creating encounter: $errorBody")
-                return false
+
+                responseCode // Return the response code to the caller
             }
         } catch (e: IOException) {
             _errorFlow.emit("Network issue detected. Please check your internet connection and try again.")
             Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
-            false
+            ApiResponseType.FAILURE
         } catch (e: Exception) {
             _errorFlow.emit("Unexpected error occurred. Please try again later.")
             Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
-            false
+            ApiResponseType.FAILURE
         } finally {
             setLoading(false)
         }
     }
 
-    private suspend fun updateExistingEncounter(): Boolean {
+    private suspend fun updateExistingEncounter(): ApiResponseType {
         setLoading(true)
         return try {
             val formData = mapToPatientEncounterFormData(
@@ -546,25 +642,42 @@ open class MediMobileViewModel: ViewModel() {
                     Log.d("DatabaseDebug", "Encounter update succeeded but response body is null.")
                 }
                 markAsSubmitted()
-                return true
+                ApiResponseType.SUCCESS
             } else {
                 val errorBody = response.errorBody()?.string()
-                if (response.code() == 403) {
-                    _errorFlow.emit("You do not have permission to update this encounter. Please contact an administrator.")
-                } else {
-                    _errorFlow.emit("Error updating encounter. Please try again later.")
+                val detailedMessage = parseErrorDetail(errorBody)
+                val errorMessage: String
+                val responseCode: ApiResponseType
+
+                when (response.code()) {
+                    403 -> {
+                        errorMessage = "You do not have permission to update this encounter. Please contact an administrator."
+                        responseCode = ApiResponseType.FAILURE
+                    }
+                    422 -> {
+                        errorMessage = TIMEOUT_MESSAGE
+                        responseCode = ApiResponseType.LOGOUT
+                    }
+                    else -> {
+                        errorMessage = detailedMessage ?: "Error updating encounter: (code ${response.code()})."
+                        responseCode = ApiResponseType.FAILURE
+                    }
                 }
+
                 Log.e("DatabaseDebug", "Error updating encounter: $errorBody")
-                return false
+
+                _errorFlow.emit(errorMessage)
+
+                responseCode // Return the response code to the caller
             }
         } catch (e: IOException) {
             _errorFlow.emit("Network issue detected. Please check your internet connection and try again.")
             Log.e("DatabaseDebug", "Network error: ${e.localizedMessage}")
-            false
+            ApiResponseType.FAILURE
         } catch (e: Exception) {
             _errorFlow.emit("Unexpected error occurred. Please try again later.")
             Log.e("DatabaseDebug", "Unexpected error: ${e.localizedMessage}")
-            false
+            ApiResponseType.FAILURE
         } finally {
             setLoading(false)
         }
@@ -572,8 +685,8 @@ open class MediMobileViewModel: ViewModel() {
 
 
     // Save encounter to database
-    open suspend fun saveEncounterToDatabase(): Boolean {
-        val encounter = _currentEncounter.value ?: return false
+    open suspend fun saveEncounterToDatabase(): ApiResponseType {
+        val encounter = _currentEncounter.value ?: return ApiResponseType.FAILURE
 
         _currentEncounter.value = encounter.copy(
             complete = encounter.arrivalStatus == StageStatus.COMPLETE &&
@@ -585,7 +698,7 @@ open class MediMobileViewModel: ViewModel() {
             // Check if this VisitID is a duplicate of an existing one
             if (encounterList.value.any { it.visitId == encounter.visitId }) {
                 _errorFlow.emit("This Visit ID is already assigned to an existing Encounter. Please use another.")
-                return false
+                return ApiResponseType.FAILURE
             }
             // Create new encounter
             return submitNewEncounter()
