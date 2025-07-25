@@ -48,3 +48,12 @@ interface GetSequenceApi {
     @GET("api/medical/form/next-visit-id")
     suspend fun getNextVisitIDSequence(): Response<SequenceResponse>
 }
+
+interface GetEncounterByVisitIdApi {
+    // Get a patient encounter by visit ID
+    @GET("api/medical/form_by_visit_id")
+    suspend fun getEncounterByVisitId(
+        @Query("visit_id") visitId: String,
+        @Header("Authorization") token: String
+    ): Response<PatientEncounter>
+}
