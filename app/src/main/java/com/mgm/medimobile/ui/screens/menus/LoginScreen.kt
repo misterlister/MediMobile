@@ -159,7 +159,9 @@ fun LoginScreen(navController: NavController, viewModel: MediMobileViewModel) {
                         PasswordVisualTransformation()
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Go
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Go,
+                        autoCorrectEnabled = false
                     ),
                     keyboardActions = KeyboardActions(
                         onGo = {
