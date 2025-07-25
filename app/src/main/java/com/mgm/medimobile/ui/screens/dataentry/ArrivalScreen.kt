@@ -6,9 +6,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -17,6 +21,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mgm.medimobile.data.model.PatientEncounter
 import com.mgm.medimobile.data.utils.toDisplayValues
 import com.mgm.medimobile.ui.components.dropdowns.DropdownWithOtherField
 import com.mgm.medimobile.ui.components.errorscreens.NoEncounterError
@@ -28,13 +33,32 @@ import com.mgm.medimobile.ui.components.templates.DividedFormSections
 import com.mgm.medimobile.ui.components.templates.FormSectionData
 import com.mgm.medimobile.ui.components.templates.MediButton
 import com.mgm.medimobile.ui.components.templates.MediTextField
+import com.mgm.medimobile.ui.theme.ButtonStatus
 import com.mgm.medimobile.viewmodel.MediMobileViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ArrivalScreen(viewModel: MediMobileViewModel) {
     val encounter = viewModel.currentEncounter.collectAsState().value
     val selectedEvent = viewModel.selectedEvent.collectAsState().value
     val focusManager = LocalFocusManager.current
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val scannedEncounter = remember { mutableStateOf<PatientEncounter?>(null) }
+    val showQRExistingDialog = remember { mutableStateOf(false)}
+
+    fun handleVisitIdInput(scannedValue: String) {
+        coroutineScope.launch {
+            val match = viewModel.getEncounterByVisitId(scannedValue)
+            if (match == null) {
+                viewModel.setVisitId(scannedValue)
+            } else {
+                scannedEncounter.value = match
+                showQRExistingDialog.value = true
+            }
+        }
+    }
 
     if (encounter == null) {
         NoEncounterError()
@@ -73,7 +97,7 @@ fun ArrivalScreen(viewModel: MediMobileViewModel) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     QRScannerButton(onResult = { scannedValue: String ->
-                        viewModel.setVisitId(scannedValue)
+                        handleVisitIdInput(scannedValue)
                     },
                         modifier = Modifier.weight(0.5f)
                             .testTag("visitIdScannerButton"),
@@ -164,12 +188,54 @@ fun ArrivalScreen(viewModel: MediMobileViewModel) {
         )
         DividedFormSections(formSections = formSections)
     }
+
+    // Show pop-up dialog if a QR is scanned which is already assigned to an Encounter
+    if (showQRExistingDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                // Dismiss the dialog when clicking outside
+                scannedEncounter.value = null
+                showQRExistingDialog.value = false
+            },
+            title = { Text("Encounter Exists") },
+            text = {
+                Text("An encounter with this Visit ID already exists, would you like to open it?")
+            },
+            confirmButton = {
+                MediButton(
+                    onClick = {
+                        // Open the encounter with this Visit ID
+                        viewModel.setCurrentEncounter(
+                            patientEncounter = scannedEncounter.value?: PatientEncounter(),
+                            lockVisitId = true
+                        )
+                        scannedEncounter.value = null
+                        showQRExistingDialog.value = false
+                    }
+                ) {
+                    Text("Open Encounter")
+                }
+            },
+            dismissButton = {
+                MediButton(
+                    onClick = {
+                        // Dismiss the dialog if "No" is clicked
+                        scannedEncounter.value = null
+                        showQRExistingDialog.value = false
+                    },
+                    status = ButtonStatus.WARNING,
+                ) {
+                    Text("Cancel")
+                }
+            },
+        )
+    }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ArrivalScreenPreview() {
-    var viewModel = MediMobileViewModel()
+    val viewModel = MediMobileViewModel()
     viewModel.initNewEncounter()
     ArrivalScreen(viewModel = viewModel)
 }
