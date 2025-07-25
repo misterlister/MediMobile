@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import com.mgm.medimobile.R
 import com.mgm.medimobile.data.session.UserSessionManager
@@ -28,6 +31,20 @@ import com.mgm.medimobile.viewmodel.MediMobileViewModel
 fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel) {
 
     val username = UserSessionManager.userDisplayName
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(Unit) {
+        viewModel.logoutEvent
+            .flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect {
+                navController.navigate("login") {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            }
+    }
 
     ScreenLayout(
         topBar = {
@@ -40,9 +57,6 @@ fun MainMenuScreen(navController: NavController, viewModel: MediMobileViewModel)
                 UsernameText(text = username)
                 MediButton(onClick = {
                     viewModel.logout()
-                    navController.navigate("login") {
-                        popUpTo("mainMenu") { inclusive = true }
-                    }
                 }) {
                     Text(text = "Logout")
                 }

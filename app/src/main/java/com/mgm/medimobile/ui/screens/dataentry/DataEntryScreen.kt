@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -42,6 +43,7 @@ import com.mgm.medimobile.R
 import com.mgm.medimobile.data.model.StageStatus
 import com.mgm.medimobile.data.model.getStatusColour
 import com.mgm.medimobile.data.model.getStatusTextColour
+import com.mgm.medimobile.data.remote.ApiResponseType
 import com.mgm.medimobile.data.session.UserSessionManager
 import com.mgm.medimobile.data.utils.isDataEmptyOrNull
 import com.mgm.medimobile.ui.components.LoadingIndicator
@@ -53,6 +55,7 @@ import com.mgm.medimobile.ui.components.templates.ScreenLayout
 import com.mgm.medimobile.ui.theme.ButtonStatus
 import com.mgm.medimobile.ui.theme.LocalExtendedColors
 import com.mgm.medimobile.viewmodel.MediMobileViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @Composable
@@ -86,6 +89,22 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
             .collect { error ->
                 errorText = error
                 showErrorPopup = true
+            }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.logoutEvent
+            .flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect {
+                // Wait for error dialogs to close before logging out
+                snapshotFlow { showErrorPopup }
+                    .first { !it }
+                navController.navigate("login") {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
             }
     }
 
@@ -310,7 +329,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                     },
                     status = ButtonStatus.WARNING
                 ) {
-                    Text("Cancel")
+                    Text("Exit Without Saving")
                 }
             },
             dismissButton = {
@@ -320,7 +339,7 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                         showCancelPopup = false
                     }
                 ) {
-                    Text("Don't Cancel")
+                    Text("Return to Entry")
                 }
             },
             modifier = Modifier.testTag("cancelPopup")
@@ -347,13 +366,15 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                     onClick = {
                         // Save data to database and continue entry
                         coroutineScope.launch {
-                            val success = viewModel.saveEncounterToDatabase()
+                            val responseResult = viewModel.saveEncounterToDatabase()
                             showSavePopup = false  // Close the save popup
 
-                            if (success) {
+                            if (responseResult == ApiResponseType.SUCCESS) {
                                 // Show toast message on success
                                 Toast.makeText(context, "Save successful!", Toast.LENGTH_SHORT)
                                     .show()
+                            } else if (responseResult == ApiResponseType.LOGOUT) {
+                                viewModel.logout()
                             }
                         }
                     },
@@ -366,14 +387,16 @@ fun DataEntryScreen(navController: NavController, viewModel: MediMobileViewModel
                 MediButton(
                     onClick = {
                         coroutineScope.launch {
-                            val success = viewModel.saveEncounterToDatabase()
+                            val responseResult = viewModel.saveEncounterToDatabase()
                             showSavePopup = false  // Close the save popup
 
-                            if (success) {
+                            if (responseResult == ApiResponseType.SUCCESS) {
                                 // Navigate back on successful save
                                 navController.popBackStack()
                                 // Show toast message on success
                                 Toast.makeText(context, "Save successful!", Toast.LENGTH_SHORT).show()
+                            } else if (responseResult == ApiResponseType.LOGOUT) {
+                                viewModel.logout()
                             }
                         }
                     },
