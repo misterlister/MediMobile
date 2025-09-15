@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mgm.medimobile.R
 import com.mgm.medimobile.data.utils.toDisplayValues
@@ -58,13 +59,13 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
                 )
             },
             FormSectionData(
-                title = "Departure Destination",
+                title = "Discharge Disposition",
                 required = false
             ) {
                 DropdownWithOtherField (
                     currentSelection = encounter.departureDest,
                     options = selectedEvent.dropdowns.departureDestinations.toDisplayValues(),
-                    dropdownLabel = "Departure Destination",
+                    dropdownLabel = "Discharge Disposition",
                     onSelectionChanged = { newDisplayValue ->
                         viewModel.setDepartureDest(newDisplayValue?: "")
                         focusManager.clearFocus()
@@ -111,4 +112,12 @@ fun DischargeScreen(viewModel: MediMobileViewModel) {
         )
         DividedFormSections(formSections = formSections)
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun DischargeScreenPreview() {
+    val viewModel = MediMobileViewModel()
+    viewModel.initNewEncounter()
+    DischargeScreen(viewModel = viewModel)
 }

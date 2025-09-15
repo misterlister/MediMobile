@@ -30,7 +30,8 @@ fun MediTextField(
     TextField(
         value = value,
         onValueChange = { input ->
-            onValueChange(input.trim().ifEmpty { "" })
+            val noLeadingWhitespace = input.trimStart()
+            onValueChange(noLeadingWhitespace.ifBlank { "" })
         },
         enabled = enabled,
         placeholder = placeholder,

@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -52,6 +53,7 @@ import com.mgm.medimobile.ui.components.templates.MediTextField
 import com.mgm.medimobile.ui.components.templates.ScreenLayout
 import com.mgm.medimobile.ui.theme.ButtonStatus
 import com.mgm.medimobile.viewmodel.MediMobileViewModel
+import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 
 @Composable
@@ -84,6 +86,22 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
             }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.logoutEvent
+            .flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect {
+                // Wait for error dialogs to close before logging out
+                snapshotFlow { showErrorPopup }
+                    .first { !it }
+                navController.navigate("login") {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            }
+    }
+
     // State to hold values used in the alert pop-up
     val alertValue = remember { mutableStateOf("") }
 
@@ -99,7 +117,6 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
     val filteredEncounterList = remember {
         derivedStateOf {
             encounterList.filter { encounter ->
-
                     val isCompleted = showCompleted.value || !encounter.complete
                     val isVisitIdMatch = visitIdFilter.value.isEmpty() || encounter.visitId.contains(visitIdFilter.value, ignoreCase = true)
                     val isDateMatch = dateFilter.value == null || encounter.arrivalDate == dateFilter.value
@@ -151,9 +168,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                         records = filteredEncounterList.value,
                         onRowClick = { selectedRecord ->
                             // Load the selected record into the viewModel
-                            viewModel.setCurrentEncounter(selectedRecord)
-                            // Ensure that the record is marked as submitted
-                            viewModel.markAsSubmitted()
+                            viewModel.setCurrentEncounter(selectedRecord, lockVisitId = true)
                             navController.navigate("dataEntry")
                         },
                         isLoading = isLoading,
@@ -168,7 +183,7 @@ fun UpdateEncounterScreen(navController: NavController, viewModel: MediMobileVie
                         val encounter = viewModel.findEncounterByVisitId(scannedValue)
 
                         if (encounter != null) {
-                            viewModel.setCurrentEncounter(encounter)
+                            viewModel.setCurrentEncounter(encounter, lockVisitId = true)
                             navController.navigate("dataEntry")
                         } else {
                             // Show a pop-up to tell the user that no Encounter matches that ID
