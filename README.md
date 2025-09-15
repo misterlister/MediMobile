@@ -1,7 +1,10 @@
 # MediMobile
 
-MediMobile is an Android app which allows for real-time data entry of patient encounters at mass-gathering events, currently supporting the Shambhala Music Festival. Infrastructure has been put in place to expand the scope to include other events in the future.
-This mobile app connects to the MGM Interest Group's existing backend database, enabling live data entry into the database so that medical events can be monitored and resources can be allocated more effectively. All data gathered by the app is completely anonymous, and is limited to a predefined minimum data set.
+- MediMobile is an Android app which allows for real-time data entry of patient encounters at mass-gathering events
+- This app currently supports data entry for the Shambhala Music Festival
+- Infrastructure has been put in place to expand the scope to include other events in the future
+- The app connects to the MGM Interest Group's existing backend database, enabling live data entry into the database so that medical events can be monitored and resources can be allocated more effectively. 
+- All data gathered by the app is completely anonymous, and is limited to a predefined minimum data set
 
 ---
 
